@@ -7,6 +7,7 @@ gem 'rails'
 gem 'pg'
 gem 'puma'
 gem 'webpacker'
+gem 'slim-rails'
 gem 'bootsnap', require: false
 
 group :development do
