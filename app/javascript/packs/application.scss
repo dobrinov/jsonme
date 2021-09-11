@@ -1,11 +1,94 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-
 @import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
 
 body {
   font-family: 'Roboto', sans-serif;
+
+  @apply text-lg leading-snug m-0 p-0;
 }
 
-h1 { font-family: 'Patua One', sans-serif; }
+.container { @apply p-5 text-center max-w-screen-xl mx-auto; }
+
+.section {
+  @apply mb-8;
+
+  .heading {
+    font-family: 'Patua One', sans-serif;
+
+    @apply text-3xl;
+  }
+}
+
+.created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
+.profile-picture { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4; }
+.profile-picture > img { @apply w-full h-full; }
+
+.name {
+  font-family: 'Patua One', sans-serif;
+
+  @apply text-5xl mb-2;
+}
+
+.description { @apply mb-8 text-left; }
+
+.timeline {
+  @apply flex flex-col;
+
+  > aside:first-child {
+    background-image: url(../images/timeline-arrow.svg);
+    font-family: 'Patua One', sans-serif;
+
+    @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-bottom bg-no-repeat;
+  }
+
+  > div {
+    background-image: url(../images/timeline-line.svg);
+
+    > ul { @apply block w-full m-0 p-0 space-y-9; }
+    > ul > li { @apply flex flex-row w-full; }
+    > ul > li > *:first-child { @apply relative w-1/2 flex-none text-right pr-4; }
+    > ul > li > *:last-child { @apply relative w-1/2 flex-none text-left pl-6 text-base; }
+
+    @apply flex flex-row py-4 bg-center bg-repeat-y;
+  }
+
+  > aside:last-child {
+    background-image: url(../images/timeline-start.svg);
+    font-family: 'Patua One', sans-serif;
+
+    @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat;
+  }
+}
+
+.period {
+  > h3 {
+    font-family: 'Patua One', sans-serif;
+
+    @apply text-xl m-0 p-0 leading-5;
+  }
+
+  > aside { @apply absolute w-3 h-3 rounded-full bg-black top-1 -right-1.5; }
+  > a { @apply text-gray-400 hover:underline text-xs block; }
+  > div { @apply text-xs text-gray-600; }
+}
+
+.employment {
+  > p { @apply text-gray-600 mb-4 leading-5; }
+  > ul { @apply space-y-6; }
+}
+
+.role {
+  > p { @apply mb-2 text-gray-600 leading-5; }
+  > h4 { @apply text-base font-bold leading-4 mb-1; }
+  > aside { @apply mb-0 text-xs leading-3 text-gray-300; }
+  > ul { @apply space-y-2; }
+}
+
+.achievement {
+  > h5 { @apply text-base underline leading-5; }
+  > p { @apply leading-5 text-gray-600; }
+  > ul { @apply space-x-0.5; }
+  > ul > li { @apply bg-gray-800 text-white text-xs rounded-full text-center inline-block py-0.5 px-2 leading-none; }
+}

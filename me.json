@@ -1,0 +1,159 @@
+{
+  "name": "Deyan Dobrinov",
+  "image": "https://avatars.githubusercontent.com/u/996877?v=4",
+  "contacts": {
+    "email": "deyan.dobrinov@gmail.com",
+    "github": "dobrinov"
+  },
+  "description": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from and I enjoy doing that. I like good UX and I fight for it.",
+  "employments": [
+    {
+      "company": {
+        "name": "Dext",
+        "website": "https://www.dext.com/",
+        "summary": "Dext is my current employer. It is a company developing products for more efficient accounting and bookkeeping. Big part of my time here I was responsible for one of the internal applications of the company, which is part of the data extraction flow. Recently I am taking part in various high profile projects."
+      },
+      "period": {"from": "05-2016", "to": null},
+      "roles": [
+        {
+          "title": "Development lead",
+          "summary": "Direct report of the CTO. Leading a team involved in projects aiming to improve system design (strategic refactoring, major updates, etc.).",
+          "major_achievements": [
+            {
+              "title": "Migration to a new technology stack",
+              "description": "Led a team of 8 which goal was to introduce a new front end technology stack for Dext’s main application. As part of this task we had to re-write big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with low amount of risk.",
+              "technologies": ["Typescript", "React", "GraphQL", "Ruby on Rails", "Ruby", "SASS", "Slim"]
+            },
+            {
+              "title": "Implementation of an internal CSS design library",
+              "description": "We re-designed (at that time our main product) and since we became a multi product company we wanted to have the same look and feel across all of our applications. Because of this we decided to organise our own CSS design library.",
+              "technologies": ["Storybook", "SASS", "React", "Typescript"]
+            }
+          ]
+        },
+        {
+          "title": "Team lead",
+          "summary": "Led a team responsible for the development of the application on which I worked in my previous role.",
+          "major_achievements": [
+            {
+              "title": "Implementation of a tool for extracting tabular data from OCR responses",
+              "description": "We needed a way to extract line items and transactions more efficient. They are usually presented in a tabular form, so I came with the idea to overlay the OCR data over the image it came from and create nice UI with which the user can select areas of a document and with some calculations to turn the data into a table.",
+              "technologies": ["Raphaël", "JavaScript", "Backbone.js"]
+            },
+            {
+              "title": "Improved the extraction capabilities of the application",
+              "description": "Implemented flows for extracting transactions from bank statements, line items from receipts and invoices, splitting of PDFs containing multiple financial documents.",
+              "technologies": ["Ruby on Rails", "Ruby"]
+            },
+            {
+              "title": "Replaced custom search implementation with Elasticsearch",
+              "description": "One of Dext's internal applications keeps information about the relationship between brands, legal entities and other properties of a company. It helps us identify that two (or more) financial documents are issued by the same business. It had search functionallity based on PostgresSQL features which was too complex and not working very well. I replaced it with Elasticsearch and the application became a thin layer and a UI around the search engine.",
+              "technologies": ["Ruby on Rails", "Ruby", "Elasticsearch"]
+            }
+          ]
+        },
+        {
+          "title": "Software engineer",
+          "summary": "I worked for a while on Dext's main product and then my main goal became to extract part of it which was dealing with manual (done by people) data extraction into a separate service.",
+          "major_achievements": [
+            {
+              "title": "Extracted part of a monolithic application into a service",
+              "description": "We identified that part of our main monolithic application dealing with manual data extraction can be organised into a separate service. I performed the task and delivered the end result in series of incremental releases.",
+              "technologies": ["Ruby on Rails", "Ruby", "SASS", "JavaScript", "Backbone.js"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "company": {
+        "name": "Funding Circle",
+        "website": "https://www.fundingcircle.com/",
+        "summary": "Funding Circle is a British peer to peer lending platform. I was part of a team responsible for technical debt. Most of the time I was investigating bugs and refactoring legacy code."
+      },
+      "period": {"from": "03-2015", "to": "05-2016"},
+      "roles": [
+        {
+          "title": "Software engineer",
+          "summary": "I was part of a team which was dealing with legacy code. My main responsibilities were refactoring old code and investigating and fixing production issues.",
+          "major_achievements": [
+            {
+              "title": "Prototype of a monitoring system",
+              "description": "Evaluating and deploying a prototype of an open source monitoring tool based on Riemann.",
+              "technologies": ["Clojure", "Riemann"]
+            },
+            {
+              "title": "Migration from Resque to Sidekiq",
+              "description": "I performed a migration of the library which we were using for background job processing.",
+              "technologies": ["Ruby on Rails", "Ruby", "Redis"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "company": {
+        "name": "Secret",
+        "website": "https://www.secret.de/",
+        "summary": "Secret.de (not operating anymore) was a \"casual\" dating website. It was ran by FriendScout24 and targeted to German speaking countries (Germany, Austria, Switzerland). It was a monolithic Ruby on Rails application with MongoDB database and Elasticsearch search engine. The most interesting thing about it was that the website had to be fully operational with disabled JavaScript but at the same time it had significant amounts of it. It also supported browser versions down to Internet Explorer 7."
+      },
+      "period": {"from": "10-2011", "to": "03-2015"},
+      "roles": [
+        {
+          "title": "Frontend engineer",
+          "summary": "I was one of the two frontend engineers working on the project. I was mostly interacting with Rails view/controller code + the javascript and css of the application.",
+          "major_achievements": [
+            {
+              "title": "Implementation of gamification features",
+              "description": "The product was heavily relying on gamification features to sell an internal currency with which the users were able to pay for features. My most interesting tasks were the implementation of two games \"Whell of fortune\" and \"Slot machine\".",
+              "technologies": ["Ruby on Rails", "Ruby", "JavaScript", "SCSS"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "company": {
+        "name": "SAP",
+        "website": "https://www.sap.com/",
+        "summary": "SAP AG is one of the biggest producers of enterprice software in the world. Most of the time there I was responsible for the tooling required for the internationalization of an application server (NetWeaver) developed by the company."
+      },
+      "period": {"from": "04-2007", "to": "10-2011"},
+      "roles": [
+        {
+          "title": "Software engineer",
+          "major_achievements": [
+            {
+              "title": "Migration of an internal knowledge base system from MediaWiki to Confluence",
+              "description": "We decided to move away from MediaWiki and my job was to implement a tool and use it to migrate our documentation to Confluence.",
+              "technologies": ["PHP", "Java"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": {
+        "name": "New Bulgarian University",
+        "website": "https://nbu.bg/"
+      },
+      "period": {"from": "10-2008", "to": "05-2011"},
+      "summary": "Informatics"
+    },
+    {
+      "institution": {
+        "name": "Sofia University",
+        "website": "https://www.uni-sofia.bg/"
+      },
+      "period": {"from": "10-2006", "to": "05-2008"},
+      "summary": "Applied mathematics"
+    }
+  ],
+  "location": {
+    "city": "Sofia",
+    "state": null,
+    "country": "Bulgaria"
+  }
+}
