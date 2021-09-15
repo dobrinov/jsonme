@@ -40,25 +40,43 @@ body {
     background-image: url(../images/timeline-arrow.svg);
     font-family: 'Patua One', sans-serif;
 
-    @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-bottom bg-no-repeat;
+    @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-no-repeat text-center;
+    @apply bg-left-bottom w-12 text-sm;
+    @apply sm:bg-bottom sm:w-full sm:text-base;
   }
 
   > div {
     background-image: url(../images/timeline-line.svg);
 
     > ul { @apply block w-full m-0 p-0 space-y-9; }
-    > ul > li { @apply flex flex-row w-full; }
-    > ul > li > *:first-child { @apply relative w-1/2 flex-none text-right pr-4; }
-    > ul > li > *:last-child { @apply relative w-1/2 flex-none text-left pl-6 text-base; }
+    > ul > li {
+      @apply flex flex-col w-full;
+      @apply flex-col;
+      @apply sm:flex-row;
+    }
+    > ul > li > *:first-child {
+      @apply relative flex-none;
+      @apply w-full pl-12 mb-3 text-left;
+      @apply sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right;
+    }
+    > ul > li > *:last-child {
+      @apply relative flex-none text-left pl-12 text-base;
+      @apply w-full pl-12;
+      @apply sm:w-1/2 sm:pl-6;
+    }
 
-    @apply flex flex-row py-4 bg-center bg-repeat-y;
+    @apply flex flex-row py-4 bg-repeat-y;
+    @apply bg-left;
+    @apply sm:bg-center;
   }
 
   > aside:last-child {
     background-image: url(../images/timeline-start.svg);
     font-family: 'Patua One', sans-serif;
 
-    @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat;
+    @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat text-center;
+    @apply w-12;
+    @apply sm:w-full;
   }
 }
 
@@ -69,7 +87,11 @@ body {
     @apply text-xl m-0 p-0 leading-5;
   }
 
-  > aside { @apply absolute w-3 h-3 rounded-full bg-black top-1 -right-1.5; }
+  > aside {
+    @apply absolute rounded-full bg-black;
+    @apply w-4 h-4 top-0.5 left-4 right-auto;
+    @apply sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto;
+  }
   > a { @apply text-gray-400 hover:underline text-xs block; }
   > div { @apply text-xs text-gray-600; }
 }
