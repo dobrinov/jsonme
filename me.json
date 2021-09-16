@@ -5,15 +5,15 @@
     "email": "deyan.dobrinov@gmail.com",
     "github": "dobrinov"
   },
-  "description": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from and I enjoy doing that. I like good UX and I fight for it.",
+  "summary": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from and I enjoy doing that. I like good UX and I fight for it.",
   "employments": [
     {
-      "company": {
+      "employer": {
         "name": "Dext",
-        "website": "https://www.dext.com/",
-        "summary": "Dext is my current employer. It is a company developing products for more efficient accounting and bookkeeping. Big part of my time here I was responsible for one of the internal applications of the company, which is part of the data extraction flow. Recently I am taking part in various high profile projects."
+        "website": "https://www.dext.com/"
       },
       "period": {"from": "05-2016", "to": null},
+      "summary": "Dext is my current employer. It is a employer developing products for more efficient accounting and bookkeeping. Big part of my time here I was responsible for one of the internal applications of the employer, which is part of the data extraction flow. Recently I am taking part in various high profile projects.",
       "roles": [
         {
           "title": "Development lead",
@@ -21,12 +21,12 @@
           "major_achievements": [
             {
               "title": "Migration to a new technology stack",
-              "description": "Led a team of 8 which goal was to introduce a new front end technology stack for Dext’s main application. As part of this task we had to re-write big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with low amount of risk.",
+              "summary": "Led a team of 8 which goal was to introduce a new front end technology stack for Dext’s main application. As part of this task we had to re-write big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with low amount of risk.",
               "technologies": ["Typescript", "React", "GraphQL", "Ruby on Rails", "Ruby", "SASS", "Slim"]
             },
             {
               "title": "Implementation of an internal CSS design library",
-              "description": "We re-designed (at that time our main product) and since we became a multi product company we wanted to have the same look and feel across all of our applications. Because of this we decided to organise our own CSS design library.",
+              "summary": "We re-designed (at that time our main product) and since we became a multi product employer we wanted to have the same look and feel across all of our applications. Because of this we decided to organise our own CSS design library.",
               "technologies": ["Storybook", "SASS", "React", "Typescript"]
             }
           ]
@@ -37,17 +37,17 @@
           "major_achievements": [
             {
               "title": "Implementation of a tool for extracting tabular data from OCR responses",
-              "description": "We needed a way to extract line items and transactions more efficient. They are usually presented in a tabular form, so I came with the idea to overlay the OCR data over the image it came from and create nice UI with which the user can select areas of a document and with some calculations to turn the data into a table.",
+              "summary": "We needed a way to extract line items and transactions more efficient. They are usually presented in a tabular form, so I came with the idea to overlay the OCR data over the image it came from and create nice UI with which the user can select areas of a document and with some calculations to turn the data into a table.",
               "technologies": ["Raphaël", "JavaScript", "Backbone.js"]
             },
             {
               "title": "Improved the extraction capabilities of the application",
-              "description": "Implemented flows for extracting transactions from bank statements, line items from receipts and invoices, splitting of PDFs containing multiple financial documents.",
+              "summary": "Implemented flows for extracting transactions from bank statements, line items from receipts and invoices, splitting of PDFs containing multiple financial documents.",
               "technologies": ["Ruby on Rails", "Ruby"]
             },
             {
               "title": "Replaced custom search implementation with Elasticsearch",
-              "description": "One of Dext's internal applications keeps information about the relationship between brands, legal entities and other properties of a company. It helps us identify that two (or more) financial documents are issued by the same business. It had search functionallity based on PostgresSQL features which was too complex and not working very well. I replaced it with Elasticsearch and the application became a thin layer and a UI around the search engine.",
+              "summary": "One of Dext's internal applications keeps information about the relationship between brands, legal entities and other properties of a employer. It helps us identify that two (or more) financial documents are issued by the same business. It had search functionallity based on PostgresSQL features which was too complex and not working very well. I replaced it with Elasticsearch and the application became a thin layer and a UI around the search engine.",
               "technologies": ["Ruby on Rails", "Ruby", "Elasticsearch"]
             }
           ]
@@ -58,7 +58,7 @@
           "major_achievements": [
             {
               "title": "Extracted part of a monolithic application into a service",
-              "description": "We identified that part of our main monolithic application dealing with manual data extraction can be organised into a separate service. I performed the task and delivered the end result in series of incremental releases.",
+              "summary": "We identified that part of our main monolithic application dealing with manual data extraction can be organised into a separate service. I performed the task and delivered the end result in series of incremental releases.",
               "technologies": ["Ruby on Rails", "Ruby", "SASS", "JavaScript", "Backbone.js"]
             }
           ]
@@ -66,12 +66,12 @@
       ]
     },
     {
-      "company": {
+      "employer": {
         "name": "Funding Circle",
-        "website": "https://www.fundingcircle.com/",
-        "summary": "Funding Circle is a British peer to peer lending platform. I was part of a team responsible for technical debt. Most of the time I was investigating bugs and refactoring legacy code."
+        "website": "https://www.fundingcircle.com/"
       },
       "period": {"from": "03-2015", "to": "05-2016"},
+      "summary": "Funding Circle is a British peer to peer lending platform. I was part of a team responsible for technical debt. Most of the time I was investigating bugs and refactoring legacy code.",
       "roles": [
         {
           "title": "Software engineer",
@@ -79,12 +79,12 @@
           "major_achievements": [
             {
               "title": "Prototype of a monitoring system",
-              "description": "Evaluating and deploying a prototype of an open source monitoring tool based on Riemann.",
+              "summary": "Evaluating and deploying a prototype of an open source monitoring tool based on Riemann.",
               "technologies": ["Clojure", "Riemann"]
             },
             {
               "title": "Migration from Resque to Sidekiq",
-              "description": "I performed a migration of the library which we were using for background job processing.",
+              "summary": "I performed a migration of the library which we were using for background job processing.",
               "technologies": ["Ruby on Rails", "Ruby", "Redis"]
             }
           ]
@@ -92,12 +92,12 @@
       ]
     },
     {
-      "company": {
+      "employer": {
         "name": "Secret",
-        "website": "https://www.secret.de/",
-        "summary": "Secret.de (not operating anymore) was a \"casual\" dating website. It was ran by FriendScout24 and targeted to German speaking countries (Germany, Austria, Switzerland). It was a monolithic Ruby on Rails application with MongoDB database and Elasticsearch search engine. The most interesting thing about it was that the website had to be fully operational with disabled JavaScript but at the same time it had significant amounts of it. It also supported browser versions down to Internet Explorer 7."
+        "website": "https://www.secret.de/"
       },
       "period": {"from": "10-2011", "to": "03-2015"},
+      "summary": "Secret.de (not operating anymore) was a \"casual\" dating website. It was ran by FriendScout24 and targeted to German speaking countries (Germany, Austria, Switzerland). It was a monolithic Ruby on Rails application with MongoDB database and Elasticsearch search engine. The most interesting thing about it was that the website had to be fully operational with disabled JavaScript but at the same time it had significant amounts of it. It also supported browser versions down to Internet Explorer 7.",
       "roles": [
         {
           "title": "Frontend engineer",
@@ -105,7 +105,7 @@
           "major_achievements": [
             {
               "title": "Implementation of gamification features",
-              "description": "The product was heavily relying on gamification features to sell an internal currency with which the users were able to pay for features. My most interesting tasks were the implementation of two games \"Whell of fortune\" and \"Slot machine\".",
+              "summary": "The product was heavily relying on gamification features to sell an internal currency with which the users were able to pay for features. My most interesting tasks were the implementation of two games \"Whell of fortune\" and \"Slot machine\".",
               "technologies": ["Ruby on Rails", "Ruby", "JavaScript", "SCSS"]
             }
           ]
@@ -113,19 +113,19 @@
       ]
     },
     {
-      "company": {
+      "employer": {
         "name": "SAP",
-        "website": "https://www.sap.com/",
-        "summary": "SAP AG is one of the biggest producers of enterprice software in the world. Most of the time there I was responsible for the tooling required for the internationalization of an application server (NetWeaver) developed by the company."
+        "website": "https://www.sap.com/"
       },
       "period": {"from": "04-2007", "to": "10-2011"},
+      "summary": "SAP AG is one of the biggest producers of enterprice software in the world. Most of the time there I was responsible for the tooling required for the internationalization of an application server (NetWeaver) developed by the employer.",
       "roles": [
         {
           "title": "Software engineer",
           "major_achievements": [
             {
               "title": "Migration of an internal knowledge base system from MediaWiki to Confluence",
-              "description": "We decided to move away from MediaWiki and my job was to implement a tool and use it to migrate our documentation to Confluence.",
+              "summary": "We decided to move away from MediaWiki and my job was to implement a tool and use it to migrate our documentation to Confluence.",
               "technologies": ["PHP", "Java"]
             }
           ]
@@ -133,7 +133,7 @@
       ]
     }
   ],
-  "education": [
+  "trainings": [
     {
       "institution": {
         "name": "New Bulgarian University",

@@ -2,51 +2,51 @@
   = link_to '#' do
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
 
-  .profile-picture = image_tag @image
+  .profile-picture = image_tag @cv.image
 
-  h1.name = @name
-  .description = @description
+  h1.name = @cv.name
+  .summary = @cv.summary
 
   = section 'Experience' do
-    = timeline from: @experience_since_year do
+    = timeline from: @cv.experience_from_year do
       ul
-        - @employments.each do |employment|
+        - @cv.employments.each do |employment|
           li
             .period
-              h3 = employment[:company][:name]
+              h3 = employment.employer.name
               aside
-              = link_to nil, employment[:company][:website], target: '_blank', rel: "nofollow"
-              div = format_period(employment[:period][:from], employment[:period][:to])
+              = link_to nil, employment.employer.website, target: '_blank', rel: "nofollow"
+              div = format_period(employment.period.from, employment.period.to)
 
             .employment
-              p = employment[:company][:summary]
+              p = employment.summary
               ul
-                - employment[:roles].each do |role|
+                - employment.roles.each do |role|
                   li.role
-                    h4 = role[:title]
-                    p = role[:summary]
+                    h4 = role.title
+                    p = role.summary
                     aside Major achievements:
                     ul
-                      - role[:major_achievements].each do |achievement|
+                      - role.achievements.each do |achievement|
                         li.achievement
-                          h5 = achievement[:title]
-                          p = achievement[:description]
+                          h5 = achievement.title
+                          p = achievement.summary
                           ul
-                            - achievement[:technologies].each do |technology|
+                            - achievement.technologies.each do |technology|
                               li = technology
 
   = section 'Education' do
-    = timeline from: @education_since_year do
+    = timeline from: @cv.training_from_year do
       ul
-        - @education.each do |education|
+        - @cv.trainings.each do |training|
           li
             .period
-              h3 = education[:institution][:name]
+              h3 = training.institution.name
               aside
-              = link_to nil, education[:institution][:website], target: '_blank', rel: "nofollow"
-              div = format_period(education[:period][:from], education[:period][:to])
+              = link_to nil, training.institution.website, target: '_blank', rel: "nofollow"
+              div = format_period(training.period.from, training.period.to)
 
-            p = education[:summary]
+            p = training.summary
 
   = section 'Location' do
-    p = @location
+    p = @cv.location
