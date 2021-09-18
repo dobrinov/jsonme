@@ -1,4 +1,4 @@
-class PdfResume
+class Pdf
   include Prawn::View
 
   PATUA = Rails.root.join('app', 'javascript', 'fonts', 'PatuaOne-Regular.ttf')

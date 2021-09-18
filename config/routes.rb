@@ -1,14 +1,18 @@
-SUBMISSION_METHODS = %i(github gitlab file text)
+WEB_SUBMISSION_METHODS = %i(github gitlab)
+SUBMISSION_METHODS = WEB_SUBMISSION_METHODS + %i(text file)
 
 Rails.application.routes.draw do
   get ':method/new', to: 'submissions#new',
                      as: :new_submission,
                      constraints: { method: /#{SUBMISSION_METHODS.join('|')}/ }
 
-  SUBMISSION_METHODS.each do |method|
-    get "#{method}/:id", to: "#{method}_submissions#show", as: "#{method}_submission"
-    post "#{method}", to: "#{method}_submissions#create", as: "#{method}_submissions"
-  end
+  get ':method/:username', to: 'submissions#show',
+                           as: :submission,
+                           constraints: { method: /#{WEB_SUBMISSION_METHODS.join('|')}/ }
+
+  post ':method', to: 'submissions#create',
+                  as: :submissions,
+                  constraints: { method: /#{SUBMISSION_METHODS.join('|')}/ }
 
   root 'static_pages#landingpage'
 end
