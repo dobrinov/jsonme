@@ -10,7 +10,7 @@
       = form_tag submissions_path(method: @method)
         .input
           = label_tag :payload, 'Json'
-          = text_area_tag :payload, nil, rows: 15, placeholder: 'Paste your résumé in JSON format here ...'
+          = text_area_tag :payload, nil, placeholder: 'Paste your résumé in JSON format here ...'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
