@@ -2,15 +2,15 @@
   = link_to '#' do
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
 
-  .profile-picture = image_tag @cv.image
+  .profile-picture = image_tag @resume.image
 
-  h1.name = @cv.name
-  .summary = @cv.summary
+  h1.name = @resume.name
+  .summary = @resume.summary
 
   = section 'Experience' do
-    = timeline from: @cv.experience_from_year do
+    = timeline from: @resume.experience_from_year do
       ul
-        - @cv.employments.each do |employment|
+        - @resume.employments.each do |employment|
           li
             .period
               h3 = employment.employer.name
@@ -36,9 +36,9 @@
                               li = technology
 
   = section 'Education' do
-    = timeline from: @cv.training_from_year do
+    = timeline from: @resume.training_from_year do
       ul
-        - @cv.trainings.each do |training|
+        - @resume.trainings.each do |training|
           li
             .period
               h3 = training.institution.name
@@ -49,4 +49,4 @@
             p = training.summary
 
   = section 'Location' do
-    p = @cv.location
+    p = @resume.location

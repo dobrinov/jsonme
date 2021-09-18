@@ -1,4 +1,4 @@
-class PdfCv
+class PdfResume
   include Prawn::View
 
   PATUA = Rails.root.join('app', 'javascript', 'fonts', 'PatuaOne-Regular.ttf')
@@ -12,7 +12,7 @@ class PdfCv
   end
 
   def initialize(cv)
-    @cv = cv
+    @resume = cv
     @width = bounds.width
   end
 
@@ -43,13 +43,13 @@ class PdfCv
 
   def name
     font(PATUA, size: 28) do
-      text @cv.name, align: :center
+      text @resume.name, align: :center
     end
   end
 
   def summary
     font(ROBOTO, size: 12) do
-      text @cv.summary
+      text @resume.summary
     end
   end
 
@@ -60,7 +60,7 @@ class PdfCv
   end
 
   def experience
-    @cv.employments.each do |employment|
+    @resume.employments.each do |employment|
       span(@width - 170, position: :right) do
         bounding_box [-170, 0], width: 150, height: 80 do
           font(PATUA, size: 15) do
@@ -130,7 +130,7 @@ class PdfCv
   end
 
   def education
-    @cv.trainings.each do |training|
+    @resume.trainings.each do |training|
       span(@width - 170, position: :right) do
         bounding_box [-170, 0], width: 150, height: 60 do
           font(PATUA, size: 15) do
@@ -164,7 +164,7 @@ class PdfCv
 
   def location
     font(ROBOTO, size: 14) do
-      text @cv.location.to_s, align: :center
+      text @resume.location.to_s, align: :center
     end
   end
 end

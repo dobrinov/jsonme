@@ -1,8 +1,8 @@
 class FileSubmissionsController < SubmissionsController
   def create
     payload = params[:file].read
-    @cv = Parser.execute payload
+    @resume = Parser.execute payload
 
-    send_data PdfCv.generate(@cv), filename: "CV_#{@cv.name.gsub(' ', '')}.pdf", disposition: :inline
+    send_data PdfResume.generate(@resume), filename: "CV_#{@resume.name.gsub(' ', '')}.pdf", disposition: :inline
   end
 end
