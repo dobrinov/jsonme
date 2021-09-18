@@ -1,5 +1,5 @@
-WEB_SUBMISSION_METHODS = %i(github gitlab)
-SUBMISSION_METHODS = WEB_SUBMISSION_METHODS + %i(text file)
+WEB_SUBMISSION_METHODS = %w(github gitlab)
+SUBMISSION_METHODS = WEB_SUBMISSION_METHODS + %w(text file)
 
 Rails.application.routes.draw do
   get ':method/new', to: 'submissions#new',

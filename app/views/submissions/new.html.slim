@@ -1,29 +1,39 @@
-h1 New submission
+.submission
+  .centered-container
+    h1 Getting started
 
-ul
-  - submission_methods.each do |method|
-    li = link_to method, new_submission_path(method: method)
+    nav.tabs
+      - submission_methods.each do |method|
+        = link_to method.capitalize, new_submission_path(method: method), class: ('active' if method == @method)
 
-- if @method == 'text'
-  h2 Text submission
-  = form_tag submissions_path(method: @method)
-    = text_area_tag :payload
-    = submit_tag 'Generate'
+    - if @method == 'text'
+      = form_tag submissions_path(method: @method)
+        .input
+          = label_tag :payload, 'Json'
+          = text_area_tag :payload, nil, rows: 15, placeholder: 'Paste your résumé in JSON format here ...'
 
-- elsif @method == 'github'
-  h2 Github submission
-  = form_tag submissions_path(method: @method)
-    = text_field_tag :username
-    = submit_tag 'Generate'
+        = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
-- elsif @method == 'gitlab'
-  h2 Gitlab submission
-  = form_tag submissions_path(method: @method)
-    = text_field_tag :username
-    = submit_tag 'Generate'
+    - elsif @method == 'github'
+      = form_tag submissions_path(method: @method)
+        .input
+          = label_tag :username, 'Github username'
+          = text_field_tag :username, nil, autocomplete: 'off'
 
-- elsif @method == 'file'
-  h2 File upload submission
-  = form_tag submissions_path(method: @method), multipart: true
-    = file_field_tag :file
-    = submit_tag 'Generate'
+        = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
+
+    - elsif @method == 'gitlab'
+      = form_tag submissions_path(method: @method)
+        .input
+          = label_tag :username, 'Gitlab username'
+          = text_field_tag :username, nil, autocomplete: 'off'
+
+        = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
+
+    - elsif @method == 'file'
+      = form_tag submissions_path(method: @method), multipart: true
+        .input
+          = label_tag :username, 'File'
+          = file_field_tag :file
+
+        = submit_tag 'Generate résumé', class: 'button button-primary button-lg'

@@ -12,7 +12,7 @@ class SubmissionsController < ApplicationController
   def create
     @method = params[:method]
 
-    if @method.to_sym.in? WEB_SUBMISSION_METHODS
+    if @method.in? WEB_SUBMISSION_METHODS
       redirect_to submission_path method: @method, username: encode(params[:username])
     else
       resume = Parser.execute payload_for(@method)
