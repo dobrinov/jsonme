@@ -9,31 +9,31 @@
     - if @method == 'text'
       = form_tag submissions_path(method: @method)
         .input
-          = label_tag :payload, 'Json'
-          = text_area_tag :payload, nil, placeholder: 'Paste your résumé in JSON format here ...'
+          = label_tag :payload, 'Résumé'
+          = text_area_tag :payload, nil, placeholder: 'Paste your résumé in JSON format here'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
     - elsif @method == 'github'
       = form_tag submissions_path(method: @method)
         .input
-          = label_tag :username, 'Github username'
-          = text_field_tag :username, nil, autocomplete: 'off'
+          = label_tag :username, 'Username'
+          = text_field_tag :username, nil, autocomplete: 'off', placeholder: 'Enter your Github username here'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
     - elsif @method == 'gitlab'
       = form_tag submissions_path(method: @method)
         .input
-          = label_tag :username, 'Gitlab username'
-          = text_field_tag :username, nil, autocomplete: 'off'
+          = label_tag :username, 'Username'
+          = text_field_tag :username, nil, autocomplete: 'off', placeholder: 'Enter your Gitlab username here'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
     - elsif @method == 'file'
       = form_tag submissions_path(method: @method), multipart: true
         .input
-          = label_tag :username, 'File'
+          = label_tag :username, 'Résumé'
           = file_field_tag :file
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
