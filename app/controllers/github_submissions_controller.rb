@@ -3,7 +3,7 @@ class GithubSubmissionsController < SubmissionsController
     payload = Net::HTTP.get URI.parse("https://raw.githubusercontent.com/#{decode(params[:id])}/me/main/cv.json")
     @cv = Parser.execute payload
 
-    render 'cvs/show'
+    render 'resume'
   end
 
   def create

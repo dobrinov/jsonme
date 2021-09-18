@@ -10,7 +10,5 @@ Rails.application.routes.draw do
     post "#{method}", to: "#{method}_submissions#create", as: "#{method}_submissions"
   end
 
-  resources :cvs, only: %i(show)
-
   root 'static_pages#landingpage'
 end

@@ -4,7 +4,7 @@ class GitlabSubmissionsController < SubmissionsController
       payload = Net::HTTP.get URI.parse("https://gitlab.com/#{decode(params[:id])}/me/-/raw/main/cv.json")
       @cv = Parser.execute payload
 
-      render 'cvs/show'
+      render 'resume'
     end
   end
 
