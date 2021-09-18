@@ -1,0 +1,29 @@
+h1 New submission
+
+ul
+  - submission_methods.each do |method|
+    li = link_to method, new_submission_path(method: method)
+
+- if @method == 'text'
+  h2 Text submission
+  = form_tag text_submissions_path
+    = text_area_tag :payload
+    = submit_tag 'Generate'
+
+- elsif @method == 'github'
+  h2 Github submission
+  = form_tag github_submissions_path
+    = text_field_tag :username
+    = submit_tag 'Generate'
+
+- elsif @method == 'gitlab'
+  h2 Gitlab submission
+  = form_tag gitlab_submissions_path
+    = text_field_tag :username
+    = submit_tag 'Generate'
+
+- elsif @method == 'file'
+  h2 File upload submission
+  = form_tag file_submissions_path, multipart: true
+    = file_field_tag :file
+    = submit_tag 'Generate'

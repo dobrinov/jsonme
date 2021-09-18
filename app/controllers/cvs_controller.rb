@@ -1,4 +1,4 @@
-class ExamplesController < ApplicationController
+class CvsController < ApplicationController
   def show
     payload = File.read Rails.root.join('me.json')
 
