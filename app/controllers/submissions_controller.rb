@@ -3,6 +3,15 @@ class SubmissionsController < ApplicationController
   def show
     @method = params[:method]
     @resume = Parser.execute payload_for(@method)
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        if @method.in? WEB_SUBMISSION_METHODS
+          send_data Pdf.generate(@resume), filename: "CV_#{@resume.name.gsub(' ', '')}.pdf", disposition: :inline
+        end
+      end
+    end
   end
 
   def new
