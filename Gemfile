@@ -9,6 +9,8 @@ gem 'http'
 gem 'prawn'
 gem 'puma'
 gem 'webpacker'
+gem 'sentry-ruby'
+gem 'sentry-rails'
 gem 'slim-rails'
 gem 'bootsnap', require: false
 
