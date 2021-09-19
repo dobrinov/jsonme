@@ -11,7 +11,8 @@ body {
 
 h1 {
   font-family: 'Patua One', sans-serif;
-  @apply text-6xl font-bold mb-2 text-black;
+  @apply text-5xl;
+  @apply sm:text-6xl font-bold mb-2 text-black;
 }
 
 p { @apply mb-8 }
@@ -24,8 +25,15 @@ h2 {
 }
 
 .logo { @apply inline-block;}
-.logo.logo-top { @apply w-24 my-9; }
-.logo.logo-bottom { @apply w-16 my-9; }
+.logo.logo-top {
+  @apply w-16 my-6;
+  @apply sm:w-24 sm:my-9;
+}
+
+.logo.logo-bottom {
+  @apply w-11 mt-14 mb-0;
+  @apply sm:w-16;
+}
 
 .resume { @apply inline-block my-14 drop-shadow-xl w-full; border-radius: 10px; overflow: hidden; }
 .resume.resume-lg { @apply hidden sm:block; }
