@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title JsonMe - Technical resume as JSON.
+
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    = csp_meta_tag
+    = stylesheet_pack_tag 'landingpage', media: 'all'
+    = javascript_pack_tag 'landingpage'
+
+  body
+    = yield
