@@ -27,7 +27,7 @@ h2 {
 .logo.logo-top { @apply w-24 my-9; }
 .logo.logo-bottom { @apply w-16 my-9; }
 
-.resume { @apply my-8 drop-shadow-xl; border-radius: 10px; overflow: hidden; }
+.resume { @apply my-14 drop-shadow-xl; border-radius: 10px; overflow: hidden; }
 
 .button { @apply cursor-pointer no-underline; }
 .button.button-primary { @apply inline-flex items-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500; }
