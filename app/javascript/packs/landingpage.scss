@@ -15,7 +15,10 @@ h1 {
   @apply sm:text-6xl font-bold sm:mb-2 text-black;
 }
 
-p { @apply mb-8 }
+p {
+  @apply mb-8 w-full text-center inline-block;
+  @apply sm:max-w-3xl;
+}
 
 a { @apply text-indigo-600 underline hover:no-underline; }
 
