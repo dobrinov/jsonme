@@ -68,8 +68,8 @@ class Parser
   private
 
   def period_from(json)
-    from = json[:from] ? MonthAndYear.new(*json[:from].split('-')) : nil
-    to = json[:to] ? MonthAndYear.new(*json[:to].split('-')) : nil
+    from = json[:from] ? MonthAndYear.new(*json[:from].split('-').map(&:to_i)) : nil
+    to = json[:to] ? MonthAndYear.new(*json[:to].split('-').map(&:to_i)) : nil
 
     Period.new from, to
   end

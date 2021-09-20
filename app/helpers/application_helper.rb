@@ -1,7 +1,7 @@
 module ApplicationHelper
   def format_period(from, to)
-    from = Date.parse("01-#{from}").strftime('%B %Y')
-    to = to ? Date.parse("01-#{to}").strftime('%B %Y') : 'Present'
+    from = Date.new(from.year, from.month, 1).strftime('%B %Y')
+    to = to ? Date.new(to.year, to.month, 1).strftime('%B %Y') : 'Present'
 
     "#{from} - #{to}"
   end
