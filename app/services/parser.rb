@@ -1,5 +1,13 @@
 class Parser
-  CV = Struct.new :name, :image, :summary, :employments, :trainings, :location do
+  Resume = Struct.new :name, :image, :summary, :employments, :trainings, :location, :errors do
+    def invalid?
+      errors.any?
+    end
+
+    def valid?
+      errors.blank?
+    end
+
     def experience_from_year
       employments.map { |employment| employment.period.from.year }.min
     end
@@ -8,6 +16,8 @@ class Parser
       trainings.map { |training| training.period.from.year }.min
     end
   end
+
+  Result = Struct.new :resume, :error
 
   Employment = Struct.new :employer, :summary, :period, :roles
   Employer = Struct.new :name, :website
@@ -62,7 +72,9 @@ class Parser
 
     location = Location.new json[:location][:city], json[:location][:state], json[:location][:country]
 
-    CV.new json[:name], json[:image], json[:summary], employments, trainings, location
+    Resume.new json[:name], json[:image], json[:summary], employments, trainings, location, []
+  rescue JSON::ParserError
+    Resume.new nil, nil, nil, [], [], nil, ['Invalid JSON']
   end
 
   private

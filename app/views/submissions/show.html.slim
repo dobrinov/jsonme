@@ -5,51 +5,55 @@
   = link_to 'https://www.jsonme.com/', target: 'blank' do
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
 
-  .profile-picture = image_tag @resume.image
+  - if @resume.valid?
+    .profile-picture = image_tag @resume.image
 
-  h1.name = @resume.name
-  .summary = @resume.summary
+    h1.name = @resume.name
+    .summary = @resume.summary
 
-  = section 'Experience' do
-    = timeline from: @resume.experience_from_year do
-      ul
-        - @resume.employments.each do |employment|
-          li
-            .period
-              h3 = employment.employer.name
-              aside
-              = link_to nil, employment.employer.website, target: '_blank', rel: "nofollow"
-              div = format_period(employment.period.from, employment.period.to)
+    = section 'Experience' do
+      = timeline from: @resume.experience_from_year do
+        ul
+          - @resume.employments.each do |employment|
+            li
+              .period
+                h3 = employment.employer.name
+                aside
+                = link_to nil, employment.employer.website, target: '_blank', rel: "nofollow"
+                div = format_period(employment.period.from, employment.period.to)
 
-            .employment
-              p = employment.summary
-              ul
-                - employment.roles.each do |role|
-                  li.role
-                    h4 = role.title
-                    p = role.summary
-                    aside Major achievements:
-                    ul
-                      - role.achievements.each do |achievement|
-                        li.achievement
-                          h5 = achievement.title
-                          p = achievement.summary
-                          ul
-                            - achievement.technologies.each do |technology|
-                              li = technology
+              .employment
+                p = employment.summary
+                ul
+                  - employment.roles.each do |role|
+                    li.role
+                      h4 = role.title
+                      p = role.summary
+                      aside Major achievements:
+                      ul
+                        - role.achievements.each do |achievement|
+                          li.achievement
+                            h5 = achievement.title
+                            p = achievement.summary
+                            ul
+                              - achievement.technologies.each do |technology|
+                                li = technology
 
-  = section 'Education' do
-    = timeline from: @resume.training_from_year do
-      ul
-        - @resume.trainings.each do |training|
-          li
-            .period
-              h3 = training.institution.name
-              aside
-              = link_to nil, training.institution.website, target: '_blank', rel: "nofollow"
-              div = format_period(training.period.from, training.period.to)
+    = section 'Education' do
+      = timeline from: @resume.training_from_year do
+        ul
+          - @resume.trainings.each do |training|
+            li
+              .period
+                h3 = training.institution.name
+                aside
+                = link_to nil, training.institution.website, target: '_blank', rel: "nofollow"
+                div = format_period(training.period.from, training.period.to)
 
-            p = training.summary
+              p = training.summary
 
-  = section 'Location' do
-    p = @resume.location
+    = section 'Location' do
+      p = @resume.location
+
+  - else
+    = render 'errors', errors: @resume.errors

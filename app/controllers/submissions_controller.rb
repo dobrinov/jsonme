@@ -2,7 +2,8 @@ class SubmissionsController < ApplicationController
   helper_method :submission_methods
   def show
     @method = params[:method]
-    @resume = Parser.execute payload_for(@method)
+    payload, payload_errors = payload_for @method
+    @resume = Parser.execute payload
 
     respond_to do |format|
       format.html
@@ -20,11 +21,23 @@ class SubmissionsController < ApplicationController
 
   def create
     @method = params[:method]
+    payload, payload_errors = payload_for @method
+
+    if payload_errors.any?
+      @errors = payload_errors
+      render :new and return
+    end
+
+    resume = Parser.execute payload
+
+    if resume.invalid?
+      @errors = resume.errors
+      render :new and return
+    end
 
     if @method.in? WEB_SUBMISSION_METHODS
       redirect_to submission_path method: @method, username: encode(params[:username])
     else
-      resume = Parser.execute payload_for(@method)
       send_data Pdf.generate(resume), filename: "CV_#{resume.name.gsub(' ', '')}.pdf", disposition: :inline
     end
   end
@@ -32,23 +45,40 @@ class SubmissionsController < ApplicationController
   private
 
   def payload_for(method)
-    payload =
-      case method
-      when 'text'
-        params[:payload]
-      when 'file'
-        params[:file].read
-      when 'gitlab'
-        GitlabFetcher.execute decode(params[:username])
-      when 'github'
-        GithubFetcher.execute decode(params[:username])
-      else
-        raise 'Unsupported submission method'
+    payload = nil
+    errors = []
+
+    case method
+    when 'text'
+      errors << 'There isn\'t anything to parse' unless params[:payload].present?
+      payload = params[:payload] unless errors.any?
+
+    when 'file'
+      errors << 'File must be present' unless params[:file].present?
+      errors << 'Corrupted file upload' if params[:file].present? && !params[:file].respond_to?(:read)
+      payload = params[:file].read unless errors.any?
+
+    when 'gitlab'
+      response = GitlabFetcher.execute decode(params[:username]) if params[:username].present?
+      errors << 'Gitlab username must be present' unless params[:username].present?
+      if params[:username].present? && response.blank?
+        errors << "Can not find a cv.json in '#{params[:username]}/me'"
       end
+      payload = response.to_s unless errors.any?
 
-    raise 'Cannot fetch resume' unless payload
+    when 'github'
+      response = GithubFetcher.execute decode(params[:username]) if params[:username].present?
+      errors << 'Github username must be present' unless params[:username].present?
+      if params[:username].present? && response.blank?
+        errors << "Can not find a cv.json in '#{params[:username]}/me'"
+      end
+      payload = response.to_s unless errors.any?
 
-    payload
+    else
+      raise 'Unsupported submission method'
+    end
+
+    [payload, errors]
   end
 
   def encode(text)

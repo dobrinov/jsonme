@@ -6,11 +6,13 @@
       - submission_methods.each do |method|
         = link_to method.capitalize, new_submission_path(method: method), class: ('active' if method == @method)
 
+    = render 'errors', errors: @errors
+
     - if @method == 'text'
       = form_tag submissions_path(method: @method)
         .input
           = label_tag :payload, 'Résumé'
-          = text_area_tag :payload, nil, placeholder: 'Paste your résumé in JSON format here'
+          = text_area_tag :payload, params[:payload], placeholder: 'Paste your résumé in JSON format here'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
@@ -18,7 +20,7 @@
       = form_tag submissions_path(method: @method)
         .input
           = label_tag :username, 'Username'
-          = text_field_tag :username, nil, autocomplete: 'off', placeholder: 'Enter your Github username here'
+          = text_field_tag :username, params[:username], autocomplete: 'off', placeholder: 'Enter your Github username here'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
@@ -26,7 +28,7 @@
       = form_tag submissions_path(method: @method)
         .input
           = label_tag :username, 'Username'
-          = text_field_tag :username, nil, autocomplete: 'off', placeholder: 'Enter your Gitlab username here'
+          = text_field_tag :username, params[:username], autocomplete: 'off', placeholder: 'Enter your Gitlab username here'
 
         = submit_tag 'Generate résumé', class: 'button button-primary button-lg'
 
