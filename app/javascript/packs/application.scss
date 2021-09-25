@@ -19,6 +19,10 @@ body {
     @apply text-3xl font-bold mb-8;
   }
 
+  .general-summary { @apply mb-8; }
+  .method > p { @apply text-left mb-3; }
+  .method > p:last-of-type { @apply mb-5; }
+
   .tabs { @apply mb-5; }
   .input > textarea { @apply h-60; }
 
