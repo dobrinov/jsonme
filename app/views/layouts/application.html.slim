@@ -13,4 +13,7 @@ html lang="en"
     = javascript_pack_tag 'application'
 
   body
-    = yield
+    .centered-container
+      = link_to root_path do
+        = image_pack_tag 'logo.svg', class: 'logo', alt: '{me}'
+      = yield

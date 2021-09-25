@@ -1,59 +1,58 @@
 .submission
-  .centered-container
-    h1 Getting started
+  h1 Getting started
 
-    p.general-summary To generate a resume you will need to create a json file with the following structure and submit it via:
+  p.general-summary To generate a resume you will need to create a json file with the following structure and submit it via:
 
-    nav.tabs
-      - submission_methods.each do |method|
-        = link_to method.capitalize, new_submission_path(method: method), class: ('active' if method == @method)
+  nav.tabs
+    - submission_methods.each do |method|
+      = link_to method.capitalize, new_submission_path(method: method), class: ('active' if method == @method)
 
-    = render 'errors', errors: @errors
+  = render 'errors', errors: @errors
 
-    - if @method == 'github'
-      .method
-        p To use this submission method, make sure that you have a Github repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of yoyr CV.
-        p This method supports both <strong>web</strong> and <strong>pdf</strong> resume formats.
+  - if @method == 'github'
+    .method
+      p To use this submission method, make sure that you have a Github repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of yoyr CV.
+      p This method supports both <strong>web</strong> and <strong>pdf</strong> resume formats.
 
-        = form_tag submissions_path(method: @method)
-          .input
-            = label_tag :username, 'Username'
-            = text_field_tag :username, params[:username], autocomplete: 'off', placeholder: 'Enter your Github username here'
+      = form_tag submissions_path(method: @method)
+        .input
+          = label_tag :username, 'Username'
+          = text_field_tag :username, params[:username], autocomplete: 'off', placeholder: 'Enter your Github username here'
 
-          = submit_tag 'Generate resume', class: 'button button-primary button-lg'
+        = submit_tag 'Generate resume', class: 'button button-primary button-lg'
 
-    - elsif @method == 'gitlab'
-      .method
-        p To use this submission method, make sure that you have a Gitlab repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of yoyr CV.
-        p This method supports both <strong>web</strong> and <strong>pdf</strong> resume formats.
+  - elsif @method == 'gitlab'
+    .method
+      p To use this submission method, make sure that you have a Gitlab repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of yoyr CV.
+      p This method supports both <strong>web</strong> and <strong>pdf</strong> resume formats.
 
-        = form_tag submissions_path(method: @method)
-          .input
-            = label_tag :username, 'Username'
-            = text_field_tag :username, params[:username], autocomplete: 'off', placeholder: 'Enter your Gitlab username here'
+      = form_tag submissions_path(method: @method)
+        .input
+          = label_tag :username, 'Username'
+          = text_field_tag :username, params[:username], autocomplete: 'off', placeholder: 'Enter your Gitlab username here'
 
-          = submit_tag 'Generate resume', class: 'button button-primary button-lg'
+        = submit_tag 'Generate resume', class: 'button button-primary button-lg'
 
-    - elsif @method == 'file'
-      .method
-        p This is the text which will give you information what exactly has to be done in order to use this submission method. And this is the most difficult one because I have already user all of my options.
-        p This method supports only <strong>pdf</strong> resume format.
+  - elsif @method == 'file'
+    .method
+      p This is the text which will give you information what exactly has to be done in order to use this submission method. And this is the most difficult one because I have already user all of my options.
+      p This method supports only <strong>pdf</strong> resume format.
 
-        = form_tag submissions_path(method: @method), multipart: true
-          .input
-            = label_tag :username, 'Resume'
-            = file_field_tag :file
+      = form_tag submissions_path(method: @method), multipart: true
+        .input
+          = label_tag :username, 'Resume'
+          = file_field_tag :file
 
-          = submit_tag 'Generate resume', class: 'button button-primary button-lg'
+        = submit_tag 'Generate resume', class: 'button button-primary button-lg'
 
-    - elsif @method == 'text'
-      .method
-        p This is the text which will give you information what exactly has to be done in order to use this submission method. I will make it a little bit different for each tab.
-        p This method supports only <strong>pdf</strong> resume format.
+  - elsif @method == 'text'
+    .method
+      p This is the text which will give you information what exactly has to be done in order to use this submission method. I will make it a little bit different for each tab.
+      p This method supports only <strong>pdf</strong> resume format.
 
-        = form_tag submissions_path(method: @method)
-          .input
-            = label_tag :payload, 'Resume'
-            = text_area_tag :payload, params[:payload], placeholder: 'Paste your résumé in JSON format here'
+      = form_tag submissions_path(method: @method)
+        .input
+          = label_tag :payload, 'Resume'
+          = text_area_tag :payload, params[:payload], placeholder: 'Paste your résumé in JSON format here'
 
-          = submit_tag 'Generate resume', class: 'button button-primary button-lg'
+        = submit_tag 'Generate resume', class: 'button button-primary button-lg'
