@@ -14,5 +14,7 @@ Rails.application.routes.draw do
                   as: :submissions,
                   constraints: { method: /#{SUBMISSION_METHODS.join('|')}/ }
 
+  get 'schema', to: 'static_pages#schema', as: :schema
+
   root 'static_pages#landingpage'
 end

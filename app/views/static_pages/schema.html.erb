@@ -1,0 +1,52 @@
+<%= link_to root_path do %>
+  <%= image_pack_tag 'logo.svg', class: 'logo', alt: '{me}' %>
+<% end %>
+
+<div class="schema">
+  <h1>Schema</h1>
+  <pre>
+    {
+      "name": string,
+      "image": url,
+      "summary": string,
+      "employments": [
+        {
+          "employer": {
+            "name": string,
+            "website": url
+          },
+          "period": {"from": string, "to": string | null},
+          "summary": string,
+          "roles": [
+            {
+              "title": string,
+              "summary": string,
+              "major_achievements": [
+                {
+                  "title": string,
+                  "summary": string,
+                  "technologies": string[]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "trainings": [
+        {
+          "institution": {
+            "name": string,
+            "website": string
+          },
+          "period": {"from": string, "to": string | null},
+          "summary": string
+        }
+      ],
+      "location": {
+        "city": string,
+        "state": string | null,
+        "country": string
+      }
+    }
+  </pre>
+</div>
