@@ -2,7 +2,7 @@
 = content_for :description, @resume.summary
 
 .centered-container
-  = link_to 'https://www.jsonme.com/', target: 'blank' do
+  = link_to root_path, target: 'blank' do
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
 
   - if @resume.valid?
