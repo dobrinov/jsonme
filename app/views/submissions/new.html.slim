@@ -17,7 +17,7 @@
     = content_for :description, 'Generate a technical resume from a file in your Github profile'
 
     .method
-      p To use this submission method, make sure that you have a Github repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of yoyr CV.
+      p To use this submission method, make sure that you have a Github repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of your CV.
       p This method supports both <strong>web</strong> and <strong>pdf</strong> resume formats.
 
       = form_tag submissions_path(method: @method)
@@ -32,7 +32,7 @@
     = content_for :description, 'Generate a technical resume from a file in your Gitlab profile'
 
     .method
-      p To use this submission method, make sure that you have a Gitlab repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of yoyr CV.
+      p To use this submission method, make sure that you have a Gitlab repository called <strong>"me"</strong> with a <strong>"resume.json"</strong> file in it containig the contents of your CV.
       p This method supports both <strong>web</strong> and <strong>pdf</strong> resume formats.
 
       = form_tag submissions_path(method: @method)
