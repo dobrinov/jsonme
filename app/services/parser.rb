@@ -54,13 +54,21 @@ class Parser
   def execute
     json = JSON.parse(@payload).with_indifferent_access
 
-    Resume.new json[:name],
-               json[:image],
-               json[:summary],
-               parse_employments(json[:employments]),
-               parse_trainings(json[:trainings]),
-               parse_location(json[:location]),
-               []
+    name = json[:name]
+    image = json[:image]
+    summary = json[:summary]
+    employments = parse_employments json[:employments]
+    trainings = parse_trainings json[:trainings]
+    location = parse_location json[:location]
+
+    if name.present? && summary.present? && employments.any?
+      Resume.new name, image, summary, employments, trainings, location, []
+    else
+      Resume.new nil, nil, nil, [], [], nil, [<<~ERROR]
+          Your resume should have at least a name, a short summary of you and some employment history.
+          Without this as minimum, it will look empty.
+        ERROR
+    end
   rescue JSON::ParserError
     Resume.new nil, nil, nil, [], [], nil, ['Invalid JSON']
   end

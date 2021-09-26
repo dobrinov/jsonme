@@ -36,7 +36,9 @@ class SubmissionsController < ApplicationController
     end
 
     if @method.in? WEB_SUBMISSION_METHODS
-      redirect_to submission_path method: @method, username: encode(params[:username])
+      @resume = resume
+      render :show
+      #redirect_to submission_path method: @method, username: encode(params[:username])
     else
       send_data Pdf.generate(resume), filename: "CV_#{resume.name.gsub(' ', '')}.pdf", disposition: :inline
     end
