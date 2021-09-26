@@ -6,54 +6,61 @@
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
 
   - if @resume.valid?
-    .profile-picture = image_tag @resume.image
+    - if @resume.image.present?
+      .profile-picture = image_tag @resume.image
 
-    h1.name = @resume.name
-    .summary = @resume.summary
+    - if @resume.name
+      h1.name = @resume.name
 
-    = section 'Experience' do
-      = timeline from: @resume.experience_from_year do
-        ul
-          - @resume.employments.each do |employment|
-            li
-              .period
-                h3 = employment.employer.name
-                aside
-                = link_to nil, employment.employer.website, target: '_blank', rel: "nofollow"
-                div = format_period(employment.period.from, employment.period.to)
+    - if @resume.summary
+      .summary = @resume.summary
 
-              .employment
-                p = employment.summary
-                ul
-                  - employment.roles.each do |role|
-                    li.role
-                      h4 = role.title
-                      p = role.summary
-                      aside Major achievements:
-                      ul
-                        - role.achievements.each do |achievement|
-                          li.achievement
-                            h5 = achievement.title
-                            p = achievement.summary
-                            ul
-                              - achievement.technologies.each do |technology|
-                                li = technology
+    - if @resume.employments.any?
+      = section 'Experience' do
+        = timeline from: @resume.experience_from_year do
+          ul
+            - @resume.employments.each do |employment|
+              li
+                .period
+                  h3 = employment.employer.name
+                  aside
+                  = link_to nil, employment.employer.website, target: '_blank', rel: "nofollow"
+                  div = format_period(employment.period.from, employment.period.to)
 
-    = section 'Education' do
-      = timeline from: @resume.training_from_year do
-        ul
-          - @resume.trainings.each do |training|
-            li
-              .period
-                h3 = training.institution.name
-                aside
-                = link_to nil, training.institution.website, target: '_blank', rel: "nofollow"
-                div = format_period(training.period.from, training.period.to)
+                .employment
+                  p = employment.summary
+                  ul
+                    - employment.roles.each do |role|
+                      li.role
+                        h4 = role.title
+                        p = role.summary
+                        aside Major achievements:
+                        ul
+                          - role.achievements.each do |achievement|
+                            li.achievement
+                              h5 = achievement.title
+                              p = achievement.summary
+                              ul
+                                - achievement.technologies.each do |technology|
+                                  li = technology
 
-              p = training.summary
+    - if @resume.trainings.any?
+      = section 'Education' do
+        = timeline from: @resume.training_from_year do
+          ul
+            - @resume.trainings.each do |training|
+              li
+                .period
+                  h3 = training.institution.name
+                  aside
+                  = link_to nil, training.institution.website, target: '_blank', rel: "nofollow"
+                  div = format_period(training.period.from, training.period.to)
 
-    = section 'Location' do
-      p = @resume.location
+                p = training.summary
+
+    - if @resume.location.present?
+      = section 'Location' do
+        p = @resume.location
 
   - else
     = render 'errors', errors: @resume.errors

@@ -15,6 +15,14 @@ class Parser
     def training_from_year
       trainings.map { |training| training.period.from.year }.min
     end
+
+    def filename
+      if name.present?
+        resume.name.gsub(' ', '-').downcase
+      else
+        'noname'
+      end
+    end
   end
 
   Result = Struct.new :resume, :error
@@ -46,38 +54,54 @@ class Parser
   def execute
     json = JSON.parse(@payload).with_indifferent_access
 
-    employments =
-      json[:employments].map do |employment|
-        employer = Employer.new employment[:employer][:name], employment[:employer][:website]
-
-        roles =
-          employment[:roles].map do |role|
-            achievements =
-              role[:major_achievements].map do |achievement|
-                Achievement.new achievement[:title], achievement[:summary], achievement[:technologies]
-              end
-
-            Role.new role[:title], role[:summary], achievements
-          end
-
-        Employment.new employer, employment[:summary], period_from(employment[:period]), roles
-      end
-
-    trainings =
-      json[:trainings].map do |training|
-        institution = Institution.new training[:institution][:name], training[:institution][:website]
-
-        Training.new institution, training[:summary], period_from(training[:period])
-      end
-
-    location = Location.new json[:location][:city], json[:location][:state], json[:location][:country]
-
-    Resume.new json[:name], json[:image], json[:summary], employments, trainings, location, []
+    Resume.new json[:name],
+               json[:image],
+               json[:summary],
+               parse_employments(json[:employments]),
+               parse_trainings(json[:trainings]),
+               parse_location(json[:location]),
+               []
   rescue JSON::ParserError
     Resume.new nil, nil, nil, [], [], nil, ['Invalid JSON']
   end
 
   private
+
+  def parse_employments(employments)
+    return [] unless employments.present?
+
+    employments.map do |employment|
+      employer = Employer.new employment[:employer][:name], employment[:employer][:website]
+
+      roles =
+        employment[:roles].map do |role|
+          achievements =
+            role[:major_achievements].map do |achievement|
+              Achievement.new achievement[:title], achievement[:summary], achievement[:technologies]
+            end
+
+          Role.new role[:title], role[:summary], achievements
+        end
+
+      Employment.new employer, employment[:summary], period_from(employment[:period]), roles
+    end
+  end
+
+  def parse_trainings(trainings)
+    return [] unless trainings.present?
+
+    trainings.map do |training|
+      institution = Institution.new training[:institution][:name], training[:institution][:website]
+
+      Training.new institution, training[:summary], period_from(training[:period])
+    end
+  end
+
+  def parse_location(location)
+    return nil unless location.present?
+
+    Location.new location[:city], location[:state], location[:country]
+  end
 
   def period_from(json)
     from = json[:from] ? MonthAndYear.new(*json[:from].split('-').map(&:to_i)) : nil
