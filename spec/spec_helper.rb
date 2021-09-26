@@ -25,6 +25,7 @@ RSpec.configure do |config|
     #     # => "be bigger than 2 and smaller than 4"
     # ...rather than:
     #     # => "be bigger than 2"
+    expectations.syntax = %i(should expect)
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
@@ -34,6 +35,7 @@ RSpec.configure do |config|
     # Prevents you from mocking or stubbing a method that does not exist on
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
+    mocks.syntax = %i(should expect)
     mocks.verify_partial_doubles = true
   end
 
