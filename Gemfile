@@ -5,6 +5,7 @@ ruby '3.0.2'
 
 gem 'rails'
 gem 'pg'
+gem 'config'
 gem 'http'
 gem 'prawn'
 gem 'puma'
