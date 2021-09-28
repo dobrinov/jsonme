@@ -4,6 +4,6 @@ class ApplicationController < ActionController::Base
   private
 
   def default_submission_method_path
-    new_submission_path method: SUBMISSION_METHODS.first
+    new_submission_path method: Submission::METHODS.first
   end
 end

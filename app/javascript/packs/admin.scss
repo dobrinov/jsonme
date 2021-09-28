@@ -1,0 +1,16 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+  @apply p-5;
+}
+
+table {
+  @apply min-w-full divide-y divide-gray-200 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg;
+
+  thead { @apply bg-gray-50 ; }
+  thead th { @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider; }
+
+  tbody td { @apply px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900; }
+}
