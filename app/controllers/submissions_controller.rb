@@ -1,5 +1,4 @@
 class SubmissionsController < ApplicationController
-  helper_method :submission_methods
   def show
     @method = params[:method]
     payload, payload_errors = payload_for @method
@@ -8,7 +7,7 @@ class SubmissionsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        if @method.in? WEB_SUBMISSION_METHODS
+        if @method.in? Submission::WEB_METHODS
           send_data Pdf.generate(@resume), filename: "CV_#{@resume.name.gsub(' ', '')}.pdf", disposition: :inline
         end
       end
@@ -16,10 +15,12 @@ class SubmissionsController < ApplicationController
   end
 
   def new
+    @submission_methods = Submission::METHODS
     @method = params[:method]
   end
 
   def create
+    @submission_methods = Submission::METHODS
     @method = params[:method]
     payload, payload_errors = payload_for @method
 
@@ -28,14 +29,14 @@ class SubmissionsController < ApplicationController
       render :new and return
     end
 
-    resume = Parser.execute payload
+    resume = SubmissionCreator.execute @method, payload, params[:username]
 
     if resume.invalid?
       @errors = resume.errors
       render :new and return
     end
 
-    if @method.in? WEB_SUBMISSION_METHODS
+    if @method.in? Submission::WEB_METHODS
       redirect_to submission_path method: @method, username: encode(params[:username])
     else
       send_data Pdf.generate(resume), filename: "CV_#{resume.name.gsub(' ', '')}.pdf", disposition: :inline
@@ -87,9 +88,5 @@ class SubmissionsController < ApplicationController
 
   def decode(text)
     text.gsub '-', '.'
-  end
-
-  def submission_methods
-    SUBMISSION_METHODS
   end
 end

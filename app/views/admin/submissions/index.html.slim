@@ -1,0 +1,21 @@
+- content_for :title, 'Submissions'
+
+- if @submissions.any?
+  table.table-auto
+    thead
+      tr
+        th Method
+        th Username
+        th Name
+        th Submitted at
+
+    tbody
+      - @submissions.each do |submission|
+        tr
+          td = submission.method
+          td = submission.username || 'n/a'
+          td = submission.name
+          td = submission.created_at.strftime('%d %b %Y %I:%M:%S %p')
+
+- else
+  p No submissions available
