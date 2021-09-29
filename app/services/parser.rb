@@ -1,5 +1,5 @@
 class Parser
-  Resume = Struct.new :name, :image, :summary, :employments, :trainings, :location, :errors do
+  Resume = Struct.new :name, :image, :summary, :employments, :trainings, :technologies, :location, :errors do
     def invalid?
       errors.any?
     end
@@ -35,6 +35,7 @@ class Parser
   Achievement = Struct.new :title, :summary, :technologies
   Training = Struct.new :institution, :summary, :period
   Institution = Struct.new :name, :website
+  Technology = Struct.new :name, :website, :recently_used, :can_mentor, :knowledge_of_best_practices, :knowledge_of_features, :task_complexity
   Location = Struct.new :city, :state, :country do
     def to_s
       "#{city}#{state ? ' ' + state : ''}, #{country}"
@@ -59,18 +60,19 @@ class Parser
     summary = json[:summary]
     employments = parse_employments json[:employments]
     trainings = parse_trainings json[:trainings]
+    technologies = parse_technologies json[:technologies]
     location = parse_location json[:location]
 
     if name.present? && summary.present? && employments.any?
-      Resume.new name, image, summary, employments, trainings, location, []
+      Resume.new name, image, summary, employments, trainings, technologies, location, []
     else
-      Resume.new nil, nil, nil, [], [], nil, [<<~ERROR]
+      Resume.new nil, nil, nil, [], [], [], nil, [<<~ERROR]
           Your resume should have at least a name, a short summary of you and some employment history.
           Without this as minimum, it will look empty.
         ERROR
     end
   rescue JSON::ParserError
-    Resume.new nil, nil, nil, [], [], nil, ['Invalid JSON']
+    Resume.new nil, nil, nil, [], [], [], nil, ['Invalid JSON']
   end
 
   private
@@ -102,6 +104,20 @@ class Parser
       institution = Institution.new training[:institution][:name], training[:institution][:website]
 
       Training.new institution, training[:summary], period_from(training[:period])
+    end
+  end
+
+  def parse_technologies(technologies)
+    return [] unless technologies.present?
+
+    technologies.map do |technology|
+      Technology.new technology[:name],
+                     technology[:website],
+                     technology[:recently_used],
+                     technology[:can_mentor],
+                     technology[:knowledge_of_best_practices],
+                     technology[:knowledge_of_features],
+                     technology[:task_complexity]
     end
   end
 

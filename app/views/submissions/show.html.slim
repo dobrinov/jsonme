@@ -58,9 +58,34 @@
 
                 p = training.summary
 
-    - if @resume.location.present?
-      = section 'Location' do
-        p = @resume.location
+    - if @resume.technologies.any?
+      = section 'Technologies' do
+        p self evaluation
+
+        .responsive-table
+          table
+            thead
+              tr
+                th
+                th Task complexity
+                th Knowledge of features
+                th Knowledge of best practices
+                th Can mentor others?
+                th Used recently?
+
+            tbody
+              - @resume.technologies.each do |technology|
+                tr
+                  th = link_to technology.name, technology.website, target: '_blank', rel: 'nofollow'
+                  td = technology.task_complexity.capitalize
+                  td = technology.knowledge_of_features.capitalize
+                  td = technology.knowledge_of_best_practices.capitalize
+                  td = technology.can_mentor ? 'Yes' : 'No'
+                  td = technology.recently_used ? 'Yes' : 'No'
 
   - else
     = render 'errors', errors: @resume.errors
+
+  - if @resume.location.present?
+    = section 'Location' do
+      p = @resume.location
