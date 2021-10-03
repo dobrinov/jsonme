@@ -28,13 +28,29 @@ class Pdf
     experience
     move_down 10
 
-    heading 'Education'
-    move_down 10
-    education
-    move_down 10
+    if @resume.trainings.any?
+      heading 'Education'
+      move_down 10
+      education
+      move_down 10
+    end
 
-    heading 'Location'
-    location
+    if @resume.technologies.any?
+      heading 'Technologies'
+      font(ROBOTO, size: 12) do
+        fill_color '999999'
+        text 'self evaluation', align: :center
+        fill_color '000000'
+      end
+      move_down 10
+      technologies
+      move_down 10
+    end
+
+    if @resume.location.present?
+      heading 'Location'
+      location
+    end
 
     render
   end
@@ -54,6 +70,8 @@ class Pdf
   end
 
   def heading(text)
+    move_down cursor if cursor < 110
+
     font(PATUA, size: 20) do
       text text, align: :center
     end
@@ -159,6 +177,96 @@ class Pdf
         end
         move_down 60
       end
+    end
+  end
+
+  def technologies
+    columns = 3
+    gutter = 10
+    column_widht = (@width - (columns - 1) * gutter) / columns
+
+    fill_color 'ffffff'
+    text '---'
+    fill_color '000000'
+
+    @resume.technologies.each_slice(columns).each do |row|
+      span @width do
+        row.each_with_index do |technology, index|
+          bounding_box [index * column_widht + gutter * index, cursor], width: column_widht, height: 62 do
+            font(PATUA, size: 13) do
+              text technology.name, align: :center
+            end
+
+            move_down 2
+
+            mentoring =
+              if technology.can_mentor
+                'can mentor others'
+              else
+                'can\'t mentor others'
+              end
+
+            used_recently =
+              if technology.recently_used
+                'used recently'
+              else
+                'not used recently'
+              end
+
+            task_complexity =
+              case technology.task_complexity
+              when 'easy'
+                'can solve easy tasks'
+              when 'intermediate'
+                'can solve intermediate tasks'
+              when 'hard'
+                'can solve difficult tasks'
+              else
+                '???'
+              end
+
+            knowledge_of_features =
+              case technology.knowledge_of_features
+              when 'low'
+                'poor knowledge of features'
+              when 'medium'
+                'average knowledge of features'
+              when 'high'
+                'high knowledge of features'
+              else
+                '?'
+              end
+
+            knowledge_of_best_practices =
+              case technology.knowledge_of_best_practices
+              when 'low'
+                'poor knowledge of best practices'
+              when 'medium'
+                'average knowledge of best practices'
+              when 'high'
+                'high knowledge of best practices'
+              else
+                '?'
+              end
+
+            font(ROBOTO, size: 8) do
+              fill_color '999999'
+              text used_recently, align: :center
+              text mentoring, align: :center
+              text task_complexity, align: :center
+              text knowledge_of_features, align: :center
+              text 'average knowledge of best practices', align: :center
+              fill_color '000000'
+            end
+          end
+          move_up 62
+        end
+
+        move_down 62
+      end
+      fill_color 'ffffff'
+      text '---'
+      fill_color '000000'
     end
   end
 
