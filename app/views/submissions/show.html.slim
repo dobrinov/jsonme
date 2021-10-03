@@ -1,7 +1,7 @@
+= content_for :url, request.original_url
+= content_for :image, @resume.image
 = content_for :title, "#{@resume.name} | Resume"
 = content_for :description, @resume.summary
-
-= content_for :og_image, @resume.image
 
 .centered-container
   = link_to root_path, target: 'blank' do
