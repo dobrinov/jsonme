@@ -1,6 +1,8 @@
 = content_for :title, "#{@resume.name} | Resume"
 = content_for :description, @resume.summary
 
+= content_for :og_image, @resume.image
+
 .centered-container
   = link_to root_path, target: 'blank' do
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
