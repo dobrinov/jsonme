@@ -1,8 +1,7 @@
 class SubmissionsController < ApplicationController
   def show
     @method = params[:method]
-    # payload, payload_errors = payload_for @method
-    payload = File.read '/Users/dobrinov/dev/me/resume.json'
+    payload, payload_errors = payload_for @method
     @resume = Parser.execute payload
 
     respond_to do |format|
