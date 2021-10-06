@@ -99,9 +99,7 @@ class Pdf
           move_down 2
           font(ROBOTO, size: 9) do
             fill_color '666666'
-            from = Date.parse("01-#{employment.period.from}").strftime('%B %Y')
-            to = employment.period.to ? Date.parse("01-#{employment.period.to}").strftime('%B %Y') : 'Present'
-            text "#{from} - #{to}", align: :right
+            text format_period(employment.period.from, employment.period.to), align: :right
             fill_color '000000'
           end
         end
@@ -171,9 +169,7 @@ class Pdf
           move_down 2
           font(ROBOTO, size: 9) do
             fill_color '666666'
-            from = Date.parse("01-#{training.period.from}").strftime('%B %Y')
-            to = training.period.to ? Date.parse("01-#{training.period.to}").strftime('%B %Y') : 'Present'
-            text "#{from} - #{to}", align: :right
+            text format_period(training.period.from, training.period.to), align: :right
             fill_color '000000'
           end
         end
@@ -208,9 +204,7 @@ class Pdf
           move_down 2
           font(ROBOTO, size: 9) do
             fill_color '666666'
-            from = Date.parse("01-#{project.period.from}").strftime('%B %Y')
-            to = project.period.to ? Date.parse("01-#{project.period.to}").strftime('%B %Y') : 'Present'
-            text "#{from} - #{to}", align: :right
+            text format_period(project.period.from, project.period.to), align: :right
             fill_color '000000'
           end
         end
@@ -313,6 +307,13 @@ class Pdf
       text '---'
       fill_color '000000'
     end
+  end
+
+  def format_period(from, to)
+    from = Date.new(from.year, from.month, 1).strftime('%B %Y')
+    to = to ? Date.new(to.year, to.month, 1).strftime('%B %Y') : 'Present'
+
+    "#{from} - #{to}"
   end
 
   def location
