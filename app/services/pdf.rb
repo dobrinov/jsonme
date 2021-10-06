@@ -35,6 +35,13 @@ class Pdf
       move_down 10
     end
 
+    if @resume.side_projects.any?
+      heading 'Side projects'
+      move_down 10
+      side_projects
+      move_down 30
+    end
+
     if @resume.technologies.any?
       heading 'Technologies'
       font(ROBOTO, size: 12) do
@@ -176,6 +183,44 @@ class Pdf
           text training.summary
         end
         move_down 60
+      end
+    end
+  end
+
+  def side_projects
+    @resume.side_projects.each do |project|
+      span(@width - 170, position: :right) do
+        bounding_box [-170, 0], width: 150, height: 60 do
+          font(PATUA, size: 15) do
+            text project.name, align: :right
+          end
+
+          font(ROBOTO, size: 8) do
+            fill_color 'bbbbbb'
+            if project.online
+              text project.website, align: :right
+            else
+              text 'offline', align: :right
+            end
+            fill_color '000000'
+          end
+
+          move_down 2
+          font(ROBOTO, size: 9) do
+            fill_color '666666'
+            from = Date.parse("01-#{project.period.from}").strftime('%B %Y')
+            to = project.period.to ? Date.parse("01-#{project.period.to}").strftime('%B %Y') : 'Present'
+            text "#{from} - #{to}", align: :right
+            fill_color '000000'
+          end
+        end
+        move_up 55
+
+        font(ROBOTO, size: 12) do
+          text project.summary
+        end
+
+        move_down 15
       end
     end
   end

@@ -148,7 +148,9 @@ body {
     @apply w-4 h-4 top-0.5 left-4 right-auto;
     @apply sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto;
   }
-  > a { @apply text-gray-400 hover:underline text-xs block; }
+  > a,
+  > span { @apply text-gray-400 text-xs block; }
+  > a { @apply hover:underline; }
   > div { @apply text-xs text-gray-600; }
 }
 

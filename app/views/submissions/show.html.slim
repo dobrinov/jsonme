@@ -17,6 +17,10 @@
     - if @resume.summary
       .summary = @resume.summary
 
+    - if @resume.location.present?
+      = section 'Location' do
+        p = @resume.location
+
     - if @resume.employments.any?
       = section 'Experience' do
         = timeline from: @resume.experience_from_year do
@@ -60,6 +64,25 @@
 
                 p = training.summary
 
+
+    - if @resume.side_projects.any?
+      = section 'Side projects' do
+        = timeline from: @resume.side_projects_from_year do
+          ul
+            - @resume.side_projects.each do |side_project|
+              li
+                .period
+                  h3 = side_project.name
+                  aside
+                  - if side_project.online
+                    = link_to nil, side_project.website, target: '_blank', rel: "nofollow"
+                  - else
+                    span.offline offline
+
+                  div = format_period(side_project.period.from, side_project.period.to)
+
+                p = side_project.summary
+
     - if @resume.technologies.any?
       = section 'Technologies' do
         p self evaluation
@@ -87,7 +110,3 @@
 
   - else
     = render 'errors', errors: @resume.errors
-
-  - if @resume.location.present?
-    = section 'Location' do
-      p = @resume.location
