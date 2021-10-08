@@ -6,4 +6,8 @@ class StaticPagesController < ApplicationController
   def schema
     render layout: 'application'
   end
+
+  def privacy
+    render layout: 'application'
+  end
 end

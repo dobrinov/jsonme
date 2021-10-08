@@ -12,6 +12,7 @@ Rails.application.routes.draw do
                   constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
   get 'schema', to: 'static_pages#schema', as: :schema
+  get 'privacy', to: 'static_pages#privacy', as: :privacy
 
   namespace :admin do
     get 'xyz', to: 'submissions#index'

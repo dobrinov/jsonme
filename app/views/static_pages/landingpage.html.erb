@@ -12,5 +12,15 @@
 <a href="mailto:deyan@jsonme.com" rel="author">Drop me a message</a>
 
 <br/>
+<br/>
+
+<h2>Links</h2>
+<nav>
+  <%= link_to 'Example', submission_path(method: 'github', username: 'dobrinov') %>
+  |
+  <%= link_to 'Schema', schema_path %>
+  |
+  <%= link_to 'Privacy', privacy_path %>
+</nav>
 
 <%= image_pack_tag 'logo.svg', class: 'logo logo-bottom', alt: '{me}' %>

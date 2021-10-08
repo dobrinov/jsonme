@@ -1,0 +1,16 @@
+= content_for :url, request.original_url
+= content_for :title, 'Privacy policy | JsonMe'
+
+= link_to root_path do
+  = image_pack_tag 'logo.svg', class: 'logo', alt: '{me}'
+
+.privacy
+  h1 Privacy policy
+  h2 Data collection
+  p The only data that JsonMe collects is your Github/Gitlab username. Nothing else. The rest of the data is consumed from Github/Gitlab directly.
+
+  h2 Cookies
+  p This website uses two cookies: One required by the web application framework that it is using. No user information is stored inside. The other one is used by the web analytics software that is used. You can read more about it in the next section.
+
+  h2 Web analytics
+  p JsonMe uses privacy-focused self-hosted website analytics - <a href="https://umami.is/" target="_blank">Umami</a>. It does not collect any personally identifiable information and anonymizes all data collected.
