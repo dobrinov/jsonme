@@ -1,8 +1,0 @@
-https://www.jsonme.com/
-https://www.jsonme.com/schema
-https://www.jsonme.com/privacy
-https://www.jsonme.com/github/dobrinov
-https://www.jsonme.com/github/new
-https://www.jsonme.com/gitlab/new
-https://www.jsonme.com/file/new
-https://www.jsonme.com/text/new

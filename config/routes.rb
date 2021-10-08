@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   get 'schema', to: 'static_pages#schema', as: :schema
   get 'privacy', to: 'static_pages#privacy', as: :privacy
+  get 'sitemap', to: 'sitemaps#show', defaults: { format: 'xml' }, as: :sitemap
 
   namespace :admin do
     get 'xyz', to: 'submissions#index'
