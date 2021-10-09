@@ -4,7 +4,7 @@ class StaticPagesController < ApplicationController
   end
 
   def example
-    @resume = Parser.execute(File.read('/Users/dobrinov/dev/me/resume.json'))#Parser.execute GithubFetcher.execute('dobrinov').to_s
+    @resume = Parser.execute GithubFetcher.execute('dobrinov').to_s
     render layout: 'application'
   end
 
