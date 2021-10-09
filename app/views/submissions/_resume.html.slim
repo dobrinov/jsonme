@@ -1,0 +1,103 @@
+- if resume.valid?
+    - if resume.image.present?
+      .profile-picture = image_tag resume.image
+
+    - if resume.name
+      h1.name = resume.name
+
+    - if resume.summary
+      .summary = resume.summary
+
+    - if resume.location.present?
+      = section 'Location' do
+        p = resume.location
+
+    - if resume.employments.any?
+      = section 'Experience' do
+        = timeline from: resume.experience_from_year do
+          ul
+            - resume.employments.each do |employment|
+              li
+                .period
+                  h3 = employment.employer.name
+                  aside
+                  = link_to nil, employment.employer.website, target: '_blank', rel: "nofollow"
+                  div = format_period(employment.period.from, employment.period.to)
+
+                .employment
+                  p = employment.summary
+                  ul
+                    - employment.roles.each do |role|
+                      li.role
+                        h4 = role.title
+                        p = role.summary
+                        aside Major achievements:
+                        ul
+                          - role.achievements.each do |achievement|
+                            li.achievement
+                              h5 = achievement.title
+                              p = achievement.summary
+                              ul
+                                - achievement.technologies.each do |technology|
+                                  li = technology
+
+    - if resume.trainings.any?
+      = section 'Education' do
+        = timeline from: resume.training_from_year do
+          ul
+            - resume.trainings.each do |training|
+              li
+                .period
+                  h3 = training.institution.name
+                  aside
+                  = link_to nil, training.institution.website, target: '_blank', rel: "nofollow"
+                  div = format_period(training.period.from, training.period.to)
+
+                p = training.summary
+
+
+    - if resume.side_projects.any?
+      = section 'Side projects' do
+        = timeline from: resume.side_projects_from_year do
+          ul
+            - resume.side_projects.each do |side_project|
+              li
+                .period
+                  h3 = side_project.name
+                  aside
+                  - if side_project.online
+                    = link_to nil, side_project.website, target: '_blank', rel: "nofollow"
+                  - else
+                    span.offline offline
+
+                  div = format_period(side_project.period.from, side_project.period.to)
+
+                p = side_project.summary
+
+    - if resume.technologies.any?
+      = section 'Technologies' do
+        p self evaluation
+
+        .responsive-table
+          table
+            thead
+              tr
+                th
+                th Task complexity
+                th Knowledge of features
+                th Knowledge of best practices
+                th Can mentor others?
+                th Used recently?
+
+            tbody
+              - resume.technologies.each do |technology|
+                tr
+                  th = link_to technology.name, technology.website, target: '_blank', rel: 'nofollow'
+                  td = technology.task_complexity.capitalize
+                  td = technology.knowledge_of_features.capitalize
+                  td = technology.knowledge_of_best_practices.capitalize
+                  td = technology.can_mentor ? 'Yes' : 'No'
+                  td = technology.recently_used ? 'Yes' : 'No'
+
+- else
+  = render 'errors', errors: resume.errors

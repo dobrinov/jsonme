@@ -1,0 +1,95 @@
+<% content_for :title, 'File structure | JsonMe' %>
+<% content_for :description, 'Instructions on how to create a JSON file that you can later use to generate a resume.' %>
+
+<%= link_to root_path do %>
+  <%= image_pack_tag 'logo.svg', class: 'logo', alt: '{me}' %>
+<% end %>
+
+<div class="schema">
+  <h1>Resume structure</h1>
+  <p>To generate a resume you need to create a JSON file with a specific structure. Below you can see a Typescript like definition of it. You can also use <a href="https://github.com/dobrinov/me/blob/main/resume.json" target="_blank" rel="noreferrer">this file</a> as an example.</p>
+
+  <pre><code class="language-typescript">type Resume = {
+  name: string
+  image: string
+  summary: string
+  location: Location
+  employments: Employment[]
+  trainings?: Training[]
+  sideProjects?: Project[]
+  technologies?: Technology[]
+}</code></pre>
+
+  <div>
+    <pre><code class="language-typescript">type Employment = {
+  employer: Employer
+  period: Period
+  summary: string
+  roles: Role[]
+}</code></pre>
+
+    <pre><code class="language-typescript">type Training = {
+  institution: Institution
+  period: Period
+  summary: string
+}</code></pre>
+
+    <pre><code class="language-typescript">type Project = {
+  name: string
+  website: string
+  online: boolean
+  period: Period
+  summary: string
+}</code></pre>
+
+    <pre><code class="language-typescript">type Technology = {
+  name: string
+  website: string
+  recentlyUsed: boolean
+  canMentor: boolean
+  knowledgeOfBestPractices: 'low' | 'medium' | 'high'
+  knowledgeOfFeatures: 'low' | 'medium' | 'high'
+  taskComplexity: 'easy' | 'intermediate' | 'hard'
+}</code></pre>
+  </div>
+
+  <div>
+    <pre><code class="language-typescript">type Employer = {
+  name: string
+  website: string
+}</code></pre>
+
+    <pre><code class="language-typescript">type Period = {
+  from: string
+  to: string | null
+}</code></pre>
+
+    <pre><code class="language-typescript">type Role = {
+  title: string
+  summary: string
+  majorAchievements: Achievement[]
+}</code></pre>
+
+    <pre><code class="language-typescript">type Achievement = {
+  title: string
+  summary: string
+  technologies?: string[]
+}</code></pre>
+
+    <pre><code class="language-typescript">type Institution = {
+  name: string
+  website: string
+}</code></pre>
+
+    <pre><code class="language-typescript">type Location = {
+  city: string
+  state?: string
+  country: string
+}</code></pre>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/typescript.min.js"></script>
+<script>hljs.highlightAll();</script>

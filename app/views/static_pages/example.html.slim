@@ -1,0 +1,11 @@
+= content_for :url, request.original_url
+= content_for :title, 'Example | JsonMe'
+= content_for :description, 'An example technical resume generated with JsonMe.'
+
+div
+  = link_to root_path do
+    = image_pack_tag 'logo.svg', class: 'logo', alt: '{me}'
+
+.example
+  h1 Example
+  = render 'submissions/resume', resume: @resume

@@ -176,9 +176,13 @@ body {
 .schema {
   h1 {
     font-family: 'Patua One', sans-serif;
-    @apply text-3xl font-bold mb-8;
+    @apply text-3xl font-bold mb-3;
   }
-  pre { @apply text-left; }
+
+  div { @apply sm:grid sm:grid-cols-2 sm:gap-5; }
+  p { @apply mb-8; }
+  a { @apply text-indigo-600 underline hover:no-underline; }
+  pre { @apply text-left rounded-md overflow-hidden mb-5; }
 }
 
 .privacy {
@@ -193,4 +197,11 @@ body {
   }
 
   p { @apply text-center mb-5; }
+}
+
+.example {
+  h1 {
+    font-family: 'Patua One', sans-serif;
+    @apply text-3xl font-bold mb-8;
+  }
 }

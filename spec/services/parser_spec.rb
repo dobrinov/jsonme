@@ -18,7 +18,7 @@ describe Parser do
               {
                 "title": "Test Dummy",
                 "summary": "I play a vital role in ensuring that software works.",
-                "major_achievements": [
+                "majorAchievements": [
                   {
                     "title": "Released JsonMe",
                     "summary": "I helped Deyan release JsonMe.",

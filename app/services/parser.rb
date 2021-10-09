@@ -66,7 +66,7 @@ class Parser
     employments = parse_employments json[:employments]
     trainings = parse_trainings json[:trainings]
     technologies = parse_technologies json[:technologies]
-    side_projects = parse_side_projects json[:side_projects]
+    side_projects = parse_side_projects json[:sideProjects]
     location = parse_location json[:location]
 
     if name.present? && summary.present? && employments.any?
@@ -92,7 +92,7 @@ class Parser
       roles =
         employment[:roles].map do |role|
           achievements =
-            role[:major_achievements].map do |achievement|
+            role[:majorAchievements].map do |achievement|
               Achievement.new achievement[:title], achievement[:summary], achievement[:technologies]
             end
 
@@ -119,11 +119,11 @@ class Parser
     technologies.map do |technology|
       Technology.new technology[:name],
                      technology[:website],
-                     technology[:recently_used],
-                     technology[:can_mentor],
-                     technology[:knowledge_of_best_practices],
-                     technology[:knowledge_of_features],
-                     technology[:task_complexity]
+                     technology[:recentlyUsed],
+                     technology[:canMentor],
+                     technology[:knowledgeOfBestPractices],
+                     technology[:knowledgeOfFeatures],
+                     technology[:taskComplexity]
     end
   end
 

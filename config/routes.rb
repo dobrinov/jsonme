@@ -11,7 +11,8 @@ Rails.application.routes.draw do
                   as: :submissions,
                   constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
-  get 'schema', to: 'static_pages#schema', as: :schema
+  get 'example', to: 'static_pages#example', as: :example
+  get 'structure', to: 'static_pages#structure', as: :structure
   get 'privacy', to: 'static_pages#privacy', as: :privacy
   get 'sitemap', to: 'sitemaps#show', defaults: { format: 'xml' }, as: :sitemap
 
