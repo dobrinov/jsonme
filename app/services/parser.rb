@@ -58,13 +58,7 @@ class Parser
   end
 
   def execute
-    json = JSON.parse(@payload)
-
-    unless json.is_a? Hash
-      return Resume.new nil, nil, nil, [], [], [], [], nil, [<<~ERROR]
-        The JSON body should be a hash.
-      ERROR
-    end
+    json = JSON.parse(@payload).with_indifferent_access
 
     name = json[:name]
     image = json[:image]
