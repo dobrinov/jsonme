@@ -1,6 +1,7 @@
 class SubmissionsController < ApplicationController
   def show
     @method = params[:method]
+    @username = params[:username]
     payload, payload_errors = payload_for @method
     @resume = Parser.execute payload
 
