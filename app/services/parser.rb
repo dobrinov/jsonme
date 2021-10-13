@@ -60,11 +60,9 @@ class Parser
   def execute
     json = JSON.parse(@payload)
 
-    unless json.is_a? Hash
-      return Resume.new nil, nil, nil, [], [], [], [], nil, [<<~ERROR]
-        The JSON body should be a hash.
-      ERROR
-    end
+    return invalid_result 'The JSON body should be a hash.' unless json.is_a? Hash
+
+    json = json.with_indifferent_access
 
     name = json[:name]
     image = json[:image]
@@ -78,16 +76,20 @@ class Parser
     if name.present? && summary.present? && employments.any?
       Resume.new name, image, summary, employments, trainings, technologies, side_projects, location, []
     else
-      Resume.new nil, nil, nil, [], [], [], [], nil, [<<~ERROR]
+      invalid_result <<~ERROR
           Your resume should have at least a name, a short summary of you and some employment history.
           Without this as minimum, it will look empty.
         ERROR
     end
   rescue JSON::ParserError
-    Resume.new nil, nil, nil, [], [], [], nil, ['Invalid JSON']
+    invalid_result 'Invalid JSON'
   end
 
   private
+
+  def invalid_result(error)
+    Resume.new nil, nil, nil, [], [], [], [], nil, [error]
+  end
 
   def parse_employments(employments)
     return [] unless employments.present?
