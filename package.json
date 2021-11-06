@@ -20,5 +20,7 @@
     "webpack-dev-server": "^3"
   },
   "version": "0.1.0",
-  "devDependencies": {}
+  "devDependencies": {
+    "fork-ts-checker-webpack-plugin": "^6.4.0"
+  }
 }
