@@ -1,11 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
+import { Onboarding } from "../javascript/onboarding";
 
-function Onboarding() {
-  return <div>Hello, React!</div>;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const rootContainer = document.querySelector('#root');
+document.addEventListener("DOMContentLoaded", () => {
+  const rootContainer = document.querySelector("#root");
   ReactDOM.render(<Onboarding {...rootContainer.dataset} />, rootContainer);
 });
