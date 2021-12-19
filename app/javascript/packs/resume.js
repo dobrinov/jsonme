@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Resume } from "../javascript/resume";
+import { Resume, parseResume } from "../javascript/Resume";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const rootContainer = document.querySelector("#root");
-  ReactDOM.render(<Resume {...rootContainer.dataset} />, rootContainer);
+  const root = document.querySelector("#root");
+  ReactDOM.render(<Resume {...parseResume(root.dataset.resume)} />, root);
 });

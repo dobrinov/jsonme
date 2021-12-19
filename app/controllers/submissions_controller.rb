@@ -1,4 +1,9 @@
 class SubmissionsController < ApplicationController
+  def resume
+    @resume = GithubFetcher.execute('dobrinov').to_s
+    render layout: 'resume'
+  end
+
   def show
     @method = params[:method]
     @username = params[:username]

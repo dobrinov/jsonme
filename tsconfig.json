@@ -5,6 +5,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["es6", "dom"],
+    "strict": true,
     "module": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
