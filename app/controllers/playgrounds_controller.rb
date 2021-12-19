@@ -1,6 +1,9 @@
 class PlaygroundsController < ApplicationController
-  layout 'onboarding'
-
   def index
+    render layout: 'onboarding'
+  end
+
+  def resume
+    render layout: 'resume'
   end
 end

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   get 'sitemap', to: 'sitemaps#show', defaults: { format: 'xml' }, as: :sitemap
 
   get '/playground', to: 'playgrounds#index'
+  get '/resume', to: 'playgrounds#resume'
 
   namespace :admin do
     get 'xyz', to: 'submissions#index'

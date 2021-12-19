@@ -87,7 +87,7 @@ export function Onboarding() {
     case 5:
       return (
         <div>
-          <h1>Education</h1>
+          <h1>What is your education?</h1>
           <p>Tell about some your education.</p>
           <button type="button" onClick={() => setStep(4)}>
             Previous
@@ -120,7 +120,7 @@ export function Onboarding() {
     case 7:
       return (
         <div>
-          <h1>Your experience</h1>
+          <h1>What is your experience?</h1>
           <p>This information will support the technologies that you listed.</p>
           <button type="button" onClick={() => setStep(6)}>
             Previous
@@ -148,7 +148,7 @@ export function Onboarding() {
     case 9:
       return (
         <div>
-          <h1>The end result</h1>
+          <h1>Voilà</h1>
           <p>
             Here is how your CV looks like. You can copy/paste the JSON and
             store it locally on your machine. You can also store it in your
