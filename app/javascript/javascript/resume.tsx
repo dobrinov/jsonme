@@ -142,7 +142,7 @@ function firstEmploymentYear(employments: Employment[]) {
     const currentYear = parseInt(employment.period.from.split("-")[1]);
 
     if (year) {
-      year = year < currentYear ? currentYear : year;
+      year = year < currentYear ? year : currentYear;
     } else {
       year = currentYear;
     }
