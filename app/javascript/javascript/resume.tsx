@@ -40,13 +40,29 @@ type Location = {
   country: string;
 };
 
+type Institution = {
+  name: string;
+  website: string;
+};
+
+type Training = {
+  institution: Institution;
+  summary: string;
+  period: Period;
+};
+
 type Resume = {
   name: string;
   image: string;
   summary: string;
   location?: Location;
   employments?: Employment[];
+  trainings?: Training[];
 };
+
+interface Temporal {
+  period: Period;
+}
 
 export function parseResume(raw: any) {
   return JSON.parse(raw) as Resume;
@@ -58,8 +74,8 @@ export function Resume({
   summary,
   location,
   employments,
+  trainings,
 }: Resume) {
-  console.log(name);
   return (
     <div className="resume">
       <div className="profile-picture">
@@ -127,7 +143,40 @@ export function Resume({
                 ))}
               </ul>
             </div>
-            <aside>{firstEmploymentYear(employments)}</aside>
+            <aside>{startingYear(employments)}</aside>
+          </div>
+        </div>
+      )}
+
+      {trainings && (
+        <div>
+          <div className="section">
+            <h2 className="heading">Education</h2>
+            <div className="timeline">
+              <aside>present</aside>
+              <div>
+                <ul>
+                  {trainings.map((training) => (
+                    <li>
+                      <div className="period">
+                        <h3>{training.institution.name}</h3>
+                        <aside />
+                        <a
+                          href={training.institution.website}
+                          target="_blank"
+                          rel="nofollow"
+                        >
+                          {training.institution.website}
+                        </a>
+                        <div>{stringifyPeriod(training.period)}</div>
+                      </div>
+                      <p>{training.summary}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <aside>{startingYear(trainings)}</aside>
+            </div>
           </div>
         </div>
       )}
@@ -135,20 +184,10 @@ export function Resume({
   );
 }
 
-function firstEmploymentYear(employments: Employment[]) {
-  let year: number | undefined = undefined;
-
-  employments.forEach((employment) => {
-    const currentYear = parseInt(employment.period.from.split("-")[1]);
-
-    if (year) {
-      year = year < currentYear ? year : currentYear;
-    } else {
-      year = currentYear;
-    }
-  });
-
-  return year;
+function startingYear(temporals: Temporal[]) {
+  return Math.min(
+    ...temporals.map((temporal) => parseInt(temporal.period.from.split("-")[1]))
+  );
 }
 
 function stringifyPeriod(period: Period) {
