@@ -51,8 +51,8 @@ type Technology = {
   website: string;
   recentlyUsed: boolean;
   canMentor: boolean;
-  knowledgeOfBestPractices: boolean;
-  knowledgeOfFeatures: boolean;
+  knowledgeOfBestPractices: string;
+  knowledgeOfFeatures: string;
   taskComplexity: string;
 };
 
@@ -215,9 +215,9 @@ export function Resume({
                         {technology.name}
                       </a>
                     </th>
-                    <td>{technology.taskComplexity}</td>
-                    <td>{technology.knowledgeOfFeatures}</td>
-                    <td>{technology.knowledgeOfBestPractices}</td>
+                    <td>{capitalize(technology.taskComplexity)}</td>
+                    <td>{capitalize(technology.knowledgeOfFeatures)}</td>
+                    <td>{capitalize(technology.knowledgeOfBestPractices)}</td>
                     <td>{technology.canMentor ? "Yes" : "No"}</td>
                     <td>{technology.recentlyUsed ? "Yes" : "No"}</td>
                   </tr>
@@ -257,4 +257,8 @@ function stringifyMonthAndYear(value: string) {
   } else {
     return "Present";
   }
+}
+
+function capitalize(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
