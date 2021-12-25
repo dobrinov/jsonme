@@ -1,10 +1,5 @@
 import React from "react";
 
-type MonthAndYear = {
-  month: number;
-  year: number;
-};
-
 type Period = {
   from: string;
   to: string;
@@ -51,6 +46,16 @@ type Training = {
   period: Period;
 };
 
+type Technology = {
+  name: string;
+  website: string;
+  recentlyUsed: boolean;
+  canMentor: boolean;
+  knowledgeOfBestPractices: boolean;
+  knowledgeOfFeatures: boolean;
+  taskComplexity: string;
+};
+
 type Resume = {
   name: string;
   image: string;
@@ -58,6 +63,7 @@ type Resume = {
   location?: Location;
   employments?: Employment[];
   trainings?: Training[];
+  technologies?: Technology[];
 };
 
 interface Temporal {
@@ -75,6 +81,7 @@ export function Resume({
   location,
   employments,
   trainings,
+  technologies,
 }: Resume) {
   return (
     <div className="resume">
@@ -149,34 +156,74 @@ export function Resume({
       )}
 
       {trainings && (
-        <div>
-          <div className="section">
-            <h2 className="heading">Education</h2>
-            <div className="timeline">
-              <aside>present</aside>
-              <div>
-                <ul>
-                  {trainings.map((training) => (
-                    <li>
-                      <div className="period">
-                        <h3>{training.institution.name}</h3>
-                        <aside />
-                        <a
-                          href={training.institution.website}
-                          target="_blank"
-                          rel="nofollow"
-                        >
-                          {training.institution.website}
-                        </a>
-                        <div>{stringifyPeriod(training.period)}</div>
-                      </div>
-                      <p>{training.summary}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <aside>{startingYear(trainings)}</aside>
+        <div className="section">
+          <h2 className="heading">Education</h2>
+          <div className="timeline">
+            <aside>present</aside>
+            <div>
+              <ul>
+                {trainings.map((training) => (
+                  <li>
+                    <div className="period">
+                      <h3>{training.institution.name}</h3>
+                      <aside />
+                      <a
+                        href={training.institution.website}
+                        target="_blank"
+                        rel="nofollow"
+                      >
+                        {training.institution.website}
+                      </a>
+                      <div>{stringifyPeriod(training.period)}</div>
+                    </div>
+                    <p>{training.summary}</p>
+                  </li>
+                ))}
+              </ul>
             </div>
+            <aside>{startingYear(trainings)}</aside>
+          </div>
+        </div>
+      )}
+
+      {technologies && (
+        <div className="section">
+          <h2 className="heading">Technologies</h2>
+          <p>self evaluation</p>
+
+          <div className="responsive-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th>Task complexity</th>
+                  <th>Knowledge of features</th>
+                  <th>Knowledge of best practices</th>
+                  <th>Can mentor others?</th>
+                  <th>Used recently?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {technologies.map((technology) => (
+                  <tr>
+                    <th>
+                      <a
+                        href={technology.website}
+                        target="_blank"
+                        rel="nofollow"
+                      >
+                        {technology.name}
+                      </a>
+                    </th>
+                    <td>{technology.taskComplexity}</td>
+                    <td>{technology.knowledgeOfFeatures}</td>
+                    <td>{technology.knowledgeOfBestPractices}</td>
+                    <td>{technology.canMentor ? "Yes" : "No"}</td>
+                    <td>{technology.recentlyUsed ? "Yes" : "No"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

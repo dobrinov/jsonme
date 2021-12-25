@@ -114,4 +114,18 @@
     > p { @apply leading-5 text-gray-600; }
     > ul > li { @apply bg-gray-800 text-white text-xs rounded-full text-center inline-block py-0.5 px-2 mr-0.5 leading-none; }
   }
+
+  .responsive-table { @apply overflow-x-auto; }
+
+  table {
+    @apply mt-5 min-w-full divide-y divide-gray-200;
+
+    thead th { @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center; }
+
+    tbody tr { @apply border-b border-dashed; }
+    tbody th,
+    tbody td { @apply px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center text-sm; }
+    tbody th { @apply font-bold underline; }
+    tbody th:hover { @apply text-blue-700; }
+  }
 }
