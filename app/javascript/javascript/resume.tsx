@@ -56,6 +56,14 @@ type Technology = {
   taskComplexity: string;
 };
 
+type SideProject = {
+  name: string;
+  website: string;
+  online: boolean;
+  period: Period;
+  summary: string;
+};
+
 type Resume = {
   name: string;
   image: string;
@@ -63,6 +71,7 @@ type Resume = {
   location?: Location;
   employments?: Employment[];
   trainings?: Training[];
+  sideProjects?: SideProject[];
   technologies?: Technology[];
 };
 
@@ -81,6 +90,7 @@ export function Resume({
   location,
   employments,
   trainings,
+  sideProjects,
   technologies,
 }: Resume) {
   return (
@@ -182,6 +192,37 @@ export function Resume({
               </ul>
             </div>
             <aside>{startingYear(trainings)}</aside>
+          </div>
+        </div>
+      )}
+
+      {sideProjects && (
+        <div className="section">
+          <h2 className="heading">Side projects</h2>
+          <div className="timeline">
+            <aside>present</aside>
+            <div>
+              <ul>
+                {sideProjects.map((sideProject) => (
+                  <li>
+                    <div className="period">
+                      <h3>{sideProject.name}</h3>
+                      <aside />
+                      <a
+                        href={sideProject.website}
+                        target="_blank"
+                        rel="nofollow"
+                      >
+                        {sideProject.website}
+                      </a>
+                      <div>{stringifyPeriod(sideProject.period)}</div>
+                    </div>
+                    <p>{sideProject.summary}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <aside>{startingYear(sideProjects)}</aside>
           </div>
         </div>
       )}
