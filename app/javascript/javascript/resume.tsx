@@ -66,8 +66,8 @@ type SideProject = {
 
 type Resume = {
   name: string;
-  image: string;
   summary: string;
+  image?: string;
   location?: Location;
   employments?: Employment[];
   trainings?: Training[];
@@ -95,9 +95,11 @@ export function Resume({
 }: Resume) {
   return (
     <div className="resume">
-      <div className="profile-picture">
-        <img src={image}></img>
-      </div>
+      {image && (
+        <div className="profile-picture">
+          <img src={image}></img>
+        </div>
+      )}
       <h1 className="name">{name}</h1>
       <div className="summary">{summary}</div>
 

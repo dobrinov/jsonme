@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Onboarding } from "../javascript/onboarding";
+import { Onboarding } from "../javascript/Onboarding";
 
 document.addEventListener("DOMContentLoaded", () => {
   const rootContainer = document.querySelector("#root");
