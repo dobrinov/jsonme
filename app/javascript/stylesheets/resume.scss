@@ -123,4 +123,6 @@
     tbody th { @apply font-bold underline; }
     tbody th:hover { @apply text-blue-700; }
   }
+
+  > *:last-child { @apply mb-0; }
 }

@@ -5,9 +5,13 @@ import { Wizard } from "./Wizard";
 export function Onboarding() {
   return (
     <>
-      <div className="gray" />
-      <Wizard />
-      <Preview />
+      <div className="left">
+        <Wizard />
+      </div>
+      <div className="right">
+        <Preview />
+      </div>
+      <div className="background" />
     </>
   );
 }

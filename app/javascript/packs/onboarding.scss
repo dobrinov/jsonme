@@ -9,21 +9,29 @@
   @apply flex max-w-screen-2xl mx-auto items-start;
 }
 
-.gray {
-  @apply w-1/2 bg-gray-100 absolute top-0 left-0 h-screen;
+.left {
+  @apply w-full h-screen flex-grow relative overflow-y-scroll lg:w-1/2;
+  // outline: 1px dotted red;
+}
+
+.right {
+  @apply w-1/2 h-screen flex-grow relative overflow-y-scroll hidden lg:block;
+  // outline: 1px dotted red;
+}
+
+.background {
+  @apply w-full bg-gray-100 absolute left-0 top-0 h-screen lg:w-1/2;
   z-index: -1;
 }
 
 .wizard {
-  // outline: 1px dotted red;
-  @apply flex-grow w-1/2 p-5 pl-8 relative text-center;
+  @apply p-5 text-center;
   h1 { @apply text-3xl font-bold mb-0.5 leading-normal; }
   p { @apply text-base font-normal text-gray-500 mb-4; }
 }
 
 .preview {
-  // outline: 1px dotted red;
-  @apply flex-grow w-1/2 p-5 relative;
+  @apply p-5;
 }
 
 .step-navigation {
