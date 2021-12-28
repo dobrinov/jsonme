@@ -48,7 +48,7 @@
 
   .step-completed {
     @apply cursor-pointer;
-    > span { @apply bg-gray-500 hover:bg-gray-900; }
+    > svg { @apply h-full w-full text-gray-400 hover:text-gray-900; }
   }
 
   .step-current {
