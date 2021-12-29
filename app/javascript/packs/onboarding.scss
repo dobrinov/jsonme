@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
 
 @import '../stylesheets/resume.scss';
+@import '../stylesheets/forms.scss';
 
 .onboarding {
   @apply flex max-w-screen-2xl mx-auto items-start;
@@ -36,7 +37,7 @@
 
 .step-navigation {
   // outline: 1px dotted red;
-  @apply flex justify-center;
+  @apply flex justify-center mt-10;
 
   ol { @apply flex flex-row items-center space-x-2; }
   li { @apply flex w-5 h-5 items-center justify-center; }

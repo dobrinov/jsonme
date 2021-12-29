@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { TextInput } from "./TextInput";
 
 export function ExperimentalOnboarding() {
   const [step, setStep] = useState(1);
@@ -22,6 +23,8 @@ export function ExperimentalOnboarding() {
             resume.
           </p>
           <TextInput
+            name="name"
+            label="Name"
             value={fullName}
             placeholder="John Doe"
             onBlur={(event) => setFullName(event.target.value)}
@@ -39,6 +42,8 @@ export function ExperimentalOnboarding() {
           <h1>How do you look like?</h1>
           <p>Here you can provide an URL to an photo of yours.</p>
           <TextInput
+            name="name"
+            label="Name"
             value={imageUrl}
             placeholder="An URL of your avatar"
             onBlur={(event) => setImageUrl(event.target.value)}
@@ -170,32 +175,4 @@ export function ExperimentalOnboarding() {
     default:
       return <div>todo</div>;
   }
-}
-
-function TextInput({
-  value,
-  placeholder,
-  onBlur,
-}: {
-  value: string;
-  placeholder?: string;
-  onBlur: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
-}) {
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    ref.current.value = value;
-  }, [value]);
-
-  return (
-    <input
-      id="name"
-      name="name"
-      type="text"
-      ref={ref}
-      placeholder={placeholder}
-      onBlur={onBlur}
-    />
-  );
 }
