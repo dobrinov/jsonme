@@ -9,7 +9,7 @@ export function TextInput({
 }: {
   name: string;
   label: string;
-  value: string;
+  value?: string;
   placeholder?: string;
   onBlur: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {
@@ -17,7 +17,7 @@ export function TextInput({
 
   useEffect(() => {
     if (!ref.current) return;
-    ref.current.value = value;
+    ref.current.value = value ?? "";
   }, [value]);
 
   return (

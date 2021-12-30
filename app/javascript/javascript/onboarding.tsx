@@ -52,6 +52,7 @@ const STEPS: Step[] = [
 export function Onboarding() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
+  const [image, setImage] = useState<string>();
   const [summary, setSummary] = useState("");
 
   return (
@@ -74,11 +75,47 @@ export function Onboarding() {
                     />
                     <button
                       type="button"
-                      className="button mt-5"
+                      className="button button-primary mt-5"
                       onClick={() => setStep(1)}
                     >
                       Next
                     </button>
+                  </>
+                );
+              case 1:
+                return (
+                  <>
+                    <TextInput
+                      name="image"
+                      label="Image URL"
+                      placeholder="Your Github/Gitlab avatar URL"
+                      value={image}
+                      onBlur={(event) => setImage(event.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="button mt-5 m-3"
+                      onClick={() => setStep(0)}
+                    >
+                      Back
+                    </button>
+                    {image ? (
+                      <button
+                        type="button"
+                        className="button button-primary mt-5"
+                        onClick={() => setStep(2)}
+                      >
+                        Next
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="button mt-5"
+                        onClick={() => setStep(2)}
+                      >
+                        Skip
+                      </button>
+                    )}
                   </>
                 );
               default:
@@ -97,6 +134,7 @@ export function Onboarding() {
           <Resume
             name={name || "John Doe"}
             summary={summary || "Hi there! I am John."}
+            image={image}
           />
         </div>
       </div>
