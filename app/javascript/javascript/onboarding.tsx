@@ -72,7 +72,11 @@ export function Onboarding() {
                       value={name}
                       onBlur={(event) => setName(event.target.value)}
                     />
-                    <button type="button" onClick={() => setStep(1)}>
+                    <button
+                      type="button"
+                      className="button mt-5"
+                      onClick={() => setStep(1)}
+                    >
                       Next
                     </button>
                   </>

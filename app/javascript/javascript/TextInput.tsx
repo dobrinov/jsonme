@@ -25,6 +25,7 @@ export function TextInput({
       <label htmlFor={name}>{label}</label>
       <input
         id={name}
+        autoComplete="off"
         name={name}
         type="text"
         ref={ref}
