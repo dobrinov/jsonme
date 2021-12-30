@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
 
 export function TextInput({
@@ -5,12 +6,16 @@ export function TextInput({
   label,
   value,
   placeholder,
+  addendum,
+  state,
   onBlur,
 }: {
   name: string;
   label: string;
   value?: string;
   placeholder?: string;
+  addendum?: string;
+  state?: "normal" | "error";
   onBlur: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
@@ -21,17 +26,22 @@ export function TextInput({
   }, [value]);
 
   return (
-    <div className="input">
+    <div className={classNames("input", { "input-error": state === "error" })}>
       <label htmlFor={name}>{label}</label>
-      <input
-        id={name}
-        autoComplete="off"
-        name={name}
-        type="text"
-        ref={ref}
-        placeholder={placeholder}
-        onBlur={onBlur}
-      />
+      <div>
+        <div>
+          <input
+            id={name}
+            autoComplete="off"
+            name={name}
+            type="text"
+            ref={ref}
+            placeholder={placeholder}
+            onBlur={onBlur}
+          />
+        </div>
+        {addendum && <p>{addendum}</p>}
+      </div>
     </div>
   );
 }

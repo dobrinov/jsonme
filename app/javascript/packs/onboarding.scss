@@ -28,8 +28,8 @@
 
 .wizard {
   @apply p-5 text-center;
-  h1 { @apply text-3xl font-bold mb-0.5 leading-normal; }
-  p { @apply text-base font-normal text-gray-500 mb-4; }
+  > h1 { @apply text-3xl font-bold mb-0.5 leading-normal; }
+  > p { @apply text-base font-normal text-gray-500 mb-4; }
 }
 
 .preview {
