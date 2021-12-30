@@ -9,6 +9,7 @@ export function TextInput({
   addendum,
   state,
   onBlur,
+  onInput,
 }: {
   name: string;
   label: string;
@@ -16,7 +17,8 @@ export function TextInput({
   placeholder?: string;
   addendum?: string;
   state?: "normal" | "error";
-  onBlur: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
+  onInput?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
 
@@ -38,6 +40,7 @@ export function TextInput({
             ref={ref}
             placeholder={placeholder}
             onBlur={onBlur}
+            onInput={onInput}
           />
         </div>
         {addendum && <p>{addendum}</p>}

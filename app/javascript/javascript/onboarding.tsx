@@ -10,7 +10,8 @@ type Step = {
 const STEPS: Step[] = [
   {
     title: "What is your name?",
-    description: "This is the name that will be displayed in your resume.",
+    description:
+      "This preferably is your legal name. It will be shown at the top of your resume.",
   },
   {
     title: "How do you look like?",
@@ -71,7 +72,7 @@ export function Onboarding() {
                       label="Name"
                       placeholder="John Doe"
                       value={name}
-                      onBlur={(event) => setName(event.target.value)}
+                      onInput={(event) => setName(event.target.value)}
                     />
                     <button
                       type="button"
