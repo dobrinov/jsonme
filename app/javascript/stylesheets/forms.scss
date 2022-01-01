@@ -2,11 +2,13 @@
   @apply text-left;
 
   > label { @apply block text-sm font-medium text-gray-700; }
-  > div > div > input { @apply py-2 px-3 mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md; }
+  > div > div > input,
+  > div > div > textarea { @apply py-2 px-3 mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md; }
   > div > p { @apply mt-1 text-sm text-gray-600; }
 }
 
 .input-error {
-  > div > div > input { @apply border-red-600 text-red-600 placeholder-red-300 focus:ring-red-500 focus:border-red-500; }
+  > div > div > input,
+  > div > div > textarea { @apply border-red-600 text-red-600 placeholder-red-300 focus:ring-red-500 focus:border-red-500; }
   > div > p { @apply text-red-600; }
 }

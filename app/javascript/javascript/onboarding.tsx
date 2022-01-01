@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Resume } from "./Resume";
+import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
 
 type Step = {
@@ -100,23 +101,38 @@ export function Onboarding() {
                     >
                       Back
                     </button>
-                    {image ? (
-                      <button
-                        type="button"
-                        className="button button-primary mt-5"
-                        onClick={() => setStep(2)}
-                      >
-                        Next
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="button mt-5"
-                        onClick={() => setStep(2)}
-                      >
-                        Skip
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="button button-primary mt-5"
+                      onClick={() => setStep(2)}
+                    >
+                      Next
+                    </button>
+                  </>
+                );
+              case 2:
+                return (
+                  <>
+                    <TextAreaInput
+                      name="summary"
+                      label="Summary"
+                      value={summary}
+                      onInput={(event) => setSummary(event.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="button mt-5 m-3"
+                      onClick={() => setStep(1)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="button button-primary mt-5"
+                      onClick={() => setStep(3)}
+                    >
+                      Next
+                    </button>
                   </>
                 );
               default:
