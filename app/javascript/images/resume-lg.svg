@@ -3,13 +3,13 @@
 <rect width="1280" height="715" rx="10" fill="white"/>
 <path d="M0 10C0 4.47715 4.47715 0 10 0H1270C1275.52 0 1280 4.47715 1280 10V53H0V10Z" fill="white"/>
 <g filter="url(#filter0_i)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M27 32C30.3137 32 33 29.3137 33 26C33 22.6863 30.3137 20 27 20C23.6863 20 21 22.6863 21 26C21 29.3137 23.6863 32 27 32Z" fill="#EE6A5F"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M27 32C30.3137 32 33 29.3137 33 26C33 22.6863 30.3137 20 27 20C23.6863 20 21 22.6863 21 26C21 29.3137 23.6863 32 27 32Z" fill="#EE6A5F"/>
 </g>
 <g filter="url(#filter1_i)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M47 32C50.3137 32 53 29.3137 53 26C53 22.6863 50.3137 20 47 20C43.6863 20 41 22.6863 41 26C41 29.3137 43.6863 32 47 32Z" fill="#F5BD4F"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M47 32C50.3137 32 53 29.3137 53 26C53 22.6863 50.3137 20 47 20C43.6863 20 41 22.6863 41 26C41 29.3137 43.6863 32 47 32Z" fill="#F5BD4F"/>
 </g>
 <g filter="url(#filter2_i)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M67 32C70.3137 32 73 29.3137 73 26C73 22.6863 70.3137 20 67 20C63.6863 20 61 22.6863 61 26C61 29.3137 63.6863 32 67 32Z" fill="#61C454"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M67 32C70.3137 32 73 29.3137 73 26C73 22.6863 70.3137 20 67 20C63.6863 20 61 22.6863 61 26C61 29.3137 63.6863 32 67 32Z" fill="#61C454"/>
 </g>
 <path d="M382 18C382 14.6863 384.686 12 388 12H892C895.314 12 898 14.6863 898 18V34C898 37.3137 895.314 40 892 40H388C384.686 40 382 37.3137 382 34V18Z" fill="black" fill-opacity="0.05"/>
 <g clip-path="url(#clip0)">
