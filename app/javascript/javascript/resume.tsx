@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type Period = {
   from: string;
@@ -95,11 +95,7 @@ export function Resume({
 }: Resume) {
   return (
     <div className="resume">
-      {image && (
-        <div className="profile-picture">
-          <img src={image}></img>
-        </div>
-      )}
+      {image && <ProfilePicture url={image} />}
       <h1 className="name">{name}</h1>
       <div className="summary">{summary}</div>
 
@@ -270,6 +266,22 @@ export function Resume({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function ProfilePicture({ url }: { url: string }) {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [url]);
+
+  const image = hasError ? "whitenoice.gif" : url;
+
+  return (
+    <div className="profile-picture">
+      <img src={image} onError={() => setHasError(true)}></img>
     </div>
   );
 }

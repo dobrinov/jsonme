@@ -79,7 +79,7 @@ body {
 
 .created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
 .pdf { @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;}
-.profile-picture { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4; }
+.profile-picture { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4 bg-gray-300; }
 .profile-picture > img { @apply w-full h-full; }
 
 .name {

@@ -30,7 +30,7 @@ const STEPS: Step[] = [
       "This information is usually quite important for remote positions because of legal and work hour overlap reasons.",
   },
   {
-    title: "What is your education?",
+    title: "What have you studied?",
     description:
       "Academic, cources, trainings. Share evrything that could help you stand out.",
   },
@@ -53,9 +53,13 @@ const STEPS: Step[] = [
 
 export function Onboarding() {
   const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>();
   const [image, setImage] = useState<string>();
-  const [summary, setSummary] = useState("");
+  const [summary, setSummary] = useState<string>();
+  const [city, setCity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+
+  const location = city && country ? { city, country } : undefined;
 
   return (
     <>
@@ -89,10 +93,9 @@ export function Onboarding() {
                   <>
                     <TextInput
                       name="image"
-                      label="Image URL"
-                      placeholder="Your Github/Gitlab avatar URL"
+                      label="Profile picture URL"
                       value={image}
-                      onBlur={(event) => setImage(event.target.value)}
+                      onInput={(event) => setImage(event.target.value)}
                     />
                     <button
                       type="button"
@@ -135,6 +138,51 @@ export function Onboarding() {
                     </button>
                   </>
                 );
+              case 3:
+                return (
+                  <>
+                    <TextInput
+                      name="city"
+                      label="City"
+                      value={city}
+                      onInput={(event) => setCity(event.target.value)}
+                    />
+                    <TextInput
+                      name="country"
+                      label="Country"
+                      value={country}
+                      onInput={(event) => setCountry(event.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="button mt-5 m-3"
+                      onClick={() => setStep(2)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="button button-primary mt-5"
+                      onClick={() => setStep(4)}
+                    >
+                      Next
+                    </button>
+                  </>
+                );
+              case 4:
+                return (
+                  <>
+                    <form>
+                      <TextInput
+                        name="city"
+                        label="Institution name"
+                        placeholder="The name of the place where you did your study. MIT, Coursera, Edx, etc."
+                        value={city}
+                        onInput={(event) => setCity(event.target.value)}
+                      />
+                    </form>
+                  </>
+                );
               default:
                 return <div>Not implemented yet</div>;
             }
@@ -152,6 +200,7 @@ export function Onboarding() {
             name={name || "John Doe"}
             summary={summary || "Hi there! I am John."}
             image={image}
+            location={location}
           />
         </div>
       </div>
