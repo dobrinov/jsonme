@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DatepickerInput } from "./DatepickerInput";
 import { Resume } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
@@ -30,7 +31,7 @@ const STEPS: Step[] = [
       "This information is usually quite important for remote positions because of legal and work hour overlap reasons.",
   },
   {
-    title: "What have you studied?",
+    title: "What is your education?",
     description:
       "Academic, cources, trainings. Share evrything that could help you stand out.",
   },
@@ -94,6 +95,7 @@ export function Onboarding() {
                     <TextInput
                       name="image"
                       label="Profile picture URL"
+                      placeholder="Tip: You can use the URL of Github/Gitlab avatar."
                       value={image}
                       onInput={(event) => setImage(event.target.value)}
                     />
@@ -144,12 +146,14 @@ export function Onboarding() {
                     <TextInput
                       name="city"
                       label="City"
+                      placeholder="Washington, D.C"
                       value={city}
                       onInput={(event) => setCity(event.target.value)}
                     />
                     <TextInput
                       name="country"
                       label="Country"
+                      placeholder="United States"
                       value={country}
                       onInput={(event) => setCountry(event.target.value)}
                     />
@@ -172,15 +176,46 @@ export function Onboarding() {
               case 4:
                 return (
                   <>
-                    <form>
+                    <div className="fooed">
+                      <strong>Sofia University</strong>
+                      <div>
+                        <a href="#">Edit</a>
+                        <a href="#">Delete</a>
+                      </div>
+                    </div>
+                    <div className="foo">
                       <TextInput
                         name="city"
-                        label="Institution name"
-                        placeholder="The name of the place where you did your study. MIT, Coursera, Edx, etc."
-                        value={city}
-                        onInput={(event) => setCity(event.target.value)}
+                        label="Institution"
+                        placeholder="The name of the institution where you did your study. MIT, Coursera, Edx, etc."
                       />
-                    </form>
+                      <TextInput
+                        name="city"
+                        label="Website"
+                        placeholder="The webisite of the institution"
+                      />
+                      <DatepickerInput name="city" type="month" label="From" />
+                      <DatepickerInput name="city" type="month" label="To" />
+                      <TextAreaInput
+                        name="city"
+                        label="Summary"
+                        placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="button mt-5 m-3"
+                      onClick={() => setStep(3)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="button button-primary button mt-5"
+                      onClick={() => setStep(5)}
+                    >
+                      Next
+                    </button>
                   </>
                 );
               default:

@@ -34,7 +34,17 @@
 
 .preview { @apply p-5; }
 
-.input { @apply mb-5; }
+.input { @apply mb-3; }
+
+.foo {
+  @apply bg-gray-200 rounded-md p-5;
+}
+
+.fooed {
+  @apply bg-gray-200 rounded-md px-5 py-3 mb-3 text-gray-500;
+  > strong { @apply block; }
+  > div > a { @apply mx-1 text-sm underline hover:no-underline; }
+}
 
 .step-navigation {
   @apply flex justify-center mt-10;
