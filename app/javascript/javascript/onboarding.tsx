@@ -176,14 +176,28 @@ export function Onboarding() {
               case 4:
                 return (
                   <>
-                    <div className="fooed">
-                      <strong>Sofia University</strong>
-                      <div>
-                        <a href="#">Edit</a>
-                        <a href="#">Delete</a>
-                      </div>
-                    </div>
-                    <div className="foo">
+                    <div className="panel">
+                      <ul>
+                        <li className="persisted">
+                          <strong>Sofia University</strong>
+                        </li>
+                        <li className="persisted">
+                          <strong>New Bulgarian University</strong>
+                        </li>
+                        <li className="persisted">
+                          <strong>Coursera</strong>
+                        </li>
+                        <li className="persisted">
+                          <strong>Coursera</strong>
+                        </li>
+                        <li className="persisted">
+                          <strong>Coursera</strong>
+                        </li>
+                        <li className="new">
+                          <strong>Add +</strong>
+                        </li>
+                      </ul>
+
                       <TextInput
                         name="city"
                         label="Institution"

@@ -46,6 +46,15 @@
   > div > a { @apply mx-1 text-sm underline hover:no-underline; }
 }
 
+.panel {
+  @apply bg-gray-200 rounded-md p-5 mb-3 text-gray-500;
+
+  > ul { @apply grid grid-cols-3 gap-3 mb-5; }
+  > ul > .persisted { @apply p-5 bg-gray-300 text-gray-700 rounded-md leading-tight text-sm; }
+  > ul > .new { @apply p-5 bg-none border-dashed border-gray-400 border-2 text-gray-600 rounded-md leading-tight text-sm; }
+  > ul > li > strong { @apply font-normal; }
+}
+
 .step-navigation {
   @apply flex justify-center mt-10;
 
