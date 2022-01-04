@@ -16,7 +16,7 @@ body { @apply p-5 max-w-3xl; }
 }
 
 .second {
-  @apply border-4 border-gray-500 border-dashed p-5 rounded-md h-72 text-center flex items-center justify-center;
+  @apply bg-gray-300 border-dashed p-5 rounded-md h-72 text-center flex items-center justify-center;
   > a { @apply cursor-pointer; }
 }
 

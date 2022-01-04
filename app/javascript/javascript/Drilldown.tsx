@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const TICK = 10;
+const DELTA = 15;
+
 export function Drilldown() {
   const firstRef = useRef<HTMLUListElement>(null);
   const secondRef = useRef<HTMLDivElement>(null);
@@ -74,14 +77,12 @@ export function Drilldown() {
   );
 }
 
-async function animateFirstOffset(element: HTMLElement) {
+function animateFirstOffset(element: HTMLElement) {
   const target = element.offsetHeight;
-  const tick = 100;
-  const delta = 15;
   let current = 0;
 
   let timer = setInterval(() => {
-    current += delta;
+    current += DELTA;
 
     if (current >= target) {
       current = target;
@@ -90,17 +91,15 @@ async function animateFirstOffset(element: HTMLElement) {
 
     element.style.top = `${current}px`;
     element.style.marginTop = `-${current}px`;
-  }, tick);
+  }, TICK);
 }
 
-async function resetFirstOffset(element: HTMLElement) {
+function resetFirstOffset(element: HTMLElement) {
   const target = 0;
-  const tick = 100;
-  const delta = 15;
   let current = element.offsetHeight;
 
   let timer = setInterval(() => {
-    current -= delta;
+    current -= DELTA;
 
     if (current <= target) {
       current = target;
@@ -109,17 +108,15 @@ async function resetFirstOffset(element: HTMLElement) {
 
     element.style.top = `${current}px`;
     element.style.marginTop = `-${current}px`;
-  }, tick);
+  }, TICK);
 }
 
-async function animateSecondOffset(element: HTMLElement) {
+function animateSecondOffset(element: HTMLElement) {
   const target = element.offsetHeight;
-  const tick = 100;
-  const delta = 15;
-  let current = 0;
+  let current = 10;
 
   let timer = setInterval(() => {
-    current += delta;
+    current += DELTA;
 
     if (current >= target) {
       current = target;
@@ -127,23 +124,21 @@ async function animateSecondOffset(element: HTMLElement) {
     }
 
     element.style.marginTop = `-${current}px`;
-  }, tick);
+  }, TICK);
 }
 
-async function resetSecondOffset(element: HTMLElement) {
-  const to = 0;
-  const tick = 100;
-  const delta = 15;
+function resetSecondOffset(element: HTMLElement) {
+  const target = 0;
   let current = element.offsetHeight;
 
   let timer = setInterval(() => {
-    current -= delta;
+    current -= DELTA;
 
-    if (current <= to) {
-      current = to;
+    if (current <= target) {
+      current = target;
       clearInterval(timer);
     }
 
     element.style.marginTop = `-${current}px`;
-  }, tick);
+  }, TICK);
 }

@@ -175,62 +175,10 @@ export function Onboarding() {
                 );
               case 4:
                 return (
-                  <>
-                    <div className="panel">
-                      <ul>
-                        <li className="persisted">
-                          <strong>Sofia University</strong>
-                        </li>
-                        <li className="persisted">
-                          <strong>New Bulgarian University</strong>
-                        </li>
-                        <li className="persisted">
-                          <strong>Coursera</strong>
-                        </li>
-                        <li className="persisted">
-                          <strong>Coursera</strong>
-                        </li>
-                        <li className="persisted">
-                          <strong>Coursera</strong>
-                        </li>
-                        <li className="new">
-                          <strong>Add +</strong>
-                        </li>
-                      </ul>
-
-                      <TextInput
-                        name="city"
-                        label="Institution"
-                        placeholder="The name of the institution where you did your study. MIT, Coursera, Edx, etc."
-                      />
-                      <TextInput
-                        name="city"
-                        label="Website"
-                        placeholder="The webisite of the institution"
-                      />
-                      <DatepickerInput name="city" type="month" label="From" />
-                      <DatepickerInput name="city" type="month" label="To" />
-                      <TextAreaInput
-                        name="city"
-                        label="Summary"
-                        placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="button mt-5 m-3"
-                      onClick={() => setStep(3)}
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="button"
-                      className="button button-primary button mt-5"
-                      onClick={() => setStep(5)}
-                    >
-                      Next
-                    </button>
-                  </>
+                  <Education
+                    previousStep={() => setStep(3)}
+                    nextStep={() => setStep(5)}
+                  />
                 );
               default:
                 return <div>Not implemented yet</div>;
@@ -314,5 +262,112 @@ function StepNavigation({
         ))}
       </ol>
     </nav>
+  );
+}
+
+function Education({
+  previousStep,
+  nextStep,
+}: {
+  previousStep: () => void;
+  nextStep: () => void;
+}) {
+  return (
+    <>
+      <section>
+        <ul>
+          <li>
+            <Entry
+              title="Sofia University"
+              onEdit={() => alert("Edit")}
+              onDelete={() => alert("Delete")}
+            />
+          </li>
+          <li>
+            <Entry
+              title="New Bulgarian University"
+              onEdit={() => alert("Edit")}
+              onDelete={() => alert("Delete")}
+            />
+          </li>
+          <li>
+            <Entry
+              title="Coursera"
+              onEdit={() => alert("Edit")}
+              onDelete={() => alert("Delete")}
+            />
+          </li>
+          <li>
+            <Entry
+              title="Coursera"
+              onEdit={() => alert("Edit")}
+              onDelete={() => alert("Delete")}
+            />
+          </li>
+          <li>
+            <Entry
+              title="Coursera"
+              onEdit={() => alert("Edit")}
+              onDelete={() => alert("Delete")}
+            />
+          </li>
+        </ul>
+        <button>Add new entry</button>
+      </section>
+
+      {/* <section>
+                        <TextInput
+                          name="city"
+                          label="Institution"
+                          placeholder="The name of the institution where you did your study. MIT, Coursera, Edx, etc."
+                        />
+                        <TextInput
+                          name="city"
+                          label="Website"
+                          placeholder="The webisite of the institution"
+                        />
+                        <DatepickerInput
+                          name="city"
+                          type="month"
+                          label="From"
+                        />
+                        <DatepickerInput name="city" type="month" label="To" />
+                        <TextAreaInput
+                          name="city"
+                          label="Summary"
+                          placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
+                        />
+                      </section> */}
+      <button type="button" className="button mt-5 m-3" onClick={previousStep}>
+        Back
+      </button>
+      <button
+        type="button"
+        className="button button-primary button mt-5"
+        onClick={nextStep}
+      >
+        Next
+      </button>
+    </>
+  );
+}
+
+function Entry({
+  title,
+  onEdit,
+  onDelete,
+}: {
+  title: string;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="entry">
+      <div>
+        <a onClick={onEdit}>Edit</a>
+        <a onClick={onDelete}>Delete</a>
+      </div>
+      <span>{title}</span>
+    </div>
   );
 }
