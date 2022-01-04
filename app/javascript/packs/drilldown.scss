@@ -1,0 +1,25 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
+
+body { @apply p-5 max-w-3xl; }
+
+.panel {
+  @apply bg-gray-200 rounded-md p-5 mb-3 text-gray-500;
+
+  ul { @apply grid grid-cols-3 gap-3; }
+  ul > .persisted { @apply p-5 bg-gray-300 text-gray-700 rounded-md leading-tight text-sm hover:bg-gray-500 hover:text-white; }
+  ul > .new { @apply p-5 bg-none bg-gray-400 text-white rounded-md leading-tight text-sm hover:bg-gray-500 hover:text-white hover:border-none; }
+  ul > li { @apply text-center box-border cursor-pointer; }
+  ul > li > strong { @apply font-normal; }
+}
+
+.second {
+  @apply border-4 border-gray-500 border-dashed p-5 rounded-md h-72 text-center flex items-center justify-center;
+  > a { @apply cursor-pointer; }
+}
+
+.foo {
+  @apply overflow-hidden
+}

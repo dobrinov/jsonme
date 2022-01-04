@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   get '/playground', to: 'playgrounds#index'
   get '/resume', to: 'submissions#resume'
+  get '/drilldown', to: 'playgrounds#drilldown'
 
   namespace :admin do
     get 'xyz', to: 'submissions#index'

@@ -6,4 +6,8 @@ class PlaygroundsController < ApplicationController
   def resume
     render layout: 'resume'
   end
+
+  def drilldown
+    render layout: 'drilldown'
+  end
 end
