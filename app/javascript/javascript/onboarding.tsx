@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DatepickerInput } from "./DatepickerInput";
 import { Resume } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
@@ -272,82 +272,83 @@ function Education({
   previousStep: () => void;
   nextStep: () => void;
 }) {
+  const drilldown = useDrilldown();
+
   return (
     <>
-      <section>
-        <ul>
-          <li>
-            <Entry
-              title="Sofia University"
-              onEdit={() => alert("Edit")}
-              onDelete={() => alert("Delete")}
-            />
-          </li>
-          <li>
-            <Entry
-              title="New Bulgarian University"
-              onEdit={() => alert("Edit")}
-              onDelete={() => alert("Delete")}
-            />
-          </li>
-          <li>
-            <Entry
-              title="Coursera"
-              onEdit={() => alert("Edit")}
-              onDelete={() => alert("Delete")}
-            />
-          </li>
-          <li>
-            <Entry
-              title="Coursera"
-              onEdit={() => alert("Edit")}
-              onDelete={() => alert("Delete")}
-            />
-          </li>
-          <li>
-            <Entry
-              title="Coursera"
-              onEdit={() => alert("Edit")}
-              onDelete={() => alert("Delete")}
-            />
-          </li>
-        </ul>
-        <button>Add new entry</button>
-      </section>
+      <div {...drilldown.containerProps} className="foo">
+        <div {...drilldown.secondaryProps} className="secondary">
+          <TextInput
+            name="city"
+            label="Institution"
+            placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
+          />
+          <TextInput
+            name="city"
+            label="Website"
+            placeholder="The webisite of the institution"
+          />
+          <DatepickerInput name="city" type="month" label="From" />
+          <DatepickerInput name="city" type="month" label="To" />
+          <TextAreaInput
+            name="city"
+            label="Summary"
+            placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
+          />
+          <button
+            className="button mt-5 m-3"
+            onClick={() => {
+              drilldown.reset();
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="button button-primary mt-5"
+            onClick={() => {
+              alert("add");
+              drilldown.reset();
+            }}
+          >
+            Add
+          </button>
+        </div>
 
-      {/* <section>
-                        <TextInput
-                          name="city"
-                          label="Institution"
-                          placeholder="The name of the institution where you did your study. MIT, Coursera, Edx, etc."
-                        />
-                        <TextInput
-                          name="city"
-                          label="Website"
-                          placeholder="The webisite of the institution"
-                        />
-                        <DatepickerInput
-                          name="city"
-                          type="month"
-                          label="From"
-                        />
-                        <DatepickerInput name="city" type="month" label="To" />
-                        <TextAreaInput
-                          name="city"
-                          label="Summary"
-                          placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
-                        />
-                      </section> */}
-      <button type="button" className="button mt-5 m-3" onClick={previousStep}>
-        Back
-      </button>
-      <button
-        type="button"
-        className="button button-primary button mt-5"
-        onClick={nextStep}
-      >
-        Next
-      </button>
+        <div {...drilldown.primaryProps} className="primary">
+          <ul>
+            <li>
+              <Entry
+                title="Sofia University"
+                onEdit={() => alert("Edit")}
+                onDelete={() => alert("Delete")}
+              />
+            </li>
+          </ul>
+          <button
+            className="button-new"
+            onClick={() => {
+              drilldown.animate();
+            }}
+          >
+            Add new education entry
+          </button>
+
+          <button
+            type="button"
+            className="button mt-5 m-3"
+            onClick={previousStep}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            className="button button-primary button mt-5"
+            onClick={nextStep}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </>
   );
 }
@@ -370,4 +371,112 @@ function Entry({
       <span>{title}</span>
     </div>
   );
+}
+
+function useDrilldown() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const primaryRef = useRef<HTMLDivElement>(null);
+  const secondaryRef = useRef<HTMLDivElement>(null);
+
+  const [level, setLevel] = useState<number | null>(null);
+
+  const TICK = 1;
+  const DELTA = 3;
+
+  useEffect(() => {
+    if (!containerRef.current || !primaryRef.current || !secondaryRef.current)
+      return;
+
+    containerRef.current.style.overflow = "hidden";
+    primaryRef.current.style.position = "relative";
+    primaryRef.current.style.top = "0";
+    primaryRef.current.style.marginTop = "0";
+    secondaryRef.current.style.marginTop = `-${secondaryRef.current.offsetHeight}px`;
+  }, [containerRef, primaryRef, secondaryRef]);
+
+  useEffect(() => {
+    if (!primaryRef.current || !secondaryRef.current || level === null) return;
+
+    switch (level) {
+      case 0: {
+        const primaryOffsetTarget = 0;
+        let currentPrimaryOffset = primaryRef.current.offsetHeight;
+
+        let resetFirstOffsetTimer = setInterval(() => {
+          console.log(currentPrimaryOffset);
+          currentPrimaryOffset -= DELTA;
+
+          if (currentPrimaryOffset <= primaryOffsetTarget) {
+            currentPrimaryOffset = primaryOffsetTarget;
+            clearInterval(resetFirstOffsetTimer);
+          }
+
+          if (primaryRef.current) {
+            primaryRef.current.style.top = `${currentPrimaryOffset}px`;
+            primaryRef.current.style.marginTop = `-${currentPrimaryOffset}px`;
+          }
+        }, TICK);
+
+        const secondOffsetTarget = secondaryRef.current;
+        let currentSecondOffset = 0;
+
+        let animateSecondOffsetTimer = setInterval(() => {
+          currentSecondOffset += DELTA;
+
+          if (currentSecondOffset >= secondOffsetTarget.offsetHeight) {
+            currentSecondOffset = secondOffsetTarget.offsetHeight;
+            clearInterval(animateSecondOffsetTimer);
+          }
+
+          secondOffsetTarget.style.marginTop = `-${currentSecondOffset}px`;
+        }, TICK);
+        break;
+      }
+      case 1: {
+        let currentSecondOffset = secondaryRef.current.offsetHeight;
+        const secondOffsetTarget = 0;
+        let animateSecondOffsetTimer = setInterval(() => {
+          currentSecondOffset -= DELTA;
+
+          if (currentSecondOffset <= secondOffsetTarget) {
+            currentSecondOffset = secondOffsetTarget;
+            clearInterval(animateSecondOffsetTimer);
+          }
+
+          if (secondaryRef.current)
+            secondaryRef.current.style.marginTop = `-${currentSecondOffset}px`;
+        }, TICK);
+
+        const primaryOffsetTarget = primaryRef.current.offsetHeight;
+        let currentPrimaryOffset = 0;
+
+        let animateFirstOffsetTimer = setInterval(() => {
+          currentPrimaryOffset += DELTA;
+
+          if (currentPrimaryOffset >= primaryOffsetTarget) {
+            currentPrimaryOffset = primaryOffsetTarget;
+            clearInterval(animateFirstOffsetTimer);
+          }
+
+          if (primaryRef.current) {
+            primaryRef.current.style.top = `${currentPrimaryOffset}px`;
+            primaryRef.current.style.marginTop = `-${currentPrimaryOffset}px`;
+          }
+        }, TICK);
+
+        break;
+      }
+    }
+  }, [level]);
+
+  const animate = () => setLevel(1);
+  const reset = () => setLevel(0);
+
+  return {
+    animate,
+    reset,
+    containerProps: { ref: containerRef },
+    primaryProps: { ref: primaryRef },
+    secondaryProps: { style: { marginTop: "-1000px" }, ref: secondaryRef },
+  };
 }
