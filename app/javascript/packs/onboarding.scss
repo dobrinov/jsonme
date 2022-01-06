@@ -33,6 +33,7 @@
 .preview { @apply p-5; }
 
 .input { @apply mb-3; }
+
 .foo { @apply px-1; }
 .foo > .secondary > .actions { @apply flex gap-3 justify-center; }
 .foo ul { @apply grid grid-cols-1 gap-3 mb-3; }

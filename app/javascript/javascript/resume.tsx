@@ -37,10 +37,10 @@ type Location = {
 
 type Institution = {
   name: string;
-  website: string;
+  website?: string;
 };
 
-type Training = {
+export type Training = {
   institution: Institution;
   summary: string;
   period: Period;

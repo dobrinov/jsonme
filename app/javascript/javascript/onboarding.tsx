@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DatepickerInput } from "./DatepickerInput";
-import { Resume } from "./Resume";
+import { Resume, Training } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
 
@@ -59,6 +59,7 @@ export function Onboarding() {
   const [summary, setSummary] = useState<string>();
   const [city, setCity] = useState<string>("");
   const [country, setCountry] = useState<string>("");
+  const [trainings, setTrainings] = useState<Training[]>([]);
 
   const location = city && country ? { city, country } : undefined;
 
@@ -175,7 +176,8 @@ export function Onboarding() {
                 );
               case 4:
                 return (
-                  <Education
+                  <TrainingsStep
+                    trainings={trainings}
                     previousStep={() => setStep(3)}
                     nextStep={() => setStep(5)}
                   />
@@ -265,10 +267,12 @@ function StepNavigation({
   );
 }
 
-function Education({
+function TrainingsStep({
+  trainings,
   previousStep,
   nextStep,
 }: {
+  trainings: Training[];
   previousStep: () => void;
   nextStep: () => void;
 }) {
@@ -278,51 +282,22 @@ function Education({
     <>
       <div {...drilldown.containerProps} className="foo">
         <div {...drilldown.secondaryProps} className="secondary">
-          <TextInput
-            name="city"
-            label="Institution"
-            placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
+          <TrainingForm
+            training={undefined}
+            onSave={() => drilldown.reset()}
+            onCancel={() => drilldown.reset()}
           />
-          <TextInput
-            name="city"
-            label="Website"
-            placeholder="The webisite of the institution"
-          />
-          <DatepickerInput name="city" type="month" label="From" />
-          <DatepickerInput name="city" type="month" label="To" />
-          <TextAreaInput
-            name="city"
-            label="Summary"
-            placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
-          />
-          <button
-            className="button mt-5 m-3"
-            onClick={() => {
-              drilldown.reset();
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            className="button button-primary mt-5"
-            onClick={() => {
-              alert("add");
-              drilldown.reset();
-            }}
-          >
-            Add
-          </button>
         </div>
 
         <div {...drilldown.primaryProps} className="primary">
           <ul>
-            <li>
+            {trainings.map((training) => (
               <Entry
-                title="Sofia University"
+                title={training.institution.name}
                 onEdit={() => alert("Edit")}
                 onDelete={() => alert("Delete")}
               />
-            </li>
+            ))}
           </ul>
           <button
             className="button-new"
@@ -350,6 +325,82 @@ function Education({
         </div>
       </div>
     </>
+  );
+}
+
+function TrainingForm({
+  training: initialTraining,
+  onSave,
+  onCancel,
+}: {
+  training?: Training;
+  onSave: (training: Training) => void;
+  onCancel: () => void;
+}) {
+  const [name, setName] = useState(initialTraining?.institution.name);
+  const [website, setWebsite] = useState(initialTraining?.institution.website);
+  const [from, setFrom] = useState(initialTraining?.period.from);
+  const [to, setTo] = useState(initialTraining?.period.to);
+  const [summary, setSummary] = useState(initialTraining?.summary);
+
+  const training: Training = {
+    institution: { name: name ?? "", website },
+    period: {
+      from: from ?? dateToMonthString(new Date()),
+      to: to ?? dateToMonthString(new Date()),
+    },
+    summary: "",
+  };
+
+  return (
+    <div>
+      <TextInput
+        name="name"
+        value={name}
+        label="Institution"
+        onBlur={(event) => setName(event.target.value)}
+        placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
+      />
+      <TextInput
+        name="website"
+        value={website}
+        label="Website"
+        onBlur={(event) => setWebsite(event.target.value)}
+        placeholder="The webisite of the institution"
+      />
+      <DatepickerInput
+        name="from"
+        value={from}
+        onBlur={(event) => setFrom(event.target.value)}
+        type="month"
+        label="From"
+      />
+      <DatepickerInput
+        name="to"
+        value={to}
+        onBlur={(event) => setTo(event.target.value)}
+        type="month"
+        label="To"
+      />
+      <TextAreaInput
+        name="summary"
+        value={summary}
+        onBlur={(event) => setSummary(event.target.value)}
+        label="Summary"
+        placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
+      />
+      <button className="button mt-5 m-3" onClick={onCancel}>
+        Cancel
+      </button>
+      <button
+        className="button button-primary mt-5"
+        onClick={() => {
+          onSave(training);
+        }}
+      >
+        Add
+      </button>
+    </div>
   );
 }
 
@@ -403,7 +454,6 @@ function useDrilldown() {
         let currentPrimaryOffset = primaryRef.current.offsetHeight;
 
         let resetFirstOffsetTimer = setInterval(() => {
-          console.log(currentPrimaryOffset);
           currentPrimaryOffset -= DELTA;
 
           if (currentPrimaryOffset <= primaryOffsetTarget) {
@@ -479,4 +529,11 @@ function useDrilldown() {
     primaryProps: { ref: primaryRef },
     secondaryProps: { style: { marginTop: "-1000px" }, ref: secondaryRef },
   };
+}
+
+function dateToMonthString(date: Date): string {
+  const yyyy = String(date.getFullYear());
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+
+  return `${yyyy}-${mm}`;
 }
