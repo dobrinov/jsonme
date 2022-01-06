@@ -432,7 +432,7 @@ function useDrilldown() {
   const [level, setLevel] = useState<number | null>(null);
 
   const TICK = 1;
-  const DELTA = 3;
+  const DELTA = 5;
 
   useEffect(() => {
     if (!containerRef.current || !primaryRef.current || !secondaryRef.current)
