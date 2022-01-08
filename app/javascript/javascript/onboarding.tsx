@@ -8,6 +8,9 @@ type Step = {
   title: string;
   description: string;
 };
+type Persistable = { index: number };
+type PersistedTraining = Training & Persistable;
+type EditableTraining = Training | PersistedTraining;
 
 const STEPS: Step[] = [
   {
@@ -180,8 +183,22 @@ export function Onboarding() {
                     trainings={trainings}
                     previousStep={() => setStep(3)}
                     nextStep={() => setStep(5)}
-                    onAddTraining={() => alert("add")}
-                    onEditTraining={() => alert("edit")}
+                    onAddTraining={(training: Training) =>
+                      setTrainings((current) => [...current, training])
+                    }
+                    onEditTraining={(training: PersistedTraining) => {
+                      setTrainings((current) => [
+                        ...current.slice(0, training.index),
+                        training,
+                        ...current.slice(training.index + 1),
+                      ]);
+                    }}
+                    onDeleteTraining={(training: PersistedTraining) => {
+                      setTrainings((current) => [
+                        ...current.slice(0, training.index),
+                        ...current.slice(training.index + 1, current.length),
+                      ]);
+                    }}
                   />
                 );
               default:
@@ -202,6 +219,7 @@ export function Onboarding() {
             summary={summary || "Hi there! I am John."}
             image={image}
             location={location}
+            trainings={trainings}
           />
         </div>
       </div>
@@ -275,25 +293,32 @@ function TrainingsStep({
   nextStep,
   onAddTraining,
   onEditTraining,
+  onDeleteTraining,
 }: {
   trainings: Training[];
   previousStep: () => void;
   nextStep: () => void;
   onAddTraining: (training: Training) => void;
-  onEditTraining: (training: Training, id: number) => void;
+  onEditTraining: (training: PersistedTraining) => void;
+  onDeleteTraining: (training: PersistedTraining) => void;
 }) {
   const drilldown = useDrilldown();
-  const [selectedTraining, setSelectedTraining] =
-    useState<{ training: Training; id: number }>();
+  const [selectedTraining, setSelectedTraining] = useState<EditableTraining>();
 
   return (
     <>
       <div {...drilldown.containerProps} className="foo">
         <div {...drilldown.secondaryProps} className="secondary">
           <TrainingForm
-            id={selectedTraining?.id}
-            training={selectedTraining?.training}
-            onSave={(training: Training, id?: number) => {
+            key={selectedTraining?.institution.name}
+            training={selectedTraining}
+            onSave={(training: EditableTraining) => {
+              if (isPersisted(training)) {
+                onEditTraining(training);
+              } else {
+                onAddTraining(training);
+              }
+
               drilldown.reset();
             }}
             onCancel={() => drilldown.reset()}
@@ -302,11 +327,17 @@ function TrainingsStep({
 
         <div {...drilldown.primaryProps} className="primary">
           <ul>
-            {trainings.map((training) => (
+            {trainings.map((training, index) => (
               <Entry
+                key={training.institution.name}
                 title={training.institution.name}
-                onEdit={() => alert("Edit")}
-                onDelete={() => alert("Delete")}
+                onEdit={() => {
+                  setSelectedTraining({ ...training, index });
+                  drilldown.animate();
+                }}
+                onDelete={() => {
+                  onDeleteTraining({ ...training, index });
+                }}
               />
             ))}
           </ul>
@@ -341,14 +372,12 @@ function TrainingsStep({
 }
 
 function TrainingForm({
-  id,
   training: initialTraining,
   onSave,
   onCancel,
 }: {
-  id?: number;
-  training?: Training;
-  onSave: (training: Training, id?: number) => void;
+  training?: EditableTraining;
+  onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
   const [name, setName] = useState<string>(
@@ -418,11 +447,15 @@ function TrainingForm({
             summary,
           };
 
-          onSave(training, id);
+          if (isPersisted(initialTraining)) {
+            onSave({ ...training, index: initialTraining.index });
+          } else {
+            onSave(training);
+          }
         }}
         disabled={!valid}
       >
-        Add
+        {isPersisted(initialTraining) ? "Update" : "Add"}
       </button>
     </div>
   );
@@ -555,9 +588,6 @@ function useDrilldown() {
   };
 }
 
-function dateToMonthString(date: Date): string {
-  const yyyy = String(date.getFullYear());
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-
-  return `${yyyy}-${mm}`;
+function isPersisted(object?: Persistable | {}): object is Persistable {
+  return object !== undefined && "index" in object;
 }
