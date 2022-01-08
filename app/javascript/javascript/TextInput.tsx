@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
+import { InputState } from "./InputState";
 
 export function TextInput({
   name,
@@ -16,7 +17,7 @@ export function TextInput({
   value?: string;
   placeholder?: string;
   addendum?: string;
-  state?: "normal" | "error";
+  state?: InputState;
   onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   onInput?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {

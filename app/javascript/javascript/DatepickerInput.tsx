@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
+import { InputState } from "./InputState";
 
 export function DatepickerInput({
   name,
@@ -16,7 +17,7 @@ export function DatepickerInput({
   label: string;
   value?: string;
   addendum?: string;
-  state?: "normal" | "error";
+  state?: InputState;
   onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   onInput?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {

@@ -180,6 +180,8 @@ export function Onboarding() {
                     trainings={trainings}
                     previousStep={() => setStep(3)}
                     nextStep={() => setStep(5)}
+                    onAddTraining={() => alert("add")}
+                    onEditTraining={() => alert("edit")}
                   />
                 );
               default:
@@ -271,20 +273,29 @@ function TrainingsStep({
   trainings,
   previousStep,
   nextStep,
+  onAddTraining,
+  onEditTraining,
 }: {
   trainings: Training[];
   previousStep: () => void;
   nextStep: () => void;
+  onAddTraining: (training: Training) => void;
+  onEditTraining: (training: Training, id: number) => void;
 }) {
   const drilldown = useDrilldown();
+  const [selectedTraining, setSelectedTraining] =
+    useState<{ training: Training; id: number }>();
 
   return (
     <>
       <div {...drilldown.containerProps} className="foo">
         <div {...drilldown.secondaryProps} className="secondary">
           <TrainingForm
-            training={undefined}
-            onSave={() => drilldown.reset()}
+            id={selectedTraining?.id}
+            training={selectedTraining?.training}
+            onSave={(training: Training, id?: number) => {
+              drilldown.reset();
+            }}
             onCancel={() => drilldown.reset()}
           />
         </div>
@@ -302,6 +313,7 @@ function TrainingsStep({
           <button
             className="button-new"
             onClick={() => {
+              setSelectedTraining(undefined);
               drilldown.animate();
             }}
           >
@@ -329,28 +341,30 @@ function TrainingsStep({
 }
 
 function TrainingForm({
+  id,
   training: initialTraining,
   onSave,
   onCancel,
 }: {
+  id?: number;
   training?: Training;
-  onSave: (training: Training) => void;
+  onSave: (training: Training, id?: number) => void;
   onCancel: () => void;
 }) {
-  const [name, setName] = useState(initialTraining?.institution.name);
-  const [website, setWebsite] = useState(initialTraining?.institution.website);
-  const [from, setFrom] = useState(initialTraining?.period.from);
-  const [to, setTo] = useState(initialTraining?.period.to);
-  const [summary, setSummary] = useState(initialTraining?.summary);
+  const [name, setName] = useState<string>(
+    initialTraining?.institution.name ?? ""
+  );
+  const [website, setWebsite] = useState<string>(
+    initialTraining?.institution.website ?? ""
+  );
+  const [from, setFrom] = useState<string>(initialTraining?.period.from ?? "");
+  const [to, setTo] = useState<string>(initialTraining?.period.to ?? "");
+  const [summary, setSummary] = useState<string>(
+    initialTraining?.summary ?? ""
+  );
 
-  const training: Training = {
-    institution: { name: name ?? "", website },
-    period: {
-      from: from ?? dateToMonthString(new Date()),
-      to: to ?? dateToMonthString(new Date()),
-    },
-    summary: "",
-  };
+  const nameValid = !!name && name.length > 0;
+  const valid = nameValid;
 
   return (
     <div>
@@ -395,8 +409,18 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          onSave(training);
+          const training: Training = {
+            institution: { name, website },
+            period: {
+              from,
+              to,
+            },
+            summary,
+          };
+
+          onSave(training, id);
         }}
+        disabled={!valid}
       >
         Add
       </button>

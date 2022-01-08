@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
+import { InputState } from "./InputState";
 
 export function TextAreaInput({
   name,
@@ -16,7 +17,7 @@ export function TextAreaInput({
   value?: string;
   placeholder?: string;
   addendum?: string;
-  state?: "normal" | "error";
+  state?: InputState;
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
   onInput?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
 }) {
