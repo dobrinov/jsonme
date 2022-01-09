@@ -3,6 +3,7 @@ import { DatepickerInput } from "./DatepickerInput";
 import { Resume, Training } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
+import { MonthAndYear, Period } from "./time";
 
 type Step = {
   title: string;
@@ -386,8 +387,12 @@ function TrainingForm({
   const [website, setWebsite] = useState<string>(
     initialTraining?.institution.website ?? ""
   );
-  const [from, setFrom] = useState<string>(initialTraining?.period.from ?? "");
-  const [to, setTo] = useState<string>(initialTraining?.period.to ?? "");
+  const [from, setFrom] = useState<MonthAndYear | undefined>(
+    initialTraining?.period.from
+  );
+  const [to, setTo] = useState<MonthAndYear | null | undefined>(
+    initialTraining?.period.to
+  );
   const [summary, setSummary] = useState<string>(
     initialTraining?.summary ?? ""
   );
@@ -413,15 +418,19 @@ function TrainingForm({
       />
       <DatepickerInput
         name="from"
-        value={from}
-        onBlur={(event) => setFrom(event.target.value)}
+        value={from?.toString()}
+        onBlur={(event) =>
+          event.target.value && setFrom(MonthAndYear.parse(event.target.value))
+        }
         type="month"
         label="From"
       />
       <DatepickerInput
         name="to"
-        value={to}
-        onBlur={(event) => setTo(event.target.value)}
+        value={to?.toString()}
+        onBlur={(event) =>
+          event.target.value && setTo(MonthAndYear.parse(event.target.value))
+        }
         type="month"
         label="To"
       />
@@ -438,12 +447,11 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
+          if (!name || !website || !from || !summary || !valid) return;
+
           const training: Training = {
             institution: { name, website },
-            period: {
-              from,
-              to,
-            },
+            period: new Period(from, to ?? null),
             summary,
           };
 

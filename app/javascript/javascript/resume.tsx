@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-
-type Period = {
-  from: string;
-  to: string;
-};
+import { Period } from "./time";
+import { capitalize, startingYear } from "./utils";
 
 type Employer = {
   name: string;
@@ -75,10 +72,6 @@ type Resume = {
   technologies?: Technology[];
 };
 
-interface Temporal {
-  period: Period;
-}
-
 export function parseResume(raw: any) {
   return JSON.parse(raw) as Resume;
 }
@@ -125,7 +118,7 @@ export function Resume({
                       >
                         {employment.employer.website}
                       </a>
-                      <div>{stringifyPeriod(employment.period)}</div>
+                      <div>{employment.period.toString()}</div>
                     </div>
                     <div className="employment">
                       <p>{employment.summary}</p>
@@ -163,7 +156,7 @@ export function Resume({
         </div>
       )}
 
-      {trainings && (
+      {trainings && trainings.length > 0 && (
         <div className="section">
           <h2 className="heading">Education</h2>
           <div className="timeline">
@@ -182,7 +175,7 @@ export function Resume({
                       >
                         {training.institution.website}
                       </a>
-                      <div>{stringifyPeriod(training.period)}</div>
+                      <div>{training.period.toString()}</div>
                     </div>
                     <p>{training.summary}</p>
                   </li>
@@ -213,7 +206,7 @@ export function Resume({
                       >
                         {sideProject.website}
                       </a>
-                      <div>{stringifyPeriod(sideProject.period)}</div>
+                      <div>{sideProject.period.toString()}</div>
                     </div>
                     <p>{sideProject.summary}</p>
                   </li>
@@ -284,36 +277,4 @@ function ProfilePicture({ url }: { url: string }) {
       <img src={image} onError={() => setHasError(true)}></img>
     </div>
   );
-}
-
-function startingYear(temporals: Temporal[]) {
-  return Math.min(
-    ...temporals.map((temporal) => parseInt(temporal.period.from.split("-")[1]))
-  );
-}
-
-function stringifyPeriod(period: Period) {
-  return `${stringifyMonthAndYear(period.from)} - ${stringifyMonthAndYear(
-    period.to
-  )}`;
-}
-
-function stringifyMonthAndYear(value: string) {
-  if (value) {
-    const [month, year] = value.split("-");
-
-    return new Date(parseInt(year), parseInt(month)).toLocaleDateString(
-      "en-US",
-      {
-        year: "numeric",
-        month: "short",
-      }
-    );
-  } else {
-    return "Present";
-  }
-}
-
-function capitalize(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }
