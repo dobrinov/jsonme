@@ -9,6 +9,7 @@ export function TextAreaInput({
   placeholder,
   addendum,
   state,
+  onChange,
   onBlur,
   onInput,
 }: {
@@ -18,6 +19,7 @@ export function TextAreaInput({
   placeholder?: string;
   addendum?: string;
   state?: InputState;
+  onChange?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
   onInput?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
 }) {
@@ -39,6 +41,7 @@ export function TextAreaInput({
             name={name}
             ref={ref}
             placeholder={placeholder}
+            onChange={onChange}
             onBlur={onBlur}
             onInput={onInput}
           ></textarea>

@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { createImportSpecifier } from "typescript";
 import { DatepickerInput } from "./DatepickerInput";
 import { Resume, Training } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
 import { MonthAndYear, Period } from "./time";
-import { Toggle } from "./Toggle";
 import { ToggleInput } from "./ToggleInput";
 
 type Step = {
@@ -15,6 +13,9 @@ type Step = {
 type Persistable = { index: number };
 type PersistedTraining = Training & Persistable;
 type EditableTraining = Training | PersistedTraining;
+
+const URL_REGEX =
+  /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
 
 const STEPS: Step[] = [
   {
@@ -384,72 +385,169 @@ function TrainingForm({
   onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
+  // Name
   const [name, setName] = useState<string | undefined>(
     initialTraining?.institution.name
   );
+  const [nameErrors, setNameErrors] = useState<string[]>([]);
+  const nameValid = nameErrors.length === 0;
+
+  const nameIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
+    let errors: string[] = [];
+
+    if (!forceValidation && name === undefined) {
+      setNameErrors(errors);
+      return errors;
+    }
+
+    if (!(name !== undefined && name.length > 0)) {
+      errors = [...errors, "must be present"];
+    }
+
+    setNameErrors(errors);
+    return errors;
+  };
+
+  useEffect(() => {
+    nameIsValid({ forceValidation: false });
+  }, [name]);
+
+  // Website
   const [website, setWebsite] = useState<string | undefined>(
     initialTraining?.institution.website
   );
-  const [ongoing, setOngoing] = useState<boolean>(false);
-  const [to, setTo] = useState<MonthAndYear | null | undefined>(
-    initialTraining?.period.to
-  );
-  const [summary, setSummary] = useState<string>(
-    initialTraining?.summary ?? ""
-  );
+  const [websiteErrors, setWebsiteErrors] = useState<string[]>([]);
+  const websiteValid = websiteErrors.length === 0;
 
-  // Name validation
-  const namePresent = name === undefined || name.length > 0;
-  const nameErrors: string[] = [];
-  if (!namePresent) {
-    nameErrors.push("must be present");
-  }
+  const websiteIsValid = ({
+    forceValidation,
+  }: {
+    forceValidation: boolean;
+  }) => {
+    let errors: string[] = [];
 
-  // Website validation
-  const websitePresent = website === undefined || website.length > 0;
-  const websiteErrors: string[] = [];
-  if (!websitePresent) {
-    websiteErrors.push("must be present");
-  }
-  if (website) {
-    const format =
-      /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
-
-    if (!format.test(website)) {
-      websiteErrors.push("is invalid");
+    if (!forceValidation && website === undefined) {
+      setWebsiteErrors(errors);
+      return errors;
     }
-  }
+
+    if (!(website !== undefined && website !== null)) {
+      errors = [...errors, "must be present"];
+    }
+
+    if (website && !URL_REGEX.test(website)) {
+      errors = [...errors, "is invalid"];
+    }
+
+    setWebsiteErrors(errors);
+    return errors;
+  };
+
+  useEffect(() => {
+    websiteIsValid({ forceValidation: false });
+  }, [website]);
 
   // From
   const [from, setFrom] = useState<MonthAndYear | undefined | null>(
     initialTraining?.period.from
   );
+  const [fromErrors, setFromErrors] = useState<string[]>([]);
+  const fromValid = fromErrors.length === 0;
 
-  const fromPresent = () => from !== undefined;
-
-  const validateFrom = ({ forceValidation }: { forceValidation: boolean }) => {
-    if (!forceValidation || from === undefined) return [];
-
+  const fromIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
     let errors: string[] = [];
 
-    if (!fromPresent()) {
+    if (!forceValidation && from === undefined) {
+      setFromErrors(errors);
+      return errors;
+    }
+
+    if (!(from !== undefined && from !== null)) {
       errors = [...errors, "must be present"];
     }
 
+    setFromErrors(errors);
     return errors;
   };
 
-  const fromErrors = validateFrom({ forceValidation: false });
-  const fromValid = fromErrors.length === 0;
-  const nameValid = nameErrors.length === 0;
-  const websiteValid = websiteErrors.length === 0;
+  useEffect(() => {
+    fromIsValid({ forceValidation: false });
+  }, [from]);
+
+  // To
+  const [to, setTo] = useState<MonthAndYear | null | undefined>(
+    initialTraining?.period.to
+  );
+  const [toErrors, setToErrors] = useState<string[]>([]);
+  const toValid = toErrors.length === 0;
+
+  const toIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
+    let errors: string[] = [];
+
+    if (!forceValidation && to === undefined) {
+      setToErrors(errors);
+      return errors;
+    }
+
+    if (!ongoing && !(to !== undefined && to !== null)) {
+      errors = [...errors, "must be present"];
+    }
+
+    setToErrors(errors);
+    return errors;
+  };
+
+  useEffect(() => {
+    toIsValid({ forceValidation: false });
+  }, [to]);
+
+  // Summary
+  const [summary, setSummary] = useState<string | undefined>(
+    initialTraining?.summary
+  );
+  const [summaryErrors, setSummaryErrors] = useState<string[]>([]);
+  const summaryValid = summaryErrors.length === 0;
+
+  const summaryIsValid = ({
+    forceValidation,
+  }: {
+    forceValidation: boolean;
+  }) => {
+    let errors: string[] = [];
+
+    if (!forceValidation && summary === undefined) {
+      setSummaryErrors(errors);
+      return errors;
+    }
+
+    if (!(summary !== undefined && summary.length > 0)) {
+      errors = [...errors, "must be present"];
+    }
+
+    setSummaryErrors(errors);
+    return errors;
+  };
+
+  useEffect(() => {
+    summaryIsValid({ forceValidation: false });
+  }, [summary]);
+
+  const [ongoing, setOngoing] = useState<boolean>(to === null);
 
   const isValid = ({
     forceValidation,
   }: {
     forceValidation: boolean;
   }): boolean => {
-    return validateFrom({ forceValidation }).length === 0;
+    const validationResults = [
+      nameIsValid({ forceValidation }).length === 0,
+      websiteIsValid({ forceValidation }).length === 0,
+      fromIsValid({ forceValidation }).length === 0,
+      toIsValid({ forceValidation }).length === 0,
+      summaryIsValid({ forceValidation }).length === 0,
+    ];
+
+    return validationResults.filter((result) => !result).length === 0;
   };
 
   return (
@@ -460,7 +558,9 @@ function TrainingForm({
         label="Institution"
         state={nameValid ? "normal" : "error"}
         addendum={nameErrors[0]}
-        onBlur={(event) => setName(event.target.value)}
+        onBlur={(event) => {
+          if (event.target.value !== "") setName(event.target.value);
+        }}
         placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
       />
       <TextInput
@@ -469,7 +569,9 @@ function TrainingForm({
         label="Website"
         state={websiteValid ? "normal" : "error"}
         addendum={websiteErrors[0]}
-        onBlur={(event) => setWebsite(event.target.value)}
+        onBlur={(event) => {
+          event.target.value && setWebsite(event.target.value);
+        }}
         placeholder="The webisite of the institution"
       />
       <DatepickerInput
@@ -478,10 +580,10 @@ function TrainingForm({
         state={fromValid ? "normal" : "error"}
         addendum={fromErrors[0]}
         onChange={(event) => {
-          if (event.target.value === "") {
-            setFrom(null);
-          } else {
+          if (event.target.value) {
             setFrom(MonthAndYear.parse(event.target.value));
+          } else {
+            setFrom(null);
           }
         }}
         type="month"
@@ -491,12 +593,17 @@ function TrainingForm({
         on={ongoing}
         name="ongoing"
         label="Ongoing"
-        onChange={(value: boolean) => setOngoing(value)}
+        onChange={(value: boolean) => {
+          setOngoing(value);
+          setTo(null);
+        }}
       />
       {!ongoing && (
         <DatepickerInput
           name="to"
           value={to?.toString()}
+          state={toValid ? "normal" : "error"}
+          addendum={toErrors[0]}
           onChange={(event) =>
             event.target.value && setTo(MonthAndYear.parse(event.target.value))
           }
@@ -507,7 +614,11 @@ function TrainingForm({
       <TextAreaInput
         name="summary"
         value={summary}
-        onBlur={(event) => setSummary(event.target.value)}
+        state={summaryValid ? "normal" : "error"}
+        addendum={summaryErrors[0]}
+        onBlur={(event) => {
+          event.target.value && setSummary(event.target.value);
+        }}
         label="Summary"
         placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
       />
@@ -517,8 +628,8 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          validate();
-          if (!name || !website || !from || !summary || !isValid()) return;
+          if (!isValid({ forceValidation: true })) return;
+          if (!name || !website || !from || !summary) return;
 
           const training: Training = {
             institution: { name, website },

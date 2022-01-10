@@ -9,6 +9,7 @@ export function TextInput({
   placeholder,
   addendum,
   state,
+  onChange,
   onBlur,
   onInput,
 }: {
@@ -18,6 +19,7 @@ export function TextInput({
   placeholder?: string;
   addendum?: string;
   state?: InputState;
+  onChange?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   onInput?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {
@@ -40,6 +42,7 @@ export function TextInput({
             type="text"
             ref={ref}
             placeholder={placeholder}
+            onChange={onChange}
             onBlur={onBlur}
             onInput={onInput}
           />
