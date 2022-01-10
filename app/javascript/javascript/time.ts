@@ -3,6 +3,7 @@ export class MonthAndYear {
   year: number;
 
   static parse(value: string) {
+    if (!value) return undefined;
     const date = new Date(value);
 
     return new MonthAndYear(date.getFullYear(), date.getMonth() + 1);
@@ -40,7 +41,10 @@ export class Period {
   to: MonthAndYear | null;
 
   static parse(from: string, to: string) {
-    return new Period(MonthAndYear.parse(from), MonthAndYear.parse(to));
+    const parsedFrom = MonthAndYear.parse(from);
+    const parsedTo = MonthAndYear.parse(to) ?? null;
+
+    return parsedFrom ? new Period(parsedFrom, parsedTo) : undefined;
   }
 
   constructor(from: MonthAndYear, to: MonthAndYear | null) {

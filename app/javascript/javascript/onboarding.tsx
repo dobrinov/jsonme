@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createImportSpecifier } from "typescript";
 import { DatepickerInput } from "./DatepickerInput";
 import { Resume, Training } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
@@ -389,9 +390,6 @@ function TrainingForm({
   const [website, setWebsite] = useState<string | undefined>(
     initialTraining?.institution.website
   );
-  const [from, setFrom] = useState<MonthAndYear | undefined>(
-    initialTraining?.period.from
-  );
   const [ongoing, setOngoing] = useState<boolean>(false);
   const [to, setTo] = useState<MonthAndYear | null | undefined>(
     initialTraining?.period.to
@@ -422,10 +420,37 @@ function TrainingForm({
     }
   }
 
-  // From validation
+  // From
+  const [from, setFrom] = useState<MonthAndYear | undefined | null>(
+    initialTraining?.period.from
+  );
+
+  const fromPresent = () => from !== undefined;
+
+  const validateFrom = ({ forceValidation }: { forceValidation: boolean }) => {
+    if (!forceValidation || from === undefined) return [];
+
+    let errors: string[] = [];
+
+    if (!fromPresent()) {
+      errors = [...errors, "must be present"];
+    }
+
+    return errors;
+  };
+
+  const fromErrors = validateFrom({ forceValidation: false });
+  const fromValid = fromErrors.length === 0;
   const nameValid = nameErrors.length === 0;
   const websiteValid = websiteErrors.length === 0;
-  const valid = nameValid && websiteValid;
+
+  const isValid = ({
+    forceValidation,
+  }: {
+    forceValidation: boolean;
+  }): boolean => {
+    return validateFrom({ forceValidation }).length === 0;
+  };
 
   return (
     <div>
@@ -450,9 +475,15 @@ function TrainingForm({
       <DatepickerInput
         name="from"
         value={from?.toString()}
-        onBlur={(event) =>
-          event.target.value && setFrom(MonthAndYear.parse(event.target.value))
-        }
+        state={fromValid ? "normal" : "error"}
+        addendum={fromErrors[0]}
+        onChange={(event) => {
+          if (event.target.value === "") {
+            setFrom(null);
+          } else {
+            setFrom(MonthAndYear.parse(event.target.value));
+          }
+        }}
         type="month"
         label="From"
       />
@@ -466,7 +497,7 @@ function TrainingForm({
         <DatepickerInput
           name="to"
           value={to?.toString()}
-          onBlur={(event) =>
+          onChange={(event) =>
             event.target.value && setTo(MonthAndYear.parse(event.target.value))
           }
           type="month"
@@ -486,7 +517,8 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          if (!name || !website || !from || !summary || !valid) return;
+          validate();
+          if (!name || !website || !from || !summary || !isValid()) return;
 
           const training: Training = {
             institution: { name, website },

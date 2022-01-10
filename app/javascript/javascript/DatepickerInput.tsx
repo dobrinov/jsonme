@@ -9,7 +9,7 @@ export function DatepickerInput({
   value,
   addendum,
   state,
-  onBlur,
+  onChange,
   onInput,
 }: {
   name: string;
@@ -18,7 +18,7 @@ export function DatepickerInput({
   value?: string;
   addendum?: string;
   state?: InputState;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
+  onChange?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   onInput?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
@@ -38,7 +38,7 @@ export function DatepickerInput({
             name={name}
             type={type}
             ref={ref}
-            onBlur={onBlur}
+            onChange={onChange}
             onInput={onInput}
           />
         </div>
