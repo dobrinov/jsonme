@@ -4,6 +4,7 @@
   "dependencies": {
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
+    "@headlessui/react": "^1.4.2",
     "@rails/actioncable": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "5.4.2",

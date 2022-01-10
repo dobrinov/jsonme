@@ -4,6 +4,8 @@ import { Resume, Training } from "./Resume";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
 import { MonthAndYear, Period } from "./time";
+import { Toggle } from "./Toggle";
+import { ToggleInput } from "./ToggleInput";
 
 type Step = {
   title: string;
@@ -381,15 +383,16 @@ function TrainingForm({
   onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
-  const [name, setName] = useState<string>(
-    initialTraining?.institution.name ?? ""
+  const [name, setName] = useState<string | undefined>(
+    initialTraining?.institution.name
   );
-  const [website, setWebsite] = useState<string>(
-    initialTraining?.institution.website ?? ""
+  const [website, setWebsite] = useState<string | undefined>(
+    initialTraining?.institution.website
   );
   const [from, setFrom] = useState<MonthAndYear | undefined>(
     initialTraining?.period.from
   );
+  const [ongoing, setOngoing] = useState<boolean>(false);
   const [to, setTo] = useState<MonthAndYear | null | undefined>(
     initialTraining?.period.to
   );
@@ -397,8 +400,32 @@ function TrainingForm({
     initialTraining?.summary ?? ""
   );
 
-  const nameValid = !!name && name.length > 0;
-  const valid = nameValid;
+  // Name validation
+  const namePresent = name === undefined || name.length > 0;
+  const nameErrors: string[] = [];
+  if (!namePresent) {
+    nameErrors.push("must be present");
+  }
+
+  // Website validation
+  const websitePresent = website === undefined || website.length > 0;
+  const websiteErrors: string[] = [];
+  if (!websitePresent) {
+    websiteErrors.push("must be present");
+  }
+  if (website) {
+    const format =
+      /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+
+    if (!format.test(website)) {
+      websiteErrors.push("is invalid");
+    }
+  }
+
+  // From validation
+  const nameValid = nameErrors.length === 0;
+  const websiteValid = websiteErrors.length === 0;
+  const valid = nameValid && websiteValid;
 
   return (
     <div>
@@ -406,6 +433,8 @@ function TrainingForm({
         name="name"
         value={name}
         label="Institution"
+        state={nameValid ? "normal" : "error"}
+        addendum={nameErrors[0]}
         onBlur={(event) => setName(event.target.value)}
         placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
       />
@@ -413,6 +442,8 @@ function TrainingForm({
         name="website"
         value={website}
         label="Website"
+        state={websiteValid ? "normal" : "error"}
+        addendum={websiteErrors[0]}
         onBlur={(event) => setWebsite(event.target.value)}
         placeholder="The webisite of the institution"
       />
@@ -425,15 +456,23 @@ function TrainingForm({
         type="month"
         label="From"
       />
-      <DatepickerInput
-        name="to"
-        value={to?.toString()}
-        onBlur={(event) =>
-          event.target.value && setTo(MonthAndYear.parse(event.target.value))
-        }
-        type="month"
-        label="To"
+      <ToggleInput
+        on={ongoing}
+        name="ongoing"
+        label="Ongoing"
+        onChange={(value: boolean) => setOngoing(value)}
       />
+      {!ongoing && (
+        <DatepickerInput
+          name="to"
+          value={to?.toString()}
+          onBlur={(event) =>
+            event.target.value && setTo(MonthAndYear.parse(event.target.value))
+          }
+          type="month"
+          label="To"
+        />
+      )}
       <TextAreaInput
         name="summary"
         value={summary}
@@ -461,7 +500,6 @@ function TrainingForm({
             onSave(training);
           }
         }}
-        disabled={!valid}
       >
         {isPersisted(initialTraining) ? "Update" : "Add"}
       </button>
