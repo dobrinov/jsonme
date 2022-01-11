@@ -464,6 +464,14 @@ function TrainingForm({
 
     if (!(from !== undefined && from !== null)) {
       errors = [...errors, "must be present"];
+    } else {
+      if (from.greatherThan(MonthAndYear.current())) {
+        errors = [...errors, "cannot be in the future"];
+      }
+
+      if (to && from.greatherThan(to)) {
+        errors = [...errors, "cannot be after 'To'"];
+      }
     }
 
     setFromErrors(errors);
@@ -484,13 +492,26 @@ function TrainingForm({
   const toIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
     let errors: string[] = [];
 
+    if (ongoing) {
+      setToErrors(errors);
+      return errors;
+    }
+
     if (!forceValidation && to === undefined) {
       setToErrors(errors);
       return errors;
     }
 
-    if (!ongoing && !(to !== undefined && to !== null)) {
+    if (!(to !== undefined && to !== null)) {
       errors = [...errors, "must be present"];
+    } else {
+      if (to.greatherThan(MonthAndYear.current())) {
+        errors = [...errors, "cannot be in the future"];
+      }
+
+      if (from && from.greatherThan(to)) {
+        errors = [...errors, "cannot be prior 'From'"];
+      }
     }
 
     setToErrors(errors);

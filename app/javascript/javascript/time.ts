@@ -20,6 +20,16 @@ export class MonthAndYear {
     this.year = year;
   }
 
+  greatherThan(other: MonthAndYear): boolean {
+    if (this.year > other.year) {
+      return true;
+    } else if (this.year === other.year) {
+      return this.month > other.month;
+    } else {
+      return false;
+    }
+  }
+
   toDate(): Date {
     return new Date(this.toString());
   }

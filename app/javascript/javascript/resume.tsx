@@ -164,7 +164,7 @@ export function Resume({
             <div>
               <ul>
                 {trainings.map((training) => (
-                  <li>
+                  <li key={training.institution.name}>
                     <div className="period">
                       <h3>{training.institution.name}</h3>
                       <aside />
