@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { DatepickerInput } from "./DatepickerInput";
-import { Resume, Training } from "./Resume";
+import { Resume, Technology, Training } from "./Resume";
+import { SelectInput } from "./SelectInput";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
 import { MonthAndYear, Period } from "./time";
@@ -11,8 +12,32 @@ type Step = {
   description: string;
 };
 type Persistable = { index: number };
+
 type PersistedTraining = Training & Persistable;
 type EditableTraining = Training | PersistedTraining;
+
+type PersistedTechnology = Technology & Persistable;
+type EditableTechnology = Technology | PersistedTechnology;
+
+type Complexity = "easy" | "intermediate" | "hard";
+type Knowledge = "poor" | "average" | "good";
+
+const TASK_COMPLEXITIES: { id: Complexity; label: string }[] = [
+  { id: "easy", label: "Easy" },
+  { id: "intermediate", label: "Intermediate" },
+  { id: "hard", label: "Hard" },
+];
+
+const KNOWLEDGE_LEVELS: { id: Knowledge; label: string }[] = [
+  { id: "poor", label: "Poor" },
+  { id: "average", label: "Average" },
+  { id: "good", label: "Good" },
+];
+
+const YES_NOS: { id: "yes" | "no"; label: string }[] = [
+  { id: "yes", label: "Yes" },
+  { id: "no", label: "No" },
+];
 
 const URL_REGEX =
   /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
@@ -68,6 +93,7 @@ export function Onboarding() {
   const [city, setCity] = useState<string>("");
   const [country, setCountry] = useState<string>("");
   const [trainings, setTrainings] = useState<Training[]>([]);
+  const [technologies, setTechnologies] = useState<Technology[]>([]);
 
   const location = city && country ? { city, country } : undefined;
 
@@ -204,6 +230,17 @@ export function Onboarding() {
                         ...current.slice(training.index + 1, current.length),
                       ]);
                     }}
+                  />
+                );
+              case 5:
+                return (
+                  <TechnologyStackStep
+                    technologies={technologies}
+                    previousStep={() => setStep(4)}
+                    nextStep={() => setStep(6)}
+                    onAddTechnology={(training: Technology) => {}}
+                    onEditTechnology={(training: PersistedTechnology) => {}}
+                    onDeleteTechnology={(training: PersistedTechnology) => {}}
                   />
                 );
               default:
@@ -353,7 +390,7 @@ function TrainingsStep({
               drilldown.animate();
             }}
           >
-            Add new education entry
+            Add education
           </button>
 
           <button
@@ -666,6 +703,178 @@ function TrainingForm({
         }}
       >
         {isPersisted(initialTraining) ? "Update" : "Add"}
+      </button>
+    </div>
+  );
+}
+
+function TechnologyStackStep({
+  technologies,
+  previousStep,
+  nextStep,
+  onAddTechnology,
+  onEditTechnology,
+  onDeleteTechnology,
+}: {
+  technologies: Technology[];
+  previousStep: () => void;
+  nextStep: () => void;
+  onAddTechnology: (technology: Technology) => void;
+  onEditTechnology: (technology: PersistedTechnology) => void;
+  onDeleteTechnology: (technology: PersistedTechnology) => void;
+}) {
+  const drilldown = useDrilldown();
+  const [selectedTechnology, setSelectedTechnology] =
+    useState<EditableTechnology>();
+
+  return (
+    <>
+      <div {...drilldown.containerProps} className="foo">
+        <div {...drilldown.secondaryProps} className="secondary">
+          <TechnologyForm onCancel={() => drilldown.reset()} />
+        </div>
+
+        <div {...drilldown.primaryProps} className="primary">
+          <ul>
+            {technologies.map((technology, index) => (
+              <Entry
+                key={technology.name}
+                title={technology.name}
+                onEdit={() => {
+                  setSelectedTechnology({ ...technology, index });
+                  drilldown.animate();
+                }}
+                onDelete={() => {
+                  onDeleteTechnology({ ...technology, index });
+                }}
+              />
+            ))}
+          </ul>
+          <button
+            className="button-new"
+            onClick={() => {
+              setSelectedTechnology(undefined);
+              drilldown.animate();
+            }}
+          >
+            Add technology
+          </button>
+
+          <button
+            type="button"
+            className="button mt-5 m-3"
+            onClick={previousStep}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            className="button button-primary button mt-5"
+            onClick={nextStep}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function TechnologyForm({ onCancel }: { onCancel: () => void }) {
+  const [name, setName] = useState<string | undefined>();
+  const [website, setWebsite] = useState<string | undefined>();
+  const [taskComplexity, setTaskComplexity] = useState<
+    Complexity | undefined
+  >();
+  const [knowledgeOfFeatures, setKnowledgeOfFeatures] = useState<
+    Knowledge | undefined
+  >();
+  const [knowledgeOfBestPractices, setKnowledgeOfBestPractices] = useState<
+    Knowledge | undefined
+  >();
+  const [canMentorOthers, setCanMentorOthers] = useState<boolean | undefined>();
+  const [usedRecently, setUsedRecently] = useState<boolean | undefined>();
+
+  return (
+    <div>
+      <TextInput
+        name="name"
+        value={name}
+        label="Name"
+        onBlur={(event) => {
+          if (event.target.value !== "") setName(event.target.value);
+        }}
+        placeholder="The name of the technology. Example: Javascript, Ruby, Rust, CSS, etc."
+      />
+      <TextInput
+        name="website"
+        value={website}
+        label="Website"
+        onBlur={(event) => {
+          if (event.target.value !== "") setWebsite(event.target.value);
+        }}
+        placeholder="The official website of the technology"
+      />
+      <SelectInput
+        name="taskComplexity"
+        value={taskComplexity}
+        collection={TASK_COMPLEXITIES}
+        prompt={true}
+        label="How difficult problems you can solve?"
+        onChange={(event) => {
+          setTaskComplexity(event.target.value as Complexity);
+        }}
+      />
+      <SelectInput
+        name="knowledgeOfFeatures"
+        value={knowledgeOfFeatures}
+        collection={KNOWLEDGE_LEVELS}
+        prompt={true}
+        label="How good is your knowledge of technology's features?"
+        onChange={(event) => {
+          setKnowledgeOfFeatures(event.target.value as Knowledge);
+        }}
+      />
+      <SelectInput
+        name="knowledgeOfBestPractices"
+        value={knowledgeOfBestPractices}
+        collection={KNOWLEDGE_LEVELS}
+        prompt={true}
+        label="How good is your knowledge of technology's best practices?"
+        onChange={(event) => {
+          setKnowledgeOfBestPractices(event.target.value as Knowledge);
+        }}
+      />
+      <SelectInput
+        name="canMentorOthers"
+        value={canMentorOthers ? "yes" : "no"}
+        collection={YES_NOS}
+        prompt={true}
+        label="Can you mentor others?"
+        onChange={(event) => {
+          setCanMentorOthers(event.target.value === "yes");
+        }}
+      />
+      <SelectInput
+        name="usedRecently"
+        value={usedRecently ? "yes" : "no"}
+        collection={YES_NOS}
+        prompt={true}
+        label="Have you used this technology recently?"
+        onChange={(event) => {
+          setUsedRecently(event.target.value === "yes");
+        }}
+      />
+      <button className="button mt-5 m-3" onClick={onCancel}>
+        Cancel
+      </button>
+      <button
+        className="button button-primary mt-5"
+        onClick={() => {
+          alert("ok");
+        }}
+      >
+        Add
       </button>
     </div>
   );

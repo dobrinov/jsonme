@@ -43,14 +43,14 @@ export type Training = {
   period: Period;
 };
 
-type Technology = {
+export type Technology = {
   name: string;
   website: string;
   recentlyUsed: boolean;
   canMentor: boolean;
   knowledgeOfBestPractices: string;
   knowledgeOfFeatures: string;
-  taskComplexity: string;
+  taskComplexity: "hard" | "intermediate" | "easy";
 };
 
 type SideProject = {
