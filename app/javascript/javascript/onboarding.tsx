@@ -429,24 +429,13 @@ function TrainingForm({
   const [nameErrors, setNameErrors] = useState<string[]>([]);
   const nameValid = nameErrors.length === 0;
 
-  const nameIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
-    let errors: string[] = [];
-
-    if (!forceValidation && name === undefined) {
-      setNameErrors(errors);
-      return errors;
-    }
-
-    if (!(name !== undefined && name.length > 0)) {
-      errors = [...errors, "must be present"];
-    }
-
-    setNameErrors(errors);
-    return errors;
-  };
+  const nameIsValid = validate({
+    validations: [validatePresence],
+    setErrors: setNameErrors,
+  });
 
   useEffect(() => {
-    nameIsValid({ forceValidation: false });
+    nameIsValid({ force: false });
   }, [name]);
 
   // Website
@@ -491,32 +480,23 @@ function TrainingForm({
   const [fromErrors, setFromErrors] = useState<string[]>([]);
   const fromValid = fromErrors.length === 0;
 
-  const fromIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
-    let errors: string[] = [];
-
-    if (!forceValidation && from === undefined) {
-      setFromErrors(errors);
-      return errors;
-    }
-
-    if (!(from !== undefined && from !== null)) {
-      errors = [...errors, "must be present"];
-    } else {
-      if (from.greatherThan(MonthAndYear.current())) {
-        errors = [...errors, "cannot be in the future"];
-      }
-
-      if (to && from.greatherThan(to)) {
-        errors = [...errors, "cannot be after 'To'"];
-      }
-    }
-
-    setFromErrors(errors);
-    return errors;
-  };
+  const fromIsValid = validate<MonthAndYear>({
+    validations: [
+      validatePresence,
+      validateBeforeDate({
+        otherFieldValue: () => to,
+        message: "cannot be after 'To'",
+      }),
+      validateBeforeDate({
+        otherFieldValue: MonthAndYear.current(),
+        message: "cannot be after in the future",
+      }),
+    ],
+    setErrors: setFromErrors,
+  });
 
   useEffect(() => {
-    fromIsValid({ forceValidation: false });
+    fromIsValid({ value: from, force: false });
   }, [from]);
 
   // To
@@ -592,17 +572,13 @@ function TrainingForm({
 
   const [ongoing, setOngoing] = useState<boolean>(to === null);
 
-  const isValid = ({
-    forceValidation,
-  }: {
-    forceValidation: boolean;
-  }): boolean => {
+  const isValid = (): boolean => {
     const validationResults = [
-      nameIsValid({ forceValidation }).length === 0,
-      websiteIsValid({ forceValidation }).length === 0,
-      fromIsValid({ forceValidation }).length === 0,
-      toIsValid({ forceValidation }).length === 0,
-      summaryIsValid({ forceValidation }).length === 0,
+      nameIsValid({ force: true }).length === 0,
+      websiteIsValid({ forceValidation: true }).length === 0,
+      fromIsValid({ value: from, force: true }).length === 0,
+      toIsValid({ forceValidation: true }).length === 0,
+      summaryIsValid({ forceValidation: true }).length === 0,
     ];
 
     return validationResults.filter((result) => !result).length === 0;
@@ -686,7 +662,7 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          if (!isValid({ forceValidation: true })) return;
+          if (!isValid()) return;
           if (!name || !website || !from || !summary) return;
 
           const training: Training = {
@@ -731,7 +707,12 @@ function TechnologyStackStep({
     <>
       <div {...drilldown.containerProps} className="foo">
         <div {...drilldown.secondaryProps} className="secondary">
-          <TechnologyForm onCancel={() => drilldown.reset()} />
+          <TechnologyForm
+            key={selectedTechnology?.name}
+            technology={selectedTechnology}
+            onSave={() => alert("save")}
+            onCancel={() => drilldown.reset()}
+          />
         </div>
 
         <div {...drilldown.primaryProps} className="primary">
@@ -780,7 +761,15 @@ function TechnologyStackStep({
   );
 }
 
-function TechnologyForm({ onCancel }: { onCancel: () => void }) {
+function TechnologyForm({
+  technology: initialTechnology,
+  onSave,
+  onCancel,
+}: {
+  technology?: EditableTechnology;
+  onSave: (technology: EditableTechnology) => void;
+  onCancel: () => void;
+}) {
   const [name, setName] = useState<string | undefined>();
   const [website, setWebsite] = useState<string | undefined>();
   const [taskComplexity, setTaskComplexity] = useState<
@@ -792,8 +781,8 @@ function TechnologyForm({ onCancel }: { onCancel: () => void }) {
   const [knowledgeOfBestPractices, setKnowledgeOfBestPractices] = useState<
     Knowledge | undefined
   >();
-  const [canMentorOthers, setCanMentorOthers] = useState<boolean | undefined>();
-  const [usedRecently, setUsedRecently] = useState<boolean | undefined>();
+  const [canMentor, setCanMentor] = useState<boolean | undefined>();
+  const [recentlyUsed, setRecentlyUsed] = useState<boolean | undefined>();
 
   return (
     <div>
@@ -801,19 +790,19 @@ function TechnologyForm({ onCancel }: { onCancel: () => void }) {
         name="name"
         value={name}
         label="Name"
+        placeholder="Javascript, Ruby, Rust, CSS, etc."
         onBlur={(event) => {
           if (event.target.value !== "") setName(event.target.value);
         }}
-        placeholder="The name of the technology. Example: Javascript, Ruby, Rust, CSS, etc."
       />
       <TextInput
         name="website"
         value={website}
         label="Website"
+        placeholder="The official website of the technology"
         onBlur={(event) => {
           if (event.target.value !== "") setWebsite(event.target.value);
         }}
-        placeholder="The official website of the technology"
       />
       <SelectInput
         name="taskComplexity"
@@ -847,22 +836,22 @@ function TechnologyForm({ onCancel }: { onCancel: () => void }) {
       />
       <SelectInput
         name="canMentorOthers"
-        value={canMentorOthers ? "yes" : "no"}
+        value={canMentor ? "yes" : "no"}
         collection={YES_NOS}
         prompt={true}
         label="Can you mentor others?"
         onChange={(event) => {
-          setCanMentorOthers(event.target.value === "yes");
+          setCanMentor(event.target.value === "yes");
         }}
       />
       <SelectInput
-        name="usedRecently"
-        value={usedRecently ? "yes" : "no"}
+        name="recentlyUsed"
+        value={recentlyUsed ? "yes" : "no"}
         collection={YES_NOS}
         prompt={true}
         label="Have you used this technology recently?"
         onChange={(event) => {
-          setUsedRecently(event.target.value === "yes");
+          setRecentlyUsed(event.target.value === "yes");
         }}
       />
       <button className="button mt-5 m-3" onClick={onCancel}>
@@ -871,10 +860,36 @@ function TechnologyForm({ onCancel }: { onCancel: () => void }) {
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          alert("ok");
+          // if (!isValid({ forceValidation: true })) return;
+          if (
+            !name ||
+            !website ||
+            !taskComplexity ||
+            !knowledgeOfFeatures ||
+            !knowledgeOfBestPractices ||
+            canMentor === undefined ||
+            recentlyUsed === undefined
+          )
+            return;
+
+          const technology: Technology = {
+            name,
+            website,
+            recentlyUsed,
+            canMentor,
+            knowledgeOfBestPractices,
+            knowledgeOfFeatures,
+            taskComplexity,
+          };
+
+          if (isPersisted(initialTechnology)) {
+            onSave({ ...technology, index: initialTechnology.index });
+          } else {
+            onSave(technology);
+          }
         }}
       >
-        Add
+        {isPersisted(initialTechnology) ? "Update" : "Add"}
       </button>
     </div>
   );
@@ -1009,4 +1024,96 @@ function useDrilldown() {
 
 function isPersisted(object?: Persistable | {}): object is Persistable {
   return object !== undefined && "index" in object;
+}
+
+type ValidationProps<T> = {
+  value?: T | null;
+  force: boolean;
+};
+
+type Validation<T> = ({ value, force }: ValidationProps<T>) => string | null;
+
+function validateLegacy<T>({
+  validations,
+  setErrors,
+}: {
+  validations: Validation<T>[];
+  setErrors: (errors: string[]) => void;
+}) {
+  return ({ value, force }: ValidationProps<T>) => {
+    const errors = validations
+      .map((validation) => validation({ value, force }))
+      .filter(isNotNullOrUndefined);
+
+    setErrors(errors);
+
+    return errors;
+  };
+}
+
+function validate<T>({
+  validations,
+  setErrors,
+}: {
+  validations: Validation<T>[];
+  setErrors: (errors: string[]) => void;
+}) {
+  return ({ value, force }: ValidationProps<T>) => {
+    const errors = validations
+      .map((validation) => validation({ value, force }))
+      .filter(isNotNullOrUndefined);
+
+    setErrors(errors);
+
+    return errors;
+  };
+}
+
+function validatePresence<T>({ value, force }: ValidationProps<T>) {
+  const message = "must be present";
+  if (value === undefined) {
+    return force ? message : null;
+  } else if (typeof value === "string") {
+    return value.length === 0 ? message : null;
+  } else {
+    return value === null ? message : null;
+  }
+}
+
+function validateBeforeDate({
+  otherFieldValue: otherFieldValueRaw,
+  message,
+}: {
+  otherFieldValue:
+    | MonthAndYear
+    | null
+    | undefined
+    | (() => MonthAndYear | null | undefined);
+  message: string;
+}): Validation<MonthAndYear> {
+  return ({ value, force }: ValidationProps<MonthAndYear>) => {
+    const otherFieldValue =
+      typeof otherFieldValueRaw === "function"
+        ? otherFieldValueRaw()
+        : otherFieldValueRaw;
+
+    if (
+      value === null ||
+      otherFieldValue === null ||
+      otherFieldValue === undefined
+    )
+      return null;
+
+    if (value === undefined) {
+      return force ? message : null;
+    } else {
+      return value.greatherThan(otherFieldValue) ? message : null;
+    }
+  };
+}
+
+function isNotNullOrUndefined<T extends Object>(
+  input: null | undefined | T
+): input is T {
+  return input !== null && input !== undefined;
 }
