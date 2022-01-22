@@ -20,7 +20,11 @@ export class MonthAndYear {
     this.year = year;
   }
 
-  greatherThan(other: MonthAndYear): boolean {
+  isEqual(other: MonthAndYear): boolean {
+    return this.year === other.year && this.month === other.month;
+  }
+
+  isAfter(other: MonthAndYear): boolean {
     if (this.year > other.year) {
       return true;
     } else if (this.year === other.year) {
@@ -28,6 +32,26 @@ export class MonthAndYear {
     } else {
       return false;
     }
+  }
+
+  isAfterOrEqual(other: MonthAndYear): boolean {
+    if (this.isEqual(other)) return true;
+    return this.isAfter(other);
+  }
+
+  isBefore(other: MonthAndYear): boolean {
+    if (this.year < other.year) {
+      return true;
+    } else if (this.year === other.year) {
+      return this.month < other.month;
+    } else {
+      return false;
+    }
+  }
+
+  isBeforeOrEqual(other: MonthAndYear): boolean {
+    if (this.isEqual(other)) return true;
+    return this.isBefore(other);
   }
 
   toDate(): Date {

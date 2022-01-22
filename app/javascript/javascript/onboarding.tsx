@@ -483,13 +483,13 @@ function TrainingForm({
   const fromIsValid = validate<MonthAndYear>({
     validations: [
       validatePresence,
-      validateBeforeDate({
-        otherFieldValue: () => to,
+      validateBeforeOrEqual({
+        other: () => to,
         message: "cannot be after 'To'",
       }),
-      validateBeforeDate({
-        otherFieldValue: MonthAndYear.current(),
-        message: "cannot be after in the future",
+      validateBeforeOrEqual({
+        other: MonthAndYear.current(),
+        message: "cannot be in the future",
       }),
     ],
     setErrors: setFromErrors,
@@ -506,37 +506,23 @@ function TrainingForm({
   const [toErrors, setToErrors] = useState<string[]>([]);
   const toValid = toErrors.length === 0;
 
-  const toIsValid = ({ forceValidation }: { forceValidation: boolean }) => {
-    let errors: string[] = [];
-
-    if (ongoing) {
-      setToErrors(errors);
-      return errors;
-    }
-
-    if (!forceValidation && to === undefined) {
-      setToErrors(errors);
-      return errors;
-    }
-
-    if (!(to !== undefined && to !== null)) {
-      errors = [...errors, "must be present"];
-    } else {
-      if (to.greatherThan(MonthAndYear.current())) {
-        errors = [...errors, "cannot be in the future"];
-      }
-
-      if (from && from.greatherThan(to)) {
-        errors = [...errors, "cannot be prior 'From'"];
-      }
-    }
-
-    setToErrors(errors);
-    return errors;
-  };
+  const toIsValid = validate<MonthAndYear>({
+    validations: [
+      validatePresence,
+      validateAfterOrEqual({
+        other: () => from,
+        message: "cannot be prior 'From'",
+      }),
+      validateBeforeOrEqual({
+        other: MonthAndYear.current(),
+        message: "cannot be in the future",
+      }),
+    ],
+    setErrors: setToErrors,
+  });
 
   useEffect(() => {
-    toIsValid({ forceValidation: false });
+    toIsValid({ value: to, force: false });
   }, [to]);
 
   // Summary
@@ -577,7 +563,7 @@ function TrainingForm({
       nameIsValid({ force: true }).length === 0,
       websiteIsValid({ forceValidation: true }).length === 0,
       fromIsValid({ value: from, force: true }).length === 0,
-      toIsValid({ forceValidation: true }).length === 0,
+      toIsValid({ value: to, force: true }).length === 0,
       summaryIsValid({ forceValidation: true }).length === 0,
     ];
 
@@ -1033,24 +1019,6 @@ type ValidationProps<T> = {
 
 type Validation<T> = ({ value, force }: ValidationProps<T>) => string | null;
 
-function validateLegacy<T>({
-  validations,
-  setErrors,
-}: {
-  validations: Validation<T>[];
-  setErrors: (errors: string[]) => void;
-}) {
-  return ({ value, force }: ValidationProps<T>) => {
-    const errors = validations
-      .map((validation) => validation({ value, force }))
-      .filter(isNotNullOrUndefined);
-
-    setErrors(errors);
-
-    return errors;
-  };
-}
-
 function validate<T>({
   validations,
   setErrors,
@@ -1080,22 +1048,65 @@ function validatePresence<T>({ value, force }: ValidationProps<T>) {
   }
 }
 
-function validateBeforeDate({
-  otherFieldValue: otherFieldValueRaw,
+type ValueOrFn<T> = T | (() => T);
+type MonthAndYearSequenceValidation = ({
+  other,
   message,
 }: {
-  otherFieldValue:
-    | MonthAndYear
-    | null
-    | undefined
-    | (() => MonthAndYear | null | undefined);
+  other: ValueOrFn<MonthAndYear | null | undefined>;
   message: string;
+}) => Validation<MonthAndYear>;
+
+const validateBefore: MonthAndYearSequenceValidation = ({ other, message }) => {
+  return validateMonthAndYearSequence({
+    other,
+    message,
+    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isBefore(b),
+  });
+};
+
+const validateBeforeOrEqual: MonthAndYearSequenceValidation = ({
+  other,
+  message,
+}) => {
+  return validateMonthAndYearSequence({
+    other,
+    message,
+    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isBeforeOrEqual(b),
+  });
+};
+
+const validateAfter: MonthAndYearSequenceValidation = ({ other, message }) => {
+  return validateMonthAndYearSequence({
+    other,
+    message,
+    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isAfter(b),
+  });
+};
+
+const validateAfterOrEqual: MonthAndYearSequenceValidation = ({
+  other,
+  message,
+}) => {
+  return validateMonthAndYearSequence({
+    other,
+    message,
+    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isAfterOrEqual(b),
+  });
+};
+
+function validateMonthAndYearSequence({
+  other: otherRaw,
+  message,
+  comparissonFn,
+}: {
+  other: ValueOrFn<MonthAndYear | null | undefined>;
+  message: string;
+  comparissonFn: (a: MonthAndYear, b: MonthAndYear) => boolean;
 }): Validation<MonthAndYear> {
   return ({ value, force }: ValidationProps<MonthAndYear>) => {
     const otherFieldValue =
-      typeof otherFieldValueRaw === "function"
-        ? otherFieldValueRaw()
-        : otherFieldValueRaw;
+      typeof otherRaw === "function" ? otherRaw() : otherRaw;
 
     if (
       value === null ||
@@ -1107,7 +1118,7 @@ function validateBeforeDate({
     if (value === undefined) {
       return force ? message : null;
     } else {
-      return value.greatherThan(otherFieldValue) ? message : null;
+      return comparissonFn(value, otherFieldValue) ? null : message;
     }
   };
 }
