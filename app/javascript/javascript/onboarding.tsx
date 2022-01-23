@@ -435,7 +435,7 @@ function TrainingForm({
   });
 
   useEffect(() => {
-    nameIsValid({ force: false });
+    nameIsValid({ value: name, force: false });
   }, [name]);
 
   // Website
@@ -445,32 +445,13 @@ function TrainingForm({
   const [websiteErrors, setWebsiteErrors] = useState<string[]>([]);
   const websiteValid = websiteErrors.length === 0;
 
-  const websiteIsValid = ({
-    forceValidation,
-  }: {
-    forceValidation: boolean;
-  }) => {
-    let errors: string[] = [];
-
-    if (!forceValidation && website === undefined) {
-      setWebsiteErrors(errors);
-      return errors;
-    }
-
-    if (!(website !== undefined && website !== null)) {
-      errors = [...errors, "must be present"];
-    }
-
-    if (website && !URL_REGEX.test(website)) {
-      errors = [...errors, "is invalid"];
-    }
-
-    setWebsiteErrors(errors);
-    return errors;
-  };
+  const websiteIsValid = validate({
+    validations: [validatePresence, validateUrlFormat],
+    setErrors: setWebsiteErrors,
+  });
 
   useEffect(() => {
-    websiteIsValid({ forceValidation: false });
+    websiteIsValid({ value: website, force: false });
   }, [website]);
 
   // From
@@ -532,39 +513,24 @@ function TrainingForm({
   const [summaryErrors, setSummaryErrors] = useState<string[]>([]);
   const summaryValid = summaryErrors.length === 0;
 
-  const summaryIsValid = ({
-    forceValidation,
-  }: {
-    forceValidation: boolean;
-  }) => {
-    let errors: string[] = [];
-
-    if (!forceValidation && summary === undefined) {
-      setSummaryErrors(errors);
-      return errors;
-    }
-
-    if (!(summary !== undefined && summary.length > 0)) {
-      errors = [...errors, "must be present"];
-    }
-
-    setSummaryErrors(errors);
-    return errors;
-  };
+  const summaryIsValid = validate({
+    validations: [validatePresence],
+    setErrors: setSummaryErrors,
+  });
 
   useEffect(() => {
-    summaryIsValid({ forceValidation: false });
+    summaryIsValid({ value: summary, force: false });
   }, [summary]);
 
   const [ongoing, setOngoing] = useState<boolean>(to === null);
 
   const isValid = (): boolean => {
     const validationResults = [
-      nameIsValid({ force: true }).length === 0,
-      websiteIsValid({ forceValidation: true }).length === 0,
+      nameIsValid({ value: name, force: true }).length === 0,
+      websiteIsValid({ value: website, force: true }).length === 0,
       fromIsValid({ value: from, force: true }).length === 0,
       toIsValid({ value: to, force: true }).length === 0,
-      summaryIsValid({ forceValidation: true }).length === 0,
+      summaryIsValid({ value: summary, force: true }).length === 0,
     ];
 
     return validationResults.filter((result) => !result).length === 0;
@@ -1013,7 +979,7 @@ function isPersisted(object?: Persistable | {}): object is Persistable {
 }
 
 type ValidationProps<T> = {
-  value?: T | null;
+  value: T | null | undefined;
   force: boolean;
 };
 
@@ -1121,6 +1087,17 @@ function validateMonthAndYearSequence({
       return comparissonFn(value, otherFieldValue) ? null : message;
     }
   };
+}
+
+function validateUrlFormat<T>({ value, force }: ValidationProps<T>) {
+  const message = "is invalid";
+  if (value === undefined) {
+    return force ? message : null;
+  } else if (typeof value === "string") {
+    return URL_REGEX.test(value) ? null : message;
+  } else {
+    throw new Error("value must be a string");
+  }
 }
 
 function isNotNullOrUndefined<T extends Object>(
