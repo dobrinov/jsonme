@@ -413,6 +413,62 @@ function TrainingsStep({
   );
 }
 
+type TrainingForm = {
+  name: string | undefined;
+  website: string | undefined;
+  from: MonthAndYear | null | undefined;
+  to: MonthAndYear | null | undefined;
+  summary: string | undefined;
+};
+
+type FormSpec<Form> = {
+  [Field in keyof Form]: {
+    value?: Form[Field];
+    validations: Validation<Form>[];
+  };
+};
+
+type FormErrors<Form> = { [Field in keyof Form]: string[] };
+
+function useForm<FormValues>(spec: FormSpec<FormValues>) {
+  function update<Field extends keyof FormValues>({
+    field,
+    value,
+  }: {
+    field: Field;
+    value: FormValues[Field];
+  }) {
+    setValues((current) => ({ ...current, [field]: value }));
+  }
+
+  const initialValues: FormValues = (
+    Object.keys(spec) as (keyof FormValues)[]
+  ).reduce((result, field: keyof FormValues) => {
+    return { ...result, [field]: spec[field].value };
+  }, {} as FormValues);
+
+  const [values, setValues] = useState(initialValues);
+
+  const errors: FormErrors<FormValues> = (
+    Object.keys(spec) as (keyof FormValues)[]
+  ).reduce((result, field: keyof FormValues) => {
+    return {
+      ...result,
+      [field]: spec[field].validations
+        .map((validation) => validation({ form: values, field }))
+        .filter(isNotNullOrUndefined),
+    };
+  }, {} as FormErrors<FormValues>);
+
+  const isValid: boolean = (
+    Object.keys(errors) as (keyof FormErrors<FormValues>)[]
+  ).reduce((result: boolean, field: keyof FormValues) => {
+    return result && errors[field].length === 0;
+  }, true);
+
+  return { values, errors, isValid, update };
+}
+
 function TrainingForm({
   training: initialTraining,
   onSave,
@@ -422,156 +478,90 @@ function TrainingForm({
   onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
-  // Name
-  const [name, setName] = useState<string | undefined>(
-    initialTraining?.institution.name
-  );
-  const [nameErrors, setNameErrors] = useState<string[]>([]);
-  const nameValid = nameErrors.length === 0;
-
-  const nameIsValid = validate({
-    validations: [validatePresence],
-    setErrors: setNameErrors,
+  const { values, errors, isValid, update } = useForm<TrainingForm>({
+    name: {
+      value: initialTraining?.institution.name,
+      validations: [validatePresence],
+    },
+    website: {
+      value: initialTraining?.institution.website,
+      validations: [validatePresence, validateUrlFormat],
+    },
+    from: {
+      value: initialTraining?.period.from,
+      validations: [
+        validatePresence,
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.from,
+          otherValue: (form) => form.to,
+          message: "cannot be after 'To'",
+        }),
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.from,
+          otherValue: () => MonthAndYear.current(),
+          message: "cannot be in the future",
+        }),
+      ],
+    },
+    to: {
+      value: initialTraining?.period.to,
+      validations: [
+        validatePresence,
+        monthAndYearAfterOrEqualTo({
+          value: (form) => form.to,
+          otherValue: (form) => form.from,
+          message: "cannot be before 'From'",
+        }),
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.to,
+          otherValue: () => MonthAndYear.current(),
+          message: "cannot be in the future",
+        }),
+      ],
+    },
+    summary: {
+      value: initialTraining?.summary,
+      validations: [validatePresence],
+    },
   });
 
-  useEffect(() => {
-    nameIsValid({ value: name, force: false });
-  }, [name]);
-
-  // Website
-  const [website, setWebsite] = useState<string | undefined>(
-    initialTraining?.institution.website
-  );
-  const [websiteErrors, setWebsiteErrors] = useState<string[]>([]);
-  const websiteValid = websiteErrors.length === 0;
-
-  const websiteIsValid = validate({
-    validations: [validatePresence, validateUrlFormat],
-    setErrors: setWebsiteErrors,
-  });
-
-  useEffect(() => {
-    websiteIsValid({ value: website, force: false });
-  }, [website]);
-
-  // From
-  const [from, setFrom] = useState<MonthAndYear | undefined | null>(
-    initialTraining?.period.from
-  );
-  const [fromErrors, setFromErrors] = useState<string[]>([]);
-  const fromValid = fromErrors.length === 0;
-
-  const fromIsValid = validate<MonthAndYear>({
-    validations: [
-      validatePresence,
-      validateBeforeOrEqual({
-        other: () => to,
-        message: "cannot be after 'To'",
-      }),
-      validateBeforeOrEqual({
-        other: MonthAndYear.current(),
-        message: "cannot be in the future",
-      }),
-    ],
-    setErrors: setFromErrors,
-  });
-
-  useEffect(() => {
-    fromIsValid({ value: from, force: false });
-  }, [from]);
-
-  // To
-  const [to, setTo] = useState<MonthAndYear | null | undefined>(
-    initialTraining?.period.to
-  );
-  const [toErrors, setToErrors] = useState<string[]>([]);
-  const toValid = toErrors.length === 0;
-
-  const toIsValid = validate<MonthAndYear>({
-    validations: [
-      validatePresence,
-      validateAfterOrEqual({
-        other: () => from,
-        message: "cannot be prior 'From'",
-      }),
-      validateBeforeOrEqual({
-        other: MonthAndYear.current(),
-        message: "cannot be in the future",
-      }),
-    ],
-    setErrors: setToErrors,
-  });
-
-  useEffect(() => {
-    toIsValid({ value: to, force: false });
-  }, [to]);
-
-  // Summary
-  const [summary, setSummary] = useState<string | undefined>(
-    initialTraining?.summary
-  );
-  const [summaryErrors, setSummaryErrors] = useState<string[]>([]);
-  const summaryValid = summaryErrors.length === 0;
-
-  const summaryIsValid = validate({
-    validations: [validatePresence],
-    setErrors: setSummaryErrors,
-  });
-
-  useEffect(() => {
-    summaryIsValid({ value: summary, force: false });
-  }, [summary]);
-
-  const [ongoing, setOngoing] = useState<boolean>(to === null);
-
-  const isValid = (): boolean => {
-    const validationResults = [
-      nameIsValid({ value: name, force: true }).length === 0,
-      websiteIsValid({ value: website, force: true }).length === 0,
-      fromIsValid({ value: from, force: true }).length === 0,
-      toIsValid({ value: to, force: true }).length === 0,
-      summaryIsValid({ value: summary, force: true }).length === 0,
-    ];
-
-    return validationResults.filter((result) => !result).length === 0;
-  };
+  const [ongoing, setOngoing] = useState<boolean>(values.to === null);
 
   return (
     <div>
       <TextInput
         name="name"
-        value={name}
+        value={values.name}
         label="Institution"
-        state={nameValid ? "normal" : "error"}
-        addendum={nameErrors[0]}
-        onBlur={(event) => {
-          if (event.target.value !== "") setName(event.target.value);
-        }}
+        state={errors.name.length === 0 ? "normal" : "error"}
+        addendum={errors.name[0]}
+        onBlur={(event) => update({ field: "name", value: event.target.value })}
         placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
       />
       <TextInput
         name="website"
-        value={website}
+        value={values.website}
         label="Website"
-        state={websiteValid ? "normal" : "error"}
-        addendum={websiteErrors[0]}
-        onBlur={(event) => {
-          event.target.value && setWebsite(event.target.value);
-        }}
+        state={errors.website.length === 0 ? "normal" : "error"}
+        addendum={errors.website[0]}
+        onBlur={(event) =>
+          update({ field: "website", value: event.target.value })
+        }
         placeholder="The webisite of the institution"
       />
       <DatepickerInput
         name="from"
-        value={from?.toString()}
-        state={fromValid ? "normal" : "error"}
-        addendum={fromErrors[0]}
-        onChange={(event) => {
-          if (event.target.value) {
-            setFrom(MonthAndYear.parse(event.target.value));
-          } else {
-            setFrom(null);
-          }
-        }}
+        value={values.from?.toString()}
+        state={errors.from.length === 0 ? "normal" : "error"}
+        addendum={errors.from[0]}
+        onChange={(event) =>
+          update({
+            field: "from",
+            value: event.target.value
+              ? MonthAndYear.parse(event.target.value)
+              : null,
+          })
+        }
         type="month"
         label="From"
       />
@@ -581,30 +571,35 @@ function TrainingForm({
         label="Ongoing"
         onChange={(value: boolean) => {
           setOngoing(value);
-          setTo(null);
+          if (!value) update({ field: "to", value: null });
         }}
       />
       {!ongoing && (
         <DatepickerInput
           name="to"
-          value={to?.toString()}
-          state={toValid ? "normal" : "error"}
-          addendum={toErrors[0]}
-          onChange={(event) =>
-            event.target.value && setTo(MonthAndYear.parse(event.target.value))
-          }
+          value={values.to?.toString()}
+          state={errors.to.length === 0 ? "normal" : "error"}
+          addendum={errors.to[0]}
+          onChange={(event) => {
+            update({
+              field: "to",
+              value: event.target.value
+                ? MonthAndYear.parse(event.target.value)
+                : null,
+            });
+          }}
           type="month"
           label="To"
         />
       )}
       <TextAreaInput
         name="summary"
-        value={summary}
-        state={summaryValid ? "normal" : "error"}
-        addendum={summaryErrors[0]}
-        onBlur={(event) => {
-          event.target.value && setSummary(event.target.value);
-        }}
+        value={values.summary}
+        state={errors.summary.length === 0 ? "normal" : "error"}
+        addendum={errors.summary[0]}
+        onBlur={(event) =>
+          update({ field: "summary", value: event.target.value })
+        }
         label="Summary"
         placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
       />
@@ -614,13 +609,19 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          if (!isValid()) return;
-          if (!name || !website || !from || !summary) return;
+          if (!isValid) return;
+          if (
+            !values.name ||
+            !values.website ||
+            !values.from ||
+            !values.summary
+          )
+            return;
 
           const training: Training = {
-            institution: { name, website },
-            period: new Period(from, to ?? null),
-            summary,
+            institution: { name: values.name, website: values.website },
+            period: new Period(values.from, values.to ?? null),
+            summary: values.summary,
           };
 
           if (isPersisted(initialTraining)) {
@@ -978,21 +979,28 @@ function isPersisted(object?: Persistable | {}): object is Persistable {
   return object !== undefined && "index" in object;
 }
 
-type ValidationProps<T> = {
+type FooProps<T> = {
   value: T | null | undefined;
   force: boolean;
 };
 
-type Validation<T> = ({ value, force }: ValidationProps<T>) => string | null;
+type Foo<T> = ({ value, force }: FooProps<T>) => string | null;
+
+type ValidationProps<Form> = {
+  form: Form;
+  field: keyof Form;
+};
+
+type Validation<Form> = ({ form }: ValidationProps<Form>) => string | null;
 
 function validate<T>({
   validations,
   setErrors,
 }: {
-  validations: Validation<T>[];
+  validations: Foo<T>[];
   setErrors: (errors: string[]) => void;
 }) {
-  return ({ value, force }: ValidationProps<T>) => {
+  return ({ value, force }: FooProps<T>) => {
     const errors = validations
       .map((validation) => validation({ value, force }))
       .filter(isNotNullOrUndefined);
@@ -1003,7 +1011,7 @@ function validate<T>({
   };
 }
 
-function validatePresence<T>({ value, force }: ValidationProps<T>) {
+function validateFoo<T>({ value, force }: FooProps<T>) {
   const message = "must be present";
   if (value === undefined) {
     return force ? message : null;
@@ -1014,6 +1022,61 @@ function validatePresence<T>({ value, force }: ValidationProps<T>) {
   }
 }
 
+function validatePresence<Form>({ form, field }: ValidationProps<Form>) {
+  const value = form[field];
+  const message = "must be present";
+
+  return value === null || value === undefined ? message : null;
+}
+
+function validateUrlFormat<Form>({ form, field }: ValidationProps<Form>) {
+  const value = form[field];
+  const message = "is invalid URL";
+
+  if (value === undefined || value === null || typeof value !== "string") {
+    return null;
+  } else {
+    return URL_REGEX.test(value) ? null : message;
+  }
+}
+
+function monthAndYearAfterOrEqualTo<Form>({
+  value: valueFn,
+  otherValue: otherValueFn,
+  message,
+}: {
+  value: (form: Form) => MonthAndYear | null | undefined;
+  otherValue: (form: Form) => MonthAndYear | null | undefined;
+  message: string;
+}) {
+  return ({ form }: ValidationProps<Form>) => {
+    const value = valueFn(form);
+    const otherValue = otherValueFn(form);
+
+    if (!value || !otherValue) return null;
+
+    return value.isAfterOrEqual(otherValue) ? null : message;
+  };
+}
+
+function monthAndYearBeforeOrEqualTo<Form>({
+  value: valueFn,
+  otherValue: otherValueFn,
+  message,
+}: {
+  value: (form: Form) => MonthAndYear | null | undefined;
+  otherValue: (form: Form) => MonthAndYear | null | undefined;
+  message: string;
+}) {
+  return ({ form }: ValidationProps<Form>) => {
+    const value = valueFn(form);
+    const otherValue = otherValueFn(form);
+
+    if (!value || !otherValue) return null;
+    return value.isBeforeOrEqual(otherValue) ? null : message;
+  };
+}
+
 type ValueOrFn<T> = T | (() => T);
 type MonthAndYearSequenceValidation = ({
   other,
@@ -1021,7 +1084,7 @@ type MonthAndYearSequenceValidation = ({
 }: {
   other: ValueOrFn<MonthAndYear | null | undefined>;
   message: string;
-}) => Validation<MonthAndYear>;
+}) => Foo<MonthAndYear>;
 
 const validateBefore: MonthAndYearSequenceValidation = ({ other, message }) => {
   return validateMonthAndYearSequence({
@@ -1069,8 +1132,8 @@ function validateMonthAndYearSequence({
   other: ValueOrFn<MonthAndYear | null | undefined>;
   message: string;
   comparissonFn: (a: MonthAndYear, b: MonthAndYear) => boolean;
-}): Validation<MonthAndYear> {
-  return ({ value, force }: ValidationProps<MonthAndYear>) => {
+}): Foo<MonthAndYear> {
+  return ({ value, force }: FooProps<MonthAndYear>) => {
     const otherFieldValue =
       typeof otherRaw === "function" ? otherRaw() : otherRaw;
 
@@ -1089,7 +1152,7 @@ function validateMonthAndYearSequence({
   };
 }
 
-function validateUrlFormat<T>({ value, force }: ValidationProps<T>) {
+function validateUrlFormatOld<T>({ value, force }: FooProps<T>) {
   const message = "is invalid";
   if (value === undefined) {
     return force ? message : null;
