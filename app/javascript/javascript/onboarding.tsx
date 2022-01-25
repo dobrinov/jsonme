@@ -979,13 +979,6 @@ function isPersisted(object?: Persistable | {}): object is Persistable {
   return object !== undefined && "index" in object;
 }
 
-type FooProps<T> = {
-  value: T | null | undefined;
-  force: boolean;
-};
-
-type Foo<T> = ({ value, force }: FooProps<T>) => string | null;
-
 type ValidationProps<Form> = {
   form: Form;
   field: keyof Form;
@@ -993,40 +986,21 @@ type ValidationProps<Form> = {
 
 type Validation<Form> = ({ form }: ValidationProps<Form>) => string | null;
 
-function validate<T>({
-  validations,
-  setErrors,
-}: {
-  validations: Foo<T>[];
-  setErrors: (errors: string[]) => void;
-}) {
-  return ({ value, force }: FooProps<T>) => {
-    const errors = validations
-      .map((validation) => validation({ value, force }))
-      .filter(isNotNullOrUndefined);
-
-    setErrors(errors);
-
-    return errors;
-  };
-}
-
-function validateFoo<T>({ value, force }: FooProps<T>) {
-  const message = "must be present";
-  if (value === undefined) {
-    return force ? message : null;
-  } else if (typeof value === "string") {
-    return value.length === 0 ? message : null;
-  } else {
-    return value === null ? message : null;
-  }
+function isNotNullOrUndefined<T extends Object>(
+  input: null | undefined | T
+): input is T {
+  return input !== null && input !== undefined;
 }
 
 function validatePresence<Form>({ form, field }: ValidationProps<Form>) {
   const value = form[field];
   const message = "must be present";
 
-  return value === null || value === undefined ? message : null;
+  return value === null ||
+    value === undefined ||
+    (typeof value === "string" && value === "")
+    ? message
+    : null;
 }
 
 function validateUrlFormat<Form>({ form, field }: ValidationProps<Form>) {
@@ -1075,96 +1049,4 @@ function monthAndYearBeforeOrEqualTo<Form>({
     if (!value || !otherValue) return null;
     return value.isBeforeOrEqual(otherValue) ? null : message;
   };
-}
-
-type ValueOrFn<T> = T | (() => T);
-type MonthAndYearSequenceValidation = ({
-  other,
-  message,
-}: {
-  other: ValueOrFn<MonthAndYear | null | undefined>;
-  message: string;
-}) => Foo<MonthAndYear>;
-
-const validateBefore: MonthAndYearSequenceValidation = ({ other, message }) => {
-  return validateMonthAndYearSequence({
-    other,
-    message,
-    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isBefore(b),
-  });
-};
-
-const validateBeforeOrEqual: MonthAndYearSequenceValidation = ({
-  other,
-  message,
-}) => {
-  return validateMonthAndYearSequence({
-    other,
-    message,
-    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isBeforeOrEqual(b),
-  });
-};
-
-const validateAfter: MonthAndYearSequenceValidation = ({ other, message }) => {
-  return validateMonthAndYearSequence({
-    other,
-    message,
-    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isAfter(b),
-  });
-};
-
-const validateAfterOrEqual: MonthAndYearSequenceValidation = ({
-  other,
-  message,
-}) => {
-  return validateMonthAndYearSequence({
-    other,
-    message,
-    comparissonFn: (a: MonthAndYear, b: MonthAndYear) => a.isAfterOrEqual(b),
-  });
-};
-
-function validateMonthAndYearSequence({
-  other: otherRaw,
-  message,
-  comparissonFn,
-}: {
-  other: ValueOrFn<MonthAndYear | null | undefined>;
-  message: string;
-  comparissonFn: (a: MonthAndYear, b: MonthAndYear) => boolean;
-}): Foo<MonthAndYear> {
-  return ({ value, force }: FooProps<MonthAndYear>) => {
-    const otherFieldValue =
-      typeof otherRaw === "function" ? otherRaw() : otherRaw;
-
-    if (
-      value === null ||
-      otherFieldValue === null ||
-      otherFieldValue === undefined
-    )
-      return null;
-
-    if (value === undefined) {
-      return force ? message : null;
-    } else {
-      return comparissonFn(value, otherFieldValue) ? null : message;
-    }
-  };
-}
-
-function validateUrlFormatOld<T>({ value, force }: FooProps<T>) {
-  const message = "is invalid";
-  if (value === undefined) {
-    return force ? message : null;
-  } else if (typeof value === "string") {
-    return URL_REGEX.test(value) ? null : message;
-  } else {
-    throw new Error("value must be a string");
-  }
-}
-
-function isNotNullOrUndefined<T extends Object>(
-  input: null | undefined | T
-): input is T {
-  return input !== null && input !== undefined;
 }
