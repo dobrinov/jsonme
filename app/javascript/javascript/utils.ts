@@ -13,7 +13,3 @@ export function isNotNullOrUndefined<T extends Object>(
 ): input is T {
   return input !== null && input !== undefined;
 }
-
-export function objectsEql(a: object, b: object) {
-  JSON.stringify(a) === JSON.stringify(b);
-}

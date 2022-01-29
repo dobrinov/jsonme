@@ -418,11 +418,11 @@ function TrainingsStep({
 }
 
 type TrainingForm = {
-  name: string | undefined;
-  website: string | undefined;
-  from: MonthAndYear | null | undefined;
-  to: MonthAndYear | null | undefined;
-  summary: string | undefined;
+  name: string;
+  website: string | null;
+  from: MonthAndYear | null;
+  to: MonthAndYear | null;
+  summary: string;
 };
 
 function TrainingForm({
@@ -434,17 +434,17 @@ function TrainingForm({
   onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
-  const { values, errors, isValid, update } = useForm<TrainingForm>({
+  const { values, errors, isValid, validate, update } = useForm<TrainingForm>({
     name: {
-      value: initialTraining?.institution.name,
+      value: initialTraining?.institution.name ?? "",
       validations: [validatePresence],
     },
     website: {
-      value: initialTraining?.institution.website,
+      value: initialTraining?.institution.website ?? "",
       validations: [validatePresence, validateUrlFormat],
     },
     from: {
-      value: initialTraining?.period.from,
+      value: initialTraining?.period.from ?? null,
       validations: [
         validatePresence,
         monthAndYearBeforeOrEqualTo({
@@ -460,7 +460,7 @@ function TrainingForm({
       ],
     },
     to: {
-      value: initialTraining?.period.to,
+      value: initialTraining?.period.to ?? null,
       validations: [
         validatePresence,
         monthAndYearAfterOrEqualTo({
@@ -476,7 +476,7 @@ function TrainingForm({
       ],
     },
     summary: {
-      value: initialTraining?.summary,
+      value: initialTraining?.summary ?? "",
       validations: [validatePresence],
     },
   });
@@ -496,7 +496,7 @@ function TrainingForm({
       />
       <TextInput
         name="website"
-        value={values.website}
+        value={values.website ?? ""}
         label="Website"
         state={errors.website.length === 0 ? "normal" : "error"}
         addendum={errors.website[0]}
@@ -565,7 +565,7 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          if (!isValid) return;
+          if (!validate()) return;
           if (
             !values.name ||
             !values.website ||

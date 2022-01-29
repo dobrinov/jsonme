@@ -3,7 +3,6 @@ export class MonthAndYear {
   year: number;
 
   static parse(value: string) {
-    if (!value) return undefined;
     const date = new Date(value);
 
     return new MonthAndYear(date.getFullYear(), date.getMonth() + 1);

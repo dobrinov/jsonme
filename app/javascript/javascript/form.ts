@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MonthAndYear } from "./time";
-import { isNotNullOrUndefined, objectsEql } from "./utils";
+import { isNotNullOrUndefined } from "./utils";
 
 type ValidationProps<Form> = {
   form: Form;
@@ -11,7 +11,7 @@ type Validation<Form> = ({ form }: ValidationProps<Form>) => string | null;
 
 type FormSpec<Form> = {
   [Field in keyof Form]: {
-    value?: Form[Field];
+    value: Form[Field];
     validations: Validation<Form>[];
   };
 };
@@ -32,7 +32,7 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
     if (values[field] === value) return;
 
     setValues((current) => ({ ...current, [field]: value }));
-    setValidate(true);
+    validate(field);
   }
 
   const initialValues: FormValues = (
@@ -41,23 +41,14 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
     return { ...result, [field]: spec[field].value };
   }, {} as FormValues);
 
-  const [values, setValues] = useState(initialValues);
-  const [validate, setValidate] = useState(false);
-
-  const errors: FormErrors<FormValues> = (
+  const initialErrors: FormErrors<FormValues> = (
     Object.keys(spec) as (keyof FormValues)[]
   ).reduce((result, field: keyof FormValues) => {
-    const fieldErrors = validate
-      ? spec[field].validations
-          .map((validation) => validation({ form: values, field }))
-          .filter(isNotNullOrUndefined)
-      : [];
-
-    return {
-      ...result,
-      [field]: fieldErrors,
-    };
+    return { ...result, [field]: [] };
   }, {} as FormErrors<FormValues>);
+
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState(initialErrors);
 
   const isValid: boolean = (
     Object.keys(errors) as (keyof FormErrors<FormValues>)[]
@@ -65,7 +56,29 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
     return result && errors[field].length === 0;
   }, true);
 
-  return { values, errors, isValid, update };
+  function errorsFor(field: keyof FormValues) {
+    return spec[field].validations
+      .map((validation) => validation({ form: values, field }))
+      .filter(isNotNullOrUndefined);
+  }
+
+  function validate(fieldToValidate?: keyof FormValues) {
+    const xxx = (Object.keys(spec) as (keyof FormValues)[]).reduce(
+      (result, field: keyof FormValues) => {
+        return {
+          ...result,
+          [field]: fieldToValidate === field ? errorsFor(field) : errors[field],
+        };
+      },
+      {} as FormErrors<FormValues>
+    );
+
+    setErrors(xxx);
+
+    return xxx;
+  }
+
+  return { values, errors, isValid, validate, update };
 }
 
 export function validatePresence<Form>({ form, field }: ValidationProps<Form>) {
