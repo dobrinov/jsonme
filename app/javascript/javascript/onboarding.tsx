@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { DatepickerInput } from "./DatepickerInput";
+import { DatepickerInput, FormDatepickerInput } from "./DatepickerInput";
 import {
   monthAndYearAfterOrEqualTo,
   monthAndYearBeforeOrEqualTo,
@@ -9,8 +9,8 @@ import {
 } from "./form";
 import { Resume, Technology, Training } from "./Resume";
 import { SelectInput } from "./SelectInput";
-import { TextAreaInput } from "./TextAreaInput";
-import { TextInput } from "./TextInput";
+import { FormTextAreaInput, TextAreaInput } from "./TextAreaInput";
+import { FormTextInput, TextInput } from "./TextInput";
 import { MonthAndYear, Period } from "./time";
 import { ToggleInput } from "./ToggleInput";
 
@@ -481,48 +481,27 @@ function TrainingForm({
     },
   });
 
+  const form = { values, errors, isValid, validate, update };
+
   const [ongoing, setOngoing] = useState<boolean>(
     isPersisted(initialTraining) ? values.to === null : false
   );
 
   return (
     <div>
-      <TextInput
+      <FormTextInput
+        form={form}
         name="name"
-        value={values.name}
         label="Institution"
-        state={errors.name.length === 0 ? "normal" : "error"}
-        addendum={errors.name[0]}
-        onBlur={(event) => update({ field: "name", value: event.target.value })}
         placeholder="The name of the institution where you did your studies. MIT, Coursera, Edx, etc."
       />
-      <TextInput
+      <FormTextInput
+        form={form}
         name="website"
-        value={values.website ?? ""}
         label="Website"
-        state={errors.website.length === 0 ? "normal" : "error"}
-        addendum={errors.website[0]}
-        onBlur={(event) =>
-          update({ field: "website", value: event.target.value })
-        }
         placeholder="The webisite of the institution"
       />
-      <DatepickerInput
-        name="from"
-        value={values.from?.toString()}
-        state={errors.from.length === 0 ? "normal" : "error"}
-        addendum={errors.from[0]}
-        onChange={(event) =>
-          update({
-            field: "from",
-            value: event.target.value
-              ? MonthAndYear.parse(event.target.value)
-              : null,
-          })
-        }
-        type="month"
-        label="From"
-      />
+      <FormDatepickerInput form={form} name="from" label="From" />
       <ToggleInput
         on={ongoing}
         name="ongoing"
@@ -532,32 +511,10 @@ function TrainingForm({
           if (!value) update({ field: "to", value: null });
         }}
       />
-      {!ongoing && (
-        <DatepickerInput
-          name="to"
-          value={values.to?.toString()}
-          state={errors.to.length === 0 ? "normal" : "error"}
-          addendum={errors.to[0]}
-          onChange={(event) => {
-            update({
-              field: "to",
-              value: event.target.value
-                ? MonthAndYear.parse(event.target.value)
-                : null,
-            });
-          }}
-          type="month"
-          label="To"
-        />
-      )}
-      <TextAreaInput
+      {!ongoing && <FormDatepickerInput form={form} name="to" label="To" />}
+      <FormTextAreaInput
+        form={form}
         name="summary"
-        value={values.summary}
-        state={errors.summary.length === 0 ? "normal" : "error"}
-        addendum={errors.summary[0]}
-        onBlur={(event) =>
-          update({ field: "summary", value: event.target.value })
-        }
         label="Summary"
         placeholder="What was your speciallity or cource name? What did you learn and/or achieve there."
       />

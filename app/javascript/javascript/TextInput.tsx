@@ -52,3 +52,31 @@ export function TextInput({
     </div>
   );
 }
+
+export function FormTextInput({
+  form,
+  name,
+  label,
+  placeholder,
+  addendum,
+}: {
+  form: any;
+  name: string;
+  label: string;
+  placeholder?: string;
+  addendum?: string;
+}) {
+  return (
+    <TextInput
+      name={name}
+      label={label}
+      placeholder={placeholder}
+      state={form.errors[name].length === 0 ? "normal" : "error"}
+      addendum={form.errors[name][0] || addendum}
+      value={form.values[name]}
+      onBlur={(event) =>
+        form.update({ field: name, value: event.target.value })
+      }
+    />
+  );
+}
