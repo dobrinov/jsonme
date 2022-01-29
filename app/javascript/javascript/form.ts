@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MonthAndYear } from "./time";
 import { isNotNullOrUndefined } from "./utils";
 
@@ -22,19 +22,6 @@ const URL_REGEX =
   /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
 
 export function useForm<FormValues>(spec: FormSpec<FormValues>) {
-  function update<Field extends keyof FormValues>({
-    field,
-    value,
-  }: {
-    field: Field;
-    value: FormValues[Field];
-  }) {
-    if (values[field] === value) return;
-
-    setValues((current) => ({ ...current, [field]: value }));
-    validate(field);
-  }
-
   const initialValues: FormValues = (
     Object.keys(spec) as (keyof FormValues)[]
   ).reduce((result, field: keyof FormValues) => {
@@ -49,6 +36,11 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
 
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState(initialErrors);
+  const [changedFields, setChangedFields] = useState<(keyof FormValues)[]>([]);
+
+  useEffect(() => {
+    if (changedFields.length > 0) validate(changedFields);
+  }, [changedFields]);
 
   const isValid: boolean = (
     Object.keys(errors) as (keyof FormErrors<FormValues>)[]
@@ -62,17 +54,34 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
       .filter(isNotNullOrUndefined);
   }
 
-  function validate(fieldToValidate?: keyof FormValues) {
+  function update<Field extends keyof FormValues>({
+    field,
+    value,
+  }: {
+    field: Field;
+    value: FormValues[Field];
+  }) {
+    if (values[field] === value) return;
+
+    setValues((current) => ({ ...current, [field]: value }));
+    setChangedFields((current) => [...current, field]);
+  }
+
+  function validate(fieldsToValidate?: (keyof FormValues)[]) {
     const xxx = (Object.keys(spec) as (keyof FormValues)[]).reduce(
       (result, field: keyof FormValues) => {
         return {
           ...result,
-          [field]: fieldToValidate === field ? errorsFor(field) : errors[field],
+          [field]:
+            fieldsToValidate?.indexOf(field) !== -1
+              ? errorsFor(field)
+              : errors[field],
         };
       },
       {} as FormErrors<FormValues>
     );
 
+    setChangedFields([]);
     setErrors(xxx);
 
     return xxx;

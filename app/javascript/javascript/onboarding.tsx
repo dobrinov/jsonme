@@ -481,7 +481,9 @@ function TrainingForm({
     },
   });
 
-  const [ongoing, setOngoing] = useState<boolean>(values.to === null);
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialTraining) ? values.to === null : false
+  );
 
   return (
     <div>
