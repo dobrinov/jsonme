@@ -434,7 +434,7 @@ function TrainingForm({
   onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
-  const { values, errors, isValid, validate, update } = useForm<TrainingForm>({
+  const form = useForm<TrainingForm>({
     name: {
       value: initialTraining?.institution.name ?? "",
       validations: [validatePresence],
@@ -481,10 +481,8 @@ function TrainingForm({
     },
   });
 
-  const form = { values, errors, isValid, validate, update };
-
   const [ongoing, setOngoing] = useState<boolean>(
-    isPersisted(initialTraining) ? values.to === null : false
+    isPersisted(initialTraining) ? form.values.to === null : false
   );
 
   return (
@@ -508,7 +506,7 @@ function TrainingForm({
         label="Ongoing"
         onChange={(value: boolean) => {
           setOngoing(value);
-          if (!value) update({ field: "to", value: null });
+          if (!value) form.update({ field: "to", value: null });
         }}
       />
       {!ongoing && <FormDatepickerInput form={form} name="to" label="To" />}
@@ -524,19 +522,22 @@ function TrainingForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          if (!validate()) return;
+          if (!form.validate()) return;
           if (
-            !values.name ||
-            !values.website ||
-            !values.from ||
-            !values.summary
+            !form.values.name ||
+            !form.values.website ||
+            !form.values.from ||
+            !form.values.summary
           )
             return;
 
           const training: Training = {
-            institution: { name: values.name, website: values.website },
-            period: new Period(values.from, values.to ?? null),
-            summary: values.summary,
+            institution: {
+              name: form.values.name,
+              website: form.values.website,
+            },
+            period: new Period(form.values.from, form.values.to ?? null),
+            summary: form.values.summary,
           };
 
           if (isPersisted(initialTraining)) {

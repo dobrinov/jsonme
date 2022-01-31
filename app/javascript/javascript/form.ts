@@ -9,19 +9,28 @@ type ValidationProps<Form> = {
 
 type Validation<Form> = ({ form }: ValidationProps<Form>) => string | null;
 
-type FormSpec<Form> = {
-  [Field in keyof Form]: {
-    value: Form[Field];
-    validations: Validation<Form>[];
+type FormSpec<F> = {
+  [K in keyof F]: {
+    value: F[K];
+    validations: Validation<F>[];
   };
 };
 
-type FormErrors<Form> = { [Field in keyof Form]: string[] };
+type FormErrors<F> = { [K in keyof F]: string[] };
+
+type Form<T> = {
+  values: { [K in keyof T]: T[K] };
+  errors: { [K in keyof T]: string[] };
+  validate: (fieldsToValidate?: (keyof T)[]) => { [K in keyof T]: string[] };
+  update: ({ field, value }: { field: keyof T; value: T[keyof T] }) => void;
+};
 
 const URL_REGEX =
   /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
 
-export function useForm<FormValues>(spec: FormSpec<FormValues>) {
+export function useForm<FormValues>(
+  spec: FormSpec<FormValues>
+): Form<FormValues> {
   const initialValues: FormValues = (
     Object.keys(spec) as (keyof FormValues)[]
   ).reduce((result, field: keyof FormValues) => {
@@ -41,12 +50,6 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
   useEffect(() => {
     if (changedFields.length > 0) validate(changedFields);
   }, [changedFields]);
-
-  const isValid: boolean = (
-    Object.keys(errors) as (keyof FormErrors<FormValues>)[]
-  ).reduce((result: boolean, field: keyof FormValues) => {
-    return result && errors[field].length === 0;
-  }, true);
 
   function errorsFor(field: keyof FormValues) {
     return spec[field].validations
@@ -87,7 +90,7 @@ export function useForm<FormValues>(spec: FormSpec<FormValues>) {
     return xxx;
   }
 
-  return { values, errors, isValid, validate, update };
+  return { values, errors, validate, update };
 }
 
 export function validatePresence<Form>({ form, field }: ValidationProps<Form>) {
