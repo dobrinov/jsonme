@@ -18,7 +18,7 @@ type FormSpec<F> = {
 
 type FormErrors<F> = { [K in keyof F]: string[] };
 
-type Form<T> = {
+export type Form<T> = {
   values: { [K in keyof T]: T[K] };
   errors: { [K in keyof T]: string[] };
   validate: (fieldsToValidate?: (keyof T)[]) => { [K in keyof T]: string[] };

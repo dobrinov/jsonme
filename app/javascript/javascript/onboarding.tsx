@@ -7,8 +7,15 @@ import {
   validatePresence,
   validateUrlFormat,
 } from "./form";
-import { Resume, Technology, Training } from "./Resume";
-import { SelectInput } from "./SelectInput";
+import {
+  Complexity,
+  Knowledge,
+  Resume,
+  Technology,
+  Training,
+  YesNo,
+} from "./Resume";
+import { FormSelectInput, SelectInput } from "./SelectInput";
 import { FormTextAreaInput, TextAreaInput } from "./TextAreaInput";
 import { FormTextInput, TextInput } from "./TextInput";
 import { MonthAndYear, Period } from "./time";
@@ -26,9 +33,6 @@ type EditableTraining = Training | PersistedTraining;
 type PersistedTechnology = Technology & Persistable;
 type EditableTechnology = Technology | PersistedTechnology;
 
-type Complexity = "easy" | "intermediate" | "hard";
-type Knowledge = "poor" | "average" | "good";
-
 const TASK_COMPLEXITIES: { id: Complexity; label: string }[] = [
   { id: "easy", label: "Easy" },
   { id: "intermediate", label: "Intermediate" },
@@ -38,7 +42,6 @@ const TASK_COMPLEXITIES: { id: Complexity; label: string }[] = [
 const KNOWLEDGE_LEVELS: { id: Knowledge; label: string }[] = [
   { id: "poor", label: "Poor" },
   { id: "average", label: "Average" },
-  { id: "good", label: "Good" },
 ];
 
 const YES_NOS: { id: "yes" | "no"; label: string }[] = [
@@ -242,9 +245,11 @@ export function Onboarding() {
                     technologies={technologies}
                     previousStep={() => setStep(4)}
                     nextStep={() => setStep(6)}
-                    onAddTechnology={(training: Technology) => {}}
-                    onEditTechnology={(training: PersistedTechnology) => {}}
-                    onDeleteTechnology={(training: PersistedTechnology) => {}}
+                    onAddTechnology={(technology: Technology) => {
+                      setTechnologies((current) => [...current, technology]);
+                    }}
+                    onEditTechnology={(technology: PersistedTechnology) => {}}
+                    onDeleteTechnology={(technology: PersistedTechnology) => {}}
                   />
                 );
               default:
@@ -579,7 +584,15 @@ function TechnologyStackStep({
           <TechnologyForm
             key={selectedTechnology?.name}
             technology={selectedTechnology}
-            onSave={() => alert("save")}
+            onSave={(technology: EditableTechnology) => {
+              if (isPersisted(technology)) {
+                onEditTechnology(technology);
+              } else {
+                onAddTechnology(technology);
+              }
+
+              drilldown.reset();
+            }}
             onCancel={() => drilldown.reset()}
           />
         </div>
@@ -630,6 +643,16 @@ function TechnologyStackStep({
   );
 }
 
+type TechnologyForm = {
+  name: string;
+  website: string;
+  taskComplexity: Complexity | null;
+  knowledgeOfFeatures: Knowledge | null;
+  knowledgeOfBestPractices: Knowledge | null;
+  canMentor: YesNo | null;
+  recentlyUsed: YesNo | null;
+};
+
 function TechnologyForm({
   technology: initialTechnology,
   onSave,
@@ -639,89 +662,85 @@ function TechnologyForm({
   onSave: (technology: EditableTechnology) => void;
   onCancel: () => void;
 }) {
-  const [name, setName] = useState<string | undefined>();
-  const [website, setWebsite] = useState<string | undefined>();
-  const [taskComplexity, setTaskComplexity] = useState<
-    Complexity | undefined
-  >();
-  const [knowledgeOfFeatures, setKnowledgeOfFeatures] = useState<
-    Knowledge | undefined
-  >();
-  const [knowledgeOfBestPractices, setKnowledgeOfBestPractices] = useState<
-    Knowledge | undefined
-  >();
-  const [canMentor, setCanMentor] = useState<boolean | undefined>();
-  const [recentlyUsed, setRecentlyUsed] = useState<boolean | undefined>();
+  const form = useForm<TechnologyForm>({
+    name: {
+      value: initialTechnology?.name ?? "",
+      validations: [],
+    },
+    website: {
+      value: initialTechnology?.website ?? "",
+      validations: [],
+    },
+    taskComplexity: {
+      value: initialTechnology?.taskComplexity ?? null,
+      validations: [],
+    },
+    knowledgeOfFeatures: {
+      value: initialTechnology?.knowledgeOfFeatures ?? null,
+      validations: [],
+    },
+    knowledgeOfBestPractices: {
+      value: initialTechnology?.knowledgeOfBestPractices ?? null,
+      validations: [],
+    },
+    canMentor: {
+      value: initialTechnology?.canMentor ?? null,
+      validations: [],
+    },
+    recentlyUsed: {
+      value: initialTechnology?.recentlyUsed ?? null,
+      validations: [],
+    },
+  });
 
   return (
     <div>
-      <TextInput
+      <FormTextInput
+        form={form}
         name="name"
-        value={name}
         label="Name"
         placeholder="Javascript, Ruby, Rust, CSS, etc."
-        onBlur={(event) => {
-          if (event.target.value !== "") setName(event.target.value);
-        }}
       />
-      <TextInput
+      <FormTextInput
+        form={form}
         name="website"
-        value={website}
         label="Website"
         placeholder="The official website of the technology"
-        onBlur={(event) => {
-          if (event.target.value !== "") setWebsite(event.target.value);
-        }}
       />
-      <SelectInput
+      <FormSelectInput
+        form={form}
         name="taskComplexity"
-        value={taskComplexity}
         collection={TASK_COMPLEXITIES}
         prompt={true}
         label="How difficult problems you can solve?"
-        onChange={(event) => {
-          setTaskComplexity(event.target.value as Complexity);
-        }}
       />
-      <SelectInput
+      <FormSelectInput
+        form={form}
         name="knowledgeOfFeatures"
-        value={knowledgeOfFeatures}
         collection={KNOWLEDGE_LEVELS}
         prompt={true}
         label="How good is your knowledge of technology's features?"
-        onChange={(event) => {
-          setKnowledgeOfFeatures(event.target.value as Knowledge);
-        }}
       />
-      <SelectInput
+      <FormSelectInput
+        form={form}
         name="knowledgeOfBestPractices"
-        value={knowledgeOfBestPractices}
         collection={KNOWLEDGE_LEVELS}
         prompt={true}
         label="How good is your knowledge of technology's best practices?"
-        onChange={(event) => {
-          setKnowledgeOfBestPractices(event.target.value as Knowledge);
-        }}
       />
-      <SelectInput
-        name="canMentorOthers"
-        value={canMentor ? "yes" : "no"}
+      <FormSelectInput
+        form={form}
+        name="canMentor"
         collection={YES_NOS}
         prompt={true}
         label="Can you mentor others?"
-        onChange={(event) => {
-          setCanMentor(event.target.value === "yes");
-        }}
       />
-      <SelectInput
+      <FormSelectInput
+        form={form}
         name="recentlyUsed"
-        value={recentlyUsed ? "yes" : "no"}
         collection={YES_NOS}
         prompt={true}
         label="Have you used this technology recently?"
-        onChange={(event) => {
-          setRecentlyUsed(event.target.value === "yes");
-        }}
       />
       <button className="button mt-5 m-3" onClick={onCancel}>
         Cancel
@@ -729,26 +748,25 @@ function TechnologyForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
-          // if (!isValid({ forceValidation: true })) return;
           if (
-            !name ||
-            !website ||
-            !taskComplexity ||
-            !knowledgeOfFeatures ||
-            !knowledgeOfBestPractices ||
-            canMentor === undefined ||
-            recentlyUsed === undefined
+            !form.values.name ||
+            !form.values.website ||
+            !form.values.taskComplexity ||
+            !form.values.knowledgeOfFeatures ||
+            !form.values.knowledgeOfBestPractices ||
+            form.values.canMentor === null ||
+            form.values.recentlyUsed === null
           )
             return;
 
           const technology: Technology = {
-            name,
-            website,
-            recentlyUsed,
-            canMentor,
-            knowledgeOfBestPractices,
-            knowledgeOfFeatures,
-            taskComplexity,
+            name: form.values.name,
+            website: form.values.website,
+            recentlyUsed: form.values.recentlyUsed,
+            canMentor: form.values.canMentor,
+            knowledgeOfBestPractices: form.values.knowledgeOfBestPractices,
+            knowledgeOfFeatures: form.values.knowledgeOfFeatures,
+            taskComplexity: form.values.taskComplexity,
           };
 
           if (isPersisted(initialTechnology)) {

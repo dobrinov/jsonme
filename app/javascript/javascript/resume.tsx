@@ -43,14 +43,18 @@ export type Training = {
   period: Period;
 };
 
+export type Complexity = "easy" | "intermediate" | "hard";
+export type Knowledge = "poor" | "average" | "good";
+export type YesNo = "yes" | "no";
+
 export type Technology = {
   name: string;
   website: string;
-  recentlyUsed: boolean;
-  canMentor: boolean;
-  knowledgeOfBestPractices: string;
-  knowledgeOfFeatures: string;
-  taskComplexity: "hard" | "intermediate" | "easy";
+  recentlyUsed: YesNo;
+  canMentor: YesNo;
+  knowledgeOfBestPractices: Knowledge;
+  knowledgeOfFeatures: Knowledge;
+  taskComplexity: Complexity;
 };
 
 type SideProject = {

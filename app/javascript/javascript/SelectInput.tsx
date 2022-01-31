@@ -1,8 +1,9 @@
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
+import { Form } from "./form";
 import { InputState } from "./InputState";
 
-export function SelectInput({
+export function SelectInput<T>({
   name,
   label,
   value,
@@ -12,7 +13,7 @@ export function SelectInput({
   prompt,
   onChange,
 }: {
-  name: string;
+  name: keyof T & string;
   label: string;
   collection: { id: string; label: string }[];
   value?: string;
@@ -47,5 +48,38 @@ export function SelectInput({
         {addendum && <p>{addendum}</p>}
       </div>
     </div>
+  );
+}
+
+export function FormSelectInput<T>({
+  form,
+  name,
+  label,
+  collection,
+  addendum,
+  prompt,
+}: {
+  form: Form<T>;
+  name: keyof T & string;
+  label: string;
+  collection: { id: string; label: string }[];
+  addendum?: string;
+  prompt?: string | true;
+}) {
+  return (
+    <SelectInput<T>
+      name={name}
+      value={form.values[name] as any}
+      addendum={form.errors[name][0] || addendum}
+      collection={collection}
+      prompt={prompt}
+      label={label}
+      onChange={(event) => {
+        form.update({
+          field: name,
+          value: event.target.value as unknown as T[keyof T],
+        });
+      }}
+    />
   );
 }
