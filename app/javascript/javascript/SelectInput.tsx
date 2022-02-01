@@ -34,14 +34,16 @@ export function SelectInput<T>({
       <label htmlFor={name}>{label}</label>
       <div>
         <div>
-          <select id={name} name={name} onChange={onChange}>
+          <select id={name} name={name} onChange={onChange} value={value ?? ""}>
             {prompt && (
               <option value="">
                 {typeof prompt === "boolean" ? "Please, select..." : prompt}
               </option>
             )}
             {collection.map((element) => (
-              <option value={element.id}>{element.label}</option>
+              <option key={element.id} value={element.id}>
+                {element.label}
+              </option>
             ))}
           </select>
         </div>
@@ -71,6 +73,7 @@ export function FormSelectInput<T>({
       name={name}
       value={form.values[name] as any}
       addendum={form.errors[name][0] || addendum}
+      state={form.errors[name].length === 0 ? "normal" : "error"}
       collection={collection}
       prompt={prompt}
       label={label}

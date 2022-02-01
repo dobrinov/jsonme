@@ -12,6 +12,7 @@
 
 .input-error {
   > div > div > input,
-  > div > div > textarea { @apply border-red-600 text-red-600 placeholder-red-300 focus:ring-red-500 focus:border-red-500; }
+  > div > div > textarea,
+  > div > div > select { @apply border-red-600 text-red-600 placeholder-red-300 focus:ring-red-500 focus:border-red-500; }
   > div > p { @apply text-red-600; }
 }

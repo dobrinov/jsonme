@@ -42,6 +42,7 @@ const TASK_COMPLEXITIES: { id: Complexity; label: string }[] = [
 const KNOWLEDGE_LEVELS: { id: Knowledge; label: string }[] = [
   { id: "poor", label: "Poor" },
   { id: "average", label: "Average" },
+  { id: "good", label: "Good" },
 ];
 
 const YES_NOS: { id: "yes" | "no"; label: string }[] = [
@@ -248,8 +249,19 @@ export function Onboarding() {
                     onAddTechnology={(technology: Technology) => {
                       setTechnologies((current) => [...current, technology]);
                     }}
-                    onEditTechnology={(technology: PersistedTechnology) => {}}
-                    onDeleteTechnology={(technology: PersistedTechnology) => {}}
+                    onEditTechnology={(technology: PersistedTechnology) => {
+                      setTechnologies((current) => [
+                        ...current.slice(0, technology.index),
+                        technology,
+                        ...current.slice(technology.index + 1),
+                      ]);
+                    }}
+                    onDeleteTechnology={(technology: PersistedTechnology) => {
+                      setTechnologies((current) => [
+                        ...current.slice(0, technology.index),
+                        ...current.slice(technology.index + 1, current.length),
+                      ]);
+                    }}
                   />
                 );
               default:
@@ -271,6 +283,7 @@ export function Onboarding() {
             image={image}
             location={location}
             trainings={trainings}
+            technologies={technologies}
           />
         </div>
       </div>
@@ -539,7 +552,7 @@ function TrainingForm({
           const training: Training = {
             institution: {
               name: form.values.name,
-              website: form.values.website,
+              website: addProtocol(form.values.website),
             },
             period: new Period(form.values.from, form.values.to ?? null),
             summary: form.values.summary,
@@ -665,31 +678,31 @@ function TechnologyForm({
   const form = useForm<TechnologyForm>({
     name: {
       value: initialTechnology?.name ?? "",
-      validations: [],
+      validations: [validatePresence],
     },
     website: {
       value: initialTechnology?.website ?? "",
-      validations: [],
+      validations: [validatePresence, validateUrlFormat],
     },
     taskComplexity: {
       value: initialTechnology?.taskComplexity ?? null,
-      validations: [],
+      validations: [validatePresence],
     },
     knowledgeOfFeatures: {
       value: initialTechnology?.knowledgeOfFeatures ?? null,
-      validations: [],
+      validations: [validatePresence],
     },
     knowledgeOfBestPractices: {
       value: initialTechnology?.knowledgeOfBestPractices ?? null,
-      validations: [],
+      validations: [validatePresence],
     },
     canMentor: {
       value: initialTechnology?.canMentor ?? null,
-      validations: [],
+      validations: [validatePresence],
     },
     recentlyUsed: {
       value: initialTechnology?.recentlyUsed ?? null,
-      validations: [],
+      validations: [validatePresence],
     },
   });
 
@@ -748,6 +761,8 @@ function TechnologyForm({
       <button
         className="button button-primary mt-5"
         onClick={() => {
+          if (!form.validate()) return;
+
           if (
             !form.values.name ||
             !form.values.website ||
@@ -761,7 +776,7 @@ function TechnologyForm({
 
           const technology: Technology = {
             name: form.values.name,
-            website: form.values.website,
+            website: addProtocol(form.values.website),
             recentlyUsed: form.values.recentlyUsed,
             canMentor: form.values.canMentor,
             knowledgeOfBestPractices: form.values.knowledgeOfBestPractices,
@@ -911,4 +926,12 @@ function useDrilldown() {
 
 function isPersisted(object?: Persistable | {}): object is Persistable {
   return object !== undefined && "index" in object;
+}
+
+function addProtocol(url: string) {
+  if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
+    url = "http://" + url;
+  }
+
+  return url;
 }

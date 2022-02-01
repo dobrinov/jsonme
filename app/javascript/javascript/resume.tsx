@@ -222,7 +222,7 @@ export function Resume({
         </div>
       )}
 
-      {technologies && (
+      {technologies && technologies.length > 0 && (
         <div className="section">
           <h2 className="heading">Technologies</h2>
           <p>self evaluation</p>
