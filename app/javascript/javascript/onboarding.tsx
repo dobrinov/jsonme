@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { DatepickerInput, FormDatepickerInput } from "./DatepickerInput";
 import {
   monthAndYearAfterOrEqualTo,
   monthAndYearBeforeOrEqualTo,
@@ -16,9 +15,10 @@ import {
   Training,
   YesNo,
 } from "./Resume";
-import { FormSelectInput, SelectInput } from "./SelectInput";
+import { FormSelectInput } from "./SelectInput";
 import { FormTextAreaInput, TextAreaInput } from "./TextAreaInput";
 import { FormTextInput, TextInput } from "./TextInput";
+import { FormDatepickerInput } from "./DatepickerInput";
 import { MonthAndYear, Period } from "./time";
 import { ToggleInput } from "./ToggleInput";
 
@@ -293,7 +293,9 @@ export function Onboarding() {
                     employments={employments}
                     previousStep={() => setStep(5)}
                     nextStep={() => setStep(7)}
-                    onAddEmployment={() => {}}
+                    onAddEmployment={(employment: Employment) => {
+                      setEmployments((current) => [...current, employment]);
+                    }}
                     onEditEmployment={() => {}}
                     onDeleteEmployment={() => {}}
                   />
@@ -318,6 +320,7 @@ export function Onboarding() {
             location={location}
             trainings={trainings}
             technologies={technologies}
+            employments={employments}
           />
         </div>
       </div>
@@ -824,9 +827,9 @@ function EmploymentsStep({
   employments: Employment[];
   previousStep: () => void;
   nextStep: () => void;
-  onAddEmployment: (technology: Technology) => void;
-  onEditEmployment: (technology: PersistedEmployment) => void;
-  onDeleteEmployment: (technology: PersistedEmployment) => void;
+  onAddEmployment: (employment: Employment) => void;
+  onEditEmployment: (employment: PersistedEmployment) => void;
+  onDeleteEmployment: (employment: PersistedEmployment) => void;
 }) {
   const drilldown = useDrilldown();
   const [selectedEmployment, setSelectedEmployment] =
@@ -836,7 +839,20 @@ function EmploymentsStep({
     <>
       <div {...drilldown.containerProps} className="foo">
         <div {...drilldown.secondaryProps} className="secondary">
-          FORM
+          <EmploymentForm
+            key={selectedEmployment?.employer.name}
+            employment={selectedEmployment}
+            onSave={(employment: EditableEmployment) => {
+              if (isPersisted(employment)) {
+                onEditEmployment(employment);
+              } else {
+                onAddEmployment(employment);
+              }
+
+              drilldown.reset();
+            }}
+            onCancel={() => drilldown.reset()}
+          />
         </div>
 
         <div {...drilldown.primaryProps} className="primary">
@@ -882,6 +898,134 @@ function EmploymentsStep({
         </div>
       </div>
     </>
+  );
+}
+
+function EmploymentForm({
+  employment: initialEmployment,
+  onSave,
+  onCancel,
+}: {
+  employment?: EditableEmployment;
+  onSave: (training: EditableEmployment) => void;
+  onCancel: () => void;
+}) {
+  const form = useForm<TrainingForm>({
+    name: {
+      value: initialEmployment?.employer.name ?? "",
+      validations: [validatePresence],
+    },
+    website: {
+      value: initialEmployment?.employer.website ?? "",
+      validations: [validatePresence, validateUrlFormat],
+    },
+    from: {
+      value: initialEmployment?.period.from ?? null,
+      validations: [
+        validatePresence,
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.from,
+          otherValue: (form) => form.to,
+          message: "cannot be after 'To'",
+        }),
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.from,
+          otherValue: () => MonthAndYear.current(),
+          message: "cannot be in the future",
+        }),
+      ],
+    },
+    to: {
+      value: initialEmployment?.period.to ?? null,
+      validations: [
+        validatePresence,
+        monthAndYearAfterOrEqualTo({
+          value: (form) => form.to,
+          otherValue: (form) => form.from,
+          message: "cannot be before 'From'",
+        }),
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.to,
+          otherValue: () => MonthAndYear.current(),
+          message: "cannot be in the future",
+        }),
+      ],
+    },
+    summary: {
+      value: initialEmployment?.summary ?? "",
+      validations: [validatePresence],
+    },
+  });
+
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialEmployment) ? form.values.to === null : false
+  );
+
+  return (
+    <div>
+      <FormTextInput
+        form={form}
+        name="name"
+        label="Company name"
+        placeholder="The name of the company that employed you."
+      />
+      <FormTextInput
+        form={form}
+        name="website"
+        label="Website"
+        placeholder="The webisite of the employer"
+      />
+      <FormDatepickerInput form={form} name="from" label="From" />
+      <ToggleInput
+        on={ongoing}
+        name="ongoing"
+        label="Ongoing"
+        onChange={(value: boolean) => {
+          setOngoing(value);
+          if (!value) form.update({ field: "to", value: null });
+        }}
+      />
+      {!ongoing && <FormDatepickerInput form={form} name="to" label="To" />}
+      <FormTextAreaInput
+        form={form}
+        name="summary"
+        label="Summary"
+        placeholder="What was the business of the company for which you have been working/are working."
+      />
+      <button className="button mt-5 m-3" onClick={onCancel}>
+        Cancel
+      </button>
+      <button
+        className="button button-primary mt-5"
+        onClick={() => {
+          if (!form.validate()) return;
+          if (
+            !form.values.name ||
+            !form.values.website ||
+            !form.values.from ||
+            !form.values.summary
+          )
+            return;
+
+          const employment: Employment = {
+            employer: {
+              name: form.values.name,
+              website: addProtocol(form.values.website),
+            },
+            period: new Period(form.values.from, form.values.to ?? null),
+            summary: form.values.summary,
+          };
+
+          if (isPersisted(initialEmployment)) {
+            onSave({ ...employment, index: initialEmployment.index });
+          } else {
+            onSave(employment);
+          }
+        }}
+      >
+        {isPersisted(initialEmployment) ? "Update" : "Add"}
+      </button>
+    </div>
   );
 }
 

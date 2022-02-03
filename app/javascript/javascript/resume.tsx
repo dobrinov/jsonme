@@ -23,7 +23,7 @@ export type Employment = {
   summary: string;
   employer: Employer;
   period: Period;
-  roles: Role[];
+  roles?: Role[];
 };
 
 type Location = {
@@ -103,7 +103,7 @@ export function Resume({
         </div>
       )}
 
-      {employments && (
+      {employments && employments.length > 0 && (
         <div className="section">
           <h2 className="heading">Experience</h2>
           <div className="timeline">
@@ -127,28 +127,30 @@ export function Resume({
                     <div className="employment">
                       <p>{employment.summary}</p>
                       <ul>
-                        {employment.roles.map((role) => (
-                          <li className="role">
-                            <h4>{role.title}</h4>
-                            <p>{role.summary}</p>
-                            <aside>Major achievements:</aside>
-                            <ul>
-                              {role.majorAchievements?.map((achievement) => (
-                                <li className="achievement">
-                                  <h5>{achievement.title}</h5>
-                                  <p>{achievement.summary}</p>
-                                  <ul>
-                                    {achievement.technologies.map(
-                                      (technology) => (
-                                        <li>{technology}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        ))}
+                        {employment.roles &&
+                          employment.roles.length > 0 &&
+                          employment.roles.map((role) => (
+                            <li className="role">
+                              <h4>{role.title}</h4>
+                              <p>{role.summary}</p>
+                              <aside>Major achievements:</aside>
+                              <ul>
+                                {role.majorAchievements?.map((achievement) => (
+                                  <li className="achievement">
+                                    <h5>{achievement.title}</h5>
+                                    <p>{achievement.summary}</p>
+                                    <ul>
+                                      {achievement.technologies.map(
+                                        (technology) => (
+                                          <li>{technology}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                          ))}
                       </ul>
                     </div>
                   </li>
