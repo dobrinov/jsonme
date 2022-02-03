@@ -9,6 +9,7 @@ import {
 } from "./form";
 import {
   Complexity,
+  Employment,
   Knowledge,
   Resume,
   Technology,
@@ -32,6 +33,27 @@ type EditableTraining = Training | PersistedTraining;
 
 type PersistedTechnology = Technology & Persistable;
 type EditableTechnology = Technology | PersistedTechnology;
+
+type PersistedEmployment = Employment & Persistable;
+type EditableEmployment = Employment | PersistedEmployment;
+
+type TrainingForm = {
+  name: string;
+  website: string | null;
+  from: MonthAndYear | null;
+  to: MonthAndYear | null;
+  summary: string;
+};
+
+type TechnologyForm = {
+  name: string;
+  website: string;
+  taskComplexity: Complexity | null;
+  knowledgeOfFeatures: Knowledge | null;
+  knowledgeOfBestPractices: Knowledge | null;
+  canMentor: YesNo | null;
+  recentlyUsed: YesNo | null;
+};
 
 const TASK_COMPLEXITIES: { id: Complexity; label: string }[] = [
   { id: "easy", label: "Easy" },
@@ -102,6 +124,7 @@ export function Onboarding() {
   const [country, setCountry] = useState<string>("");
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [technologies, setTechnologies] = useState<Technology[]>([]);
+  const [employments, setEmployments] = useState<Employment[]>([]);
 
   const location = city && country ? { city, country } : undefined;
 
@@ -262,6 +285,17 @@ export function Onboarding() {
                         ...current.slice(technology.index + 1, current.length),
                       ]);
                     }}
+                  />
+                );
+              case 6:
+                return (
+                  <EmploymentsStep
+                    employments={employments}
+                    previousStep={() => setStep(5)}
+                    nextStep={() => setStep(7)}
+                    onAddEmployment={() => {}}
+                    onEditEmployment={() => {}}
+                    onDeleteEmployment={() => {}}
                   />
                 );
               default:
@@ -434,14 +468,6 @@ function TrainingsStep({
     </>
   );
 }
-
-type TrainingForm = {
-  name: string;
-  website: string | null;
-  from: MonthAndYear | null;
-  to: MonthAndYear | null;
-  summary: string;
-};
 
 function TrainingForm({
   training: initialTraining,
@@ -656,16 +682,6 @@ function TechnologyStackStep({
   );
 }
 
-type TechnologyForm = {
-  name: string;
-  website: string;
-  taskComplexity: Complexity | null;
-  knowledgeOfFeatures: Knowledge | null;
-  knowledgeOfBestPractices: Knowledge | null;
-  canMentor: YesNo | null;
-  recentlyUsed: YesNo | null;
-};
-
 function TechnologyForm({
   technology: initialTechnology,
   onSave,
@@ -794,6 +810,78 @@ function TechnologyForm({
         {isPersisted(initialTechnology) ? "Update" : "Add"}
       </button>
     </div>
+  );
+}
+
+function EmploymentsStep({
+  employments,
+  previousStep,
+  nextStep,
+  onAddEmployment,
+  onEditEmployment,
+  onDeleteEmployment,
+}: {
+  employments: Employment[];
+  previousStep: () => void;
+  nextStep: () => void;
+  onAddEmployment: (technology: Technology) => void;
+  onEditEmployment: (technology: PersistedEmployment) => void;
+  onDeleteEmployment: (technology: PersistedEmployment) => void;
+}) {
+  const drilldown = useDrilldown();
+  const [selectedEmployment, setSelectedEmployment] =
+    useState<EditableEmployment>();
+
+  return (
+    <>
+      <div {...drilldown.containerProps} className="foo">
+        <div {...drilldown.secondaryProps} className="secondary">
+          FORM
+        </div>
+
+        <div {...drilldown.primaryProps} className="primary">
+          <ul>
+            {employments.map((employment, index) => (
+              <Entry
+                key={employment.employer.name}
+                title={employment.employer.name}
+                onEdit={() => {
+                  setSelectedEmployment({ ...employment, index });
+                  drilldown.animate();
+                }}
+                onDelete={() => {
+                  onDeleteEmployment({ ...employment, index });
+                }}
+              />
+            ))}
+          </ul>
+          <button
+            className="button-new"
+            onClick={() => {
+              setSelectedEmployment(undefined);
+              drilldown.animate();
+            }}
+          >
+            Add employment
+          </button>
+
+          <button
+            type="button"
+            className="button mt-5 m-3"
+            onClick={previousStep}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            className="button button-primary button mt-5"
+            onClick={nextStep}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
 

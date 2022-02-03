@@ -19,7 +19,7 @@ type Role = {
   majorAchievements?: Achievement[];
 };
 
-type Employment = {
+export type Employment = {
   summary: string;
   employer: Employer;
   period: Period;
