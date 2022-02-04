@@ -296,8 +296,19 @@ export function Onboarding() {
                     onAddEmployment={(employment: Employment) => {
                       setEmployments((current) => [...current, employment]);
                     }}
-                    onEditEmployment={() => {}}
-                    onDeleteEmployment={() => {}}
+                    onEditEmployment={(employment: PersistedEmployment) => {
+                      setEmployments((current) => [
+                        ...current.slice(0, employment.index),
+                        employment,
+                        ...current.slice(employment.index + 1),
+                      ]);
+                    }}
+                    onDeleteEmployment={(employment: PersistedEmployment) => {
+                      setEmployments((current) => [
+                        ...current.slice(0, employment.index),
+                        ...current.slice(employment.index + 1, current.length),
+                      ]);
+                    }}
                   />
                 );
               default:
