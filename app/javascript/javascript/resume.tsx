@@ -57,7 +57,7 @@ export type Technology = {
   taskComplexity: Complexity;
 };
 
-type SideProject = {
+export type SideProject = {
   name: string;
   website: string;
   online: boolean;
@@ -193,7 +193,7 @@ export function Resume({
         </div>
       )}
 
-      {sideProjects && (
+      {sideProjects && sideProjects.length > 0 && (
         <div className="section">
           <h2 className="heading">Side projects</h2>
           <div className="timeline">

@@ -11,6 +11,7 @@ import {
   Employment,
   Knowledge,
   Resume,
+  SideProject,
   Technology,
   Training,
   YesNo,
@@ -36,6 +37,9 @@ type EditableTechnology = Technology | PersistedTechnology;
 
 type PersistedEmployment = Employment & Persistable;
 type EditableEmployment = Employment | PersistedEmployment;
+
+type PersistedSideProject = SideProject & Persistable;
+type EditableSideProject = SideProject | PersistedSideProject;
 
 type TrainingForm = {
   name: string;
@@ -125,6 +129,7 @@ export function Onboarding() {
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [employments, setEmployments] = useState<Employment[]>([]);
+  const [sideProjects, setSideProjects] = useState<SideProject[]>([]);
 
   const location = city && country ? { city, country } : undefined;
 
@@ -311,8 +316,25 @@ export function Onboarding() {
                     }}
                   />
                 );
+              case 7:
+                return (
+                  <SideProjectsStep
+                    sideProjects={sideProjects}
+                    previousStep={() => setStep(6)}
+                    nextStep={() => setStep(8)}
+                    onAddSideProject={(sideProject: SideProject) => {}}
+                    onEditSideProject={(
+                      sideProject: PersistedSideProject
+                    ) => {}}
+                    onDeleteSideProject={(
+                      sideProject: PersistedSideProject
+                    ) => {}}
+                  />
+                );
+              case 8:
+                return null;
               default:
-                return <div>Not implemented yet</div>;
+                throw new Error("Invalid wizard step");
             }
           })()}
           <StepNavigation
@@ -332,6 +354,7 @@ export function Onboarding() {
             trainings={trainings}
             technologies={technologies}
             employments={employments}
+            sideProjects={sideProjects}
           />
         </div>
       </div>
@@ -913,6 +936,219 @@ function EmploymentsStep({
 }
 
 function EmploymentForm({
+  employment: initialEmployment,
+  onSave,
+  onCancel,
+}: {
+  employment?: EditableEmployment;
+  onSave: (training: EditableEmployment) => void;
+  onCancel: () => void;
+}) {
+  const form = useForm<TrainingForm>({
+    name: {
+      value: initialEmployment?.employer.name ?? "",
+      validations: [validatePresence],
+    },
+    website: {
+      value: initialEmployment?.employer.website ?? "",
+      validations: [validatePresence, validateUrlFormat],
+    },
+    from: {
+      value: initialEmployment?.period.from ?? null,
+      validations: [
+        validatePresence,
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.from,
+          otherValue: (form) => form.to,
+          message: "cannot be after 'To'",
+        }),
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.from,
+          otherValue: () => MonthAndYear.current(),
+          message: "cannot be in the future",
+        }),
+      ],
+    },
+    to: {
+      value: initialEmployment?.period.to ?? null,
+      validations: [
+        validatePresence,
+        monthAndYearAfterOrEqualTo({
+          value: (form) => form.to,
+          otherValue: (form) => form.from,
+          message: "cannot be before 'From'",
+        }),
+        monthAndYearBeforeOrEqualTo({
+          value: (form) => form.to,
+          otherValue: () => MonthAndYear.current(),
+          message: "cannot be in the future",
+        }),
+      ],
+    },
+    summary: {
+      value: initialEmployment?.summary ?? "",
+      validations: [validatePresence],
+    },
+  });
+
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialEmployment) ? form.values.to === null : false
+  );
+
+  return (
+    <div>
+      <FormTextInput
+        form={form}
+        name="name"
+        label="Company name"
+        placeholder="The name of the company that employed you."
+      />
+      <FormTextInput
+        form={form}
+        name="website"
+        label="Website"
+        placeholder="The webisite of the employer"
+      />
+      <FormDatepickerInput form={form} name="from" label="From" />
+      <ToggleInput
+        on={ongoing}
+        name="ongoing"
+        label="Ongoing"
+        onChange={(value: boolean) => {
+          setOngoing(value);
+          if (!value) form.update({ field: "to", value: null });
+        }}
+      />
+      {!ongoing && <FormDatepickerInput form={form} name="to" label="To" />}
+      <FormTextAreaInput
+        form={form}
+        name="summary"
+        label="Summary"
+        placeholder="What was the business of the company for which you have been working/are working."
+      />
+      <button className="button mt-5 m-3" onClick={onCancel}>
+        Cancel
+      </button>
+      <button
+        className="button button-primary mt-5"
+        onClick={() => {
+          if (!form.validate()) return;
+          if (
+            !form.values.name ||
+            !form.values.website ||
+            !form.values.from ||
+            !form.values.summary
+          )
+            return;
+
+          const employment: Employment = {
+            employer: {
+              name: form.values.name,
+              website: addProtocol(form.values.website),
+            },
+            period: new Period(form.values.from, form.values.to ?? null),
+            summary: form.values.summary,
+          };
+
+          if (isPersisted(initialEmployment)) {
+            onSave({ ...employment, index: initialEmployment.index });
+          } else {
+            onSave(employment);
+          }
+        }}
+      >
+        {isPersisted(initialEmployment) ? "Update" : "Add"}
+      </button>
+    </div>
+  );
+}
+
+function SideProjectsStep({
+  sideProjects,
+  previousStep,
+  nextStep,
+  onAddSideProject,
+  onEditSideProject,
+  onDeleteSideProject,
+}: {
+  sideProjects: SideProject[];
+  previousStep: () => void;
+  nextStep: () => void;
+  onAddSideProject: (sideProject: SideProject) => void;
+  onEditSideProject: (sideProject: PersistedSideProject) => void;
+  onDeleteSideProject: (sideProject: PersistedSideProject) => void;
+}) {
+  const drilldown = useDrilldown();
+  const [selectedSideProject, setSelectedSideProject] =
+    useState<EditableSideProject>();
+
+  return (
+    <>
+      <div {...drilldown.containerProps} className="foo">
+        <div {...drilldown.secondaryProps} className="secondary">
+          {/* <SideProjectForm
+            key={selectedEmployment?.employer.name}
+            employment={selectedEmployment}
+            onSave={(employment: EditableEmployment) => {
+              if (isPersisted(employment)) {
+                onEditEmployment(employment);
+              } else {
+                onAddEmployment(employment);
+              }
+
+              drilldown.reset();
+            }}
+            onCancel={() => drilldown.reset()}
+          /> */}
+        </div>
+
+        <div {...drilldown.primaryProps} className="primary">
+          <ul>
+            {sideProjects.map((sideProject, index) => (
+              <Entry
+                key={sideProject.name}
+                title={sideProject.name}
+                onEdit={() => {
+                  setSelectedSideProject({ ...sideProject, index });
+                  drilldown.animate();
+                }}
+                onDelete={() => {
+                  onDeleteSideProject({ ...sideProject, index });
+                }}
+              />
+            ))}
+          </ul>
+          <button
+            className="button-new"
+            onClick={() => {
+              setSelectedSideProject(undefined);
+              drilldown.animate();
+            }}
+          >
+            Add a side project
+          </button>
+
+          <button
+            type="button"
+            className="button mt-5 m-3"
+            onClick={previousStep}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            className="button button-primary button mt-5"
+            onClick={nextStep}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function SideProjectForm({
   employment: initialEmployment,
   onSave,
   onCancel,
