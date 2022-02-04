@@ -322,13 +322,24 @@ export function Onboarding() {
                     sideProjects={sideProjects}
                     previousStep={() => setStep(6)}
                     nextStep={() => setStep(8)}
-                    onAddSideProject={(sideProject: SideProject) => {}}
-                    onEditSideProject={(
-                      sideProject: PersistedSideProject
-                    ) => {}}
+                    onAddSideProject={(sideProject: SideProject) => {
+                      setSideProjects((current) => [...current, sideProject]);
+                    }}
+                    onEditSideProject={(sideProject: PersistedSideProject) => {
+                      setSideProjects((current) => [
+                        ...current.slice(0, sideProject.index),
+                        sideProject,
+                        ...current.slice(sideProject.index + 1),
+                      ]);
+                    }}
                     onDeleteSideProject={(
                       sideProject: PersistedSideProject
-                    ) => {}}
+                    ) => {
+                      setEmployments((current) => [
+                        ...current.slice(0, sideProject.index),
+                        ...current.slice(sideProject.index + 1, current.length),
+                      ]);
+                    }}
                   />
                 );
               case 8:
@@ -1000,8 +1011,8 @@ function EmploymentForm({
       <FormTextInput
         form={form}
         name="name"
-        label="Company name"
-        placeholder="The name of the company that employed you."
+        label="Name"
+        placeholder="The name of your employer."
       />
       <FormTextInput
         form={form}
@@ -1086,20 +1097,20 @@ function SideProjectsStep({
     <>
       <div {...drilldown.containerProps} className="foo">
         <div {...drilldown.secondaryProps} className="secondary">
-          {/* <SideProjectForm
-            key={selectedEmployment?.employer.name}
-            employment={selectedEmployment}
-            onSave={(employment: EditableEmployment) => {
-              if (isPersisted(employment)) {
-                onEditEmployment(employment);
+          <SideProjectForm
+            key={selectedSideProject?.name}
+            sideProject={selectedSideProject}
+            onSave={(sideProject: EditableSideProject) => {
+              if (isPersisted(sideProject)) {
+                onEditSideProject(sideProject);
               } else {
-                onAddEmployment(employment);
+                onAddSideProject(sideProject);
               }
 
               drilldown.reset();
             }}
             onCancel={() => drilldown.reset()}
-          /> */}
+          />
         </div>
 
         <div {...drilldown.primaryProps} className="primary">
@@ -1149,25 +1160,25 @@ function SideProjectsStep({
 }
 
 function SideProjectForm({
-  employment: initialEmployment,
+  sideProject: initialSideProject,
   onSave,
   onCancel,
 }: {
-  employment?: EditableEmployment;
-  onSave: (training: EditableEmployment) => void;
+  sideProject?: EditableSideProject;
+  onSave: (training: EditableSideProject) => void;
   onCancel: () => void;
 }) {
   const form = useForm<TrainingForm>({
     name: {
-      value: initialEmployment?.employer.name ?? "",
+      value: initialSideProject?.name ?? "",
       validations: [validatePresence],
     },
     website: {
-      value: initialEmployment?.employer.website ?? "",
+      value: initialSideProject?.website ?? "",
       validations: [validatePresence, validateUrlFormat],
     },
     from: {
-      value: initialEmployment?.period.from ?? null,
+      value: initialSideProject?.period.from ?? null,
       validations: [
         validatePresence,
         monthAndYearBeforeOrEqualTo({
@@ -1183,7 +1194,7 @@ function SideProjectForm({
       ],
     },
     to: {
-      value: initialEmployment?.period.to ?? null,
+      value: initialSideProject?.period.to ?? null,
       validations: [
         validatePresence,
         monthAndYearAfterOrEqualTo({
@@ -1199,13 +1210,13 @@ function SideProjectForm({
       ],
     },
     summary: {
-      value: initialEmployment?.summary ?? "",
+      value: initialSideProject?.summary ?? "",
       validations: [validatePresence],
     },
   });
 
   const [ongoing, setOngoing] = useState<boolean>(
-    isPersisted(initialEmployment) ? form.values.to === null : false
+    isPersisted(initialSideProject) ? form.values.to === null : false
   );
 
   return (
@@ -1213,7 +1224,7 @@ function SideProjectForm({
       <FormTextInput
         form={form}
         name="name"
-        label="Company name"
+        label="Name"
         placeholder="The name of the company that employed you."
       />
       <FormTextInput
@@ -1254,23 +1265,22 @@ function SideProjectForm({
           )
             return;
 
-          const employment: Employment = {
-            employer: {
-              name: form.values.name,
-              website: addProtocol(form.values.website),
-            },
+          const sideProject: SideProject = {
+            name: form.values.name,
+            website: addProtocol(form.values.website),
             period: new Period(form.values.from, form.values.to ?? null),
             summary: form.values.summary,
+            online: true, // TODO: Add this to the form.
           };
 
-          if (isPersisted(initialEmployment)) {
-            onSave({ ...employment, index: initialEmployment.index });
+          if (isPersisted(initialSideProject)) {
+            onSave({ ...sideProject, index: initialSideProject.index });
           } else {
-            onSave(employment);
+            onSave(sideProject);
           }
         }}
       >
-        {isPersisted(initialEmployment) ? "Update" : "Add"}
+        {isPersisted(initialSideProject) ? "Update" : "Add"}
       </button>
     </div>
   );
