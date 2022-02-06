@@ -114,7 +114,8 @@ const STEPS: Step[] = [
   },
   {
     title: "Do you have any side projects?",
-    description: "Side projects are a nice way to present your skills.",
+    description:
+      "Side projects are a great way to show your ability to build things and take decisions.",
   },
   { title: "Voilà", description: "Your resume is ready." },
 ];
@@ -335,7 +336,7 @@ export function Onboarding() {
                     onDeleteSideProject={(
                       sideProject: PersistedSideProject
                     ) => {
-                      setEmployments((current) => [
+                      setSideProjects((current) => [
                         ...current.slice(0, sideProject.index),
                         ...current.slice(sideProject.index + 1, current.length),
                       ]);
@@ -526,6 +527,10 @@ function TrainingForm({
   onSave: (training: EditableTraining) => void;
   onCancel: () => void;
 }) {
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialTraining) ? initialTraining.period.to === null : false
+  );
+
   const form = useForm<TrainingForm>({
     name: {
       value: initialTraining?.institution.name ?? "",
@@ -566,16 +571,13 @@ function TrainingForm({
           message: "cannot be in the future",
         }),
       ],
+      validateUnless: ongoing,
     },
     summary: {
       value: initialTraining?.summary ?? "",
       validations: [validatePresence],
     },
   });
-
-  const [ongoing, setOngoing] = useState<boolean>(
-    isPersisted(initialTraining) ? form.values.to === null : false
-  );
 
   return (
     <div>
@@ -955,6 +957,12 @@ function EmploymentForm({
   onSave: (training: EditableEmployment) => void;
   onCancel: () => void;
 }) {
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialEmployment)
+      ? initialEmployment.period.to === null
+      : false
+  );
+
   const form = useForm<TrainingForm>({
     name: {
       value: initialEmployment?.employer.name ?? "",
@@ -995,16 +1003,13 @@ function EmploymentForm({
           message: "cannot be in the future",
         }),
       ],
+      validateUnless: ongoing,
     },
     summary: {
       value: initialEmployment?.summary ?? "",
       validations: [validatePresence],
     },
   });
-
-  const [ongoing, setOngoing] = useState<boolean>(
-    isPersisted(initialEmployment) ? form.values.to === null : false
-  );
 
   return (
     <div>
@@ -1168,6 +1173,12 @@ function SideProjectForm({
   onSave: (training: EditableSideProject) => void;
   onCancel: () => void;
 }) {
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialSideProject)
+      ? initialSideProject.period.to === null
+      : false
+  );
+
   const form = useForm<TrainingForm>({
     name: {
       value: initialSideProject?.name ?? "",
@@ -1208,16 +1219,13 @@ function SideProjectForm({
           message: "cannot be in the future",
         }),
       ],
+      validateUnless: ongoing,
     },
     summary: {
       value: initialSideProject?.summary ?? "",
       validations: [validatePresence],
     },
   });
-
-  const [ongoing, setOngoing] = useState<boolean>(
-    isPersisted(initialSideProject) ? form.values.to === null : false
-  );
 
   return (
     <div>

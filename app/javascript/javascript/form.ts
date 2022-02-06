@@ -13,6 +13,7 @@ type FormSpec<F> = {
   [K in keyof F]: {
     value: F[K];
     validations: Validation<F>[];
+    validateUnless?: boolean;
   };
 };
 
@@ -20,8 +21,8 @@ type FormErrors<F> = { [K in keyof F]: string[] };
 
 export type Form<T> = {
   values: { [K in keyof T]: T[K] };
-  errors: { [K in keyof T]: string[] };
-  validate: (fieldsToValidate?: (keyof T)[]) => { [K in keyof T]: string[] };
+  errors: FormErrors<T>;
+  validate: (fieldsToValidate?: (keyof T)[]) => boolean;
   update: ({ field, value }: { field: keyof T; value: T[keyof T] }) => void;
 };
 
@@ -52,6 +53,8 @@ export function useForm<FormValues>(
   }, [changedFields]);
 
   function errorsFor(field: keyof FormValues) {
+    if (spec[field].validateUnless) return [];
+
     return spec[field].validations
       .map((validation) => validation({ form: values, field }))
       .filter(isNotNullOrUndefined);
@@ -71,7 +74,7 @@ export function useForm<FormValues>(
   }
 
   function validate(fieldsToValidate?: (keyof FormValues)[]) {
-    const xxx = (Object.keys(spec) as (keyof FormValues)[]).reduce(
+    const newErrors = (Object.keys(spec) as (keyof FormValues)[]).reduce(
       (result, field: keyof FormValues) => {
         return {
           ...result,
@@ -85,12 +88,22 @@ export function useForm<FormValues>(
     );
 
     setChangedFields([]);
-    setErrors(xxx);
+    setErrors(newErrors);
 
-    return xxx;
+    return isValid(newErrors);
   }
 
   return { values, errors, validate, update };
+}
+
+function isValid<T>(errors: FormErrors<T>) {
+  let result: boolean = true;
+
+  (Object.values(errors) as string[][]).forEach((errors) => {
+    if (errors.length > 0) result = false;
+  });
+
+  return result;
 }
 
 export function validatePresence<Form>({ form, field }: ValidationProps<Form>) {
