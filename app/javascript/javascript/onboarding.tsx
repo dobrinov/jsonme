@@ -22,6 +22,7 @@ import { FormTextInput, TextInput } from "./TextInput";
 import { FormDatepickerInput } from "./DatepickerInput";
 import { MonthAndYear, Period } from "./time";
 import { ToggleInput } from "./ToggleInput";
+import { ModalProvider, useModal } from "./ModalProvider";
 
 type Step = {
   title: string;
@@ -135,7 +136,7 @@ export function Onboarding() {
   const location = city && country ? { city, country } : undefined;
 
   return (
-    <>
+    <ModalProvider>
       <div className="left">
         <div className="wizard">
           <h1>{STEPS[step].title}</h1>
@@ -371,7 +372,7 @@ export function Onboarding() {
         </div>
       </div>
       <div className="background" />
-    </>
+    </ModalProvider>
   );
 }
 
@@ -882,6 +883,8 @@ function EmploymentsStep({
   const [selectedEmployment, setSelectedEmployment] =
     useState<EditableEmployment>();
 
+  const { showModal, hideModal } = useModal();
+
   return (
     <>
       <div {...drilldown.containerProps} className="foo">
@@ -905,17 +908,37 @@ function EmploymentsStep({
         <div {...drilldown.primaryProps} className="primary">
           <ul>
             {employments.map((employment, index) => (
-              <Entry
-                key={employment.employer.name}
-                title={employment.employer.name}
-                onEdit={() => {
-                  setSelectedEmployment({ ...employment, index });
-                  drilldown.animate();
-                }}
-                onDelete={() => {
-                  onDeleteEmployment({ ...employment, index });
-                }}
-              />
+              <div className="entry" key={employment.employer.name}>
+                <div>
+                  <a
+                    onClick={() => {
+                      setSelectedEmployment({ ...employment, index });
+                      drilldown.animate();
+                    }}
+                  >
+                    Edit
+                  </a>
+                  <a
+                    onClick={() => {
+                      onDeleteEmployment({ ...employment, index });
+                    }}
+                  >
+                    Delete
+                  </a>
+                  <a
+                    onClick={() =>
+                      showModal(
+                        <div>
+                          <a onClick={hideModal}>Closedas</a>
+                        </div>
+                      )
+                    }
+                  >
+                    Add role
+                  </a>
+                </div>
+                <span>{employment.employer.name}</span>
+              </div>
             ))}
           </ul>
           <button
