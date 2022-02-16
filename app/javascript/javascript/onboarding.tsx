@@ -121,6 +121,85 @@ const STEPS: Step[] = [
   { title: "Voilà", description: "Your resume is ready." },
 ];
 
+function Foo() {
+  const { showModal } = useModal();
+
+  return <a onClick={() => showModal(<EmploymentRoleModal />)}>Add role</a>;
+}
+
+function EmploymentRoleModal() {
+  const { hideModal } = useModal();
+
+  return (
+    <div>
+      <header>
+        <strong>Add role</strong>
+      </header>
+      <section>
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+        a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a
+      </section>
+      <footer>
+        <button type="button" className="button" onClick={hideModal}>
+          Close
+        </button>
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={hideModal}
+        >
+          Add
+        </button>
+      </footer>
+    </div>
+  );
+}
+
 export function Onboarding() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState<string>();
@@ -146,6 +225,7 @@ export function Onboarding() {
               case 0:
                 return (
                   <>
+                    <Foo />
                     <TextInput
                       name="name"
                       label="Name"
@@ -929,7 +1009,7 @@ function EmploymentsStep({
                     onClick={() =>
                       showModal(
                         <div>
-                          <a onClick={hideModal}>Closedas</a>
+                          <a onClick={hideModal}>Close</a>
                         </div>
                       )
                     }
