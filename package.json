@@ -24,6 +24,9 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "fork-ts-checker-webpack-plugin": "^6.4.0"
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
+    "fork-ts-checker-webpack-plugin": "^6.4.0",
+    "react-refresh": "^0.11.0",
+    "type-fest": "^2.12.0"
   }
 }

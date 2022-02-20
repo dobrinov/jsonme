@@ -94,7 +94,8 @@ module.exports = function(api) {
         {
           removeImport: true
         }
-      ]
+      ],
+      isDevelopmentEnv && 'react-refresh/babel'
     ].filter(Boolean)
   }
 }

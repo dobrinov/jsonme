@@ -1,4 +1,5 @@
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin")
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const path = require("path")
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
@@ -14,5 +15,7 @@ environment.plugins.append(
     async: false,
   })
 );
+
+environment.plugins.append("ReactRefreshWebpackPlugin", new ReactRefreshWebpackPlugin());
 
 module.exports = environment.toWebpackConfig()
