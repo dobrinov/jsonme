@@ -1,8 +1,10 @@
 import React from "react";
-import { capitalize, startingYear } from "../utils";
-import { ProfilePicture } from "./ProfilePicture";
+import { addProtocol, capitalize, startingYear } from "../utils";
+import { Avatar } from "../Avatar";
 import { Section } from "./Section";
 import { Timeline, TimelineEvent } from "./Timeline";
+import { Name } from "./Name";
+import { Summary } from "./Summary";
 
 type Period = { from: string; to: string | null };
 
@@ -96,9 +98,9 @@ export function Resume({
 }: Resume) {
   return (
     <div className="resume">
-      {image && <ProfilePicture url={image} />}
-      <h1 className="name">{name}</h1>
-      <div className="summary">{summary}</div>
+      <Avatar url={image} />
+      <Name value={name} />
+      <Summary value={summary} />
 
       {location && (
         <Section title="Location">
@@ -114,43 +116,10 @@ export function Resume({
                 title={employment.employer.name}
                 website={employment.employer.website}
                 period={employment.period}
-                className="employment-summary"
+                className="employment"
               >
                 <p>{employment.summary}</p>
-                <ul>
-                  {employment.roles &&
-                    employment.roles.length > 0 &&
-                    employment.roles.map((role) => (
-                      <li className="role">
-                        <h4>{role.title}</h4>
-                        <p>{role.summary}</p>
-                        {role.majorAchievements &&
-                          role.majorAchievements.length > 0 && (
-                            <>
-                              <aside>Major achievements:</aside>
-                              <ul>
-                                {role.majorAchievements?.map((achievement) => (
-                                  <li className="achievement">
-                                    <h5>{achievement.title}</h5>
-                                    <p>{achievement.summary}</p>
-                                    <ul>
-                                      {achievement.technologies.map(
-                                        (technology) => (
-                                          <li>
-                                            <span>{technology}</span>
-                                            <div></div>
-                                          </li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </li>
-                                ))}
-                              </ul>
-                            </>
-                          )}
-                      </li>
-                    ))}
-                </ul>
+                <Roles roles={employment.roles} />
               </TimelineEvent>
             ))}
           </Timeline>
@@ -191,7 +160,7 @@ export function Resume({
 
       {technologies && technologies.length > 0 && (
         <Section title="Technologies" subtitle="self evaluation">
-          <div className="responsive-table">
+          <div className="technology-stack">
             <table>
               <thead>
                 <tr>
@@ -208,7 +177,7 @@ export function Resume({
                   <tr>
                     <th>
                       <a
-                        href={technology.website}
+                        href={addProtocol(technology.website)}
                         target="_blank"
                         rel="nofollow"
                       >
@@ -228,5 +197,40 @@ export function Resume({
         </Section>
       )}
     </div>
+  );
+}
+
+function Roles({ roles }: { roles?: Role[] }) {
+  if (!roles) return null;
+
+  return (
+    <ul>
+      {roles.map((role) => (
+        <li className="enployment__role">
+          <h4>{role.title}</h4>
+          <p>{role.summary}</p>
+          {role.majorAchievements && role.majorAchievements.length > 0 && (
+            <>
+              <aside>Major achievements:</aside>
+              <ul>
+                {role.majorAchievements?.map((achievement) => (
+                  <li className="enployment__achievement">
+                    <h5>{achievement.title}</h5>
+                    <p>{achievement.summary}</p>
+                    <ul>
+                      {achievement.technologies.map((technology) => (
+                        <li>
+                          <span className="badge">{technology}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 }

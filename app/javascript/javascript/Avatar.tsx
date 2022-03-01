@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-export function ProfilePicture({ url }: { url: string }) {
+export function Avatar({ url }: { url?: string }) {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    setHasError(false);
+    url && setHasError(false);
   }, [url]);
+
+  if (!url) return null;
 
   const image = hasError ? "whitenoice.gif" : url;
 
   return (
-    <div className="profile-picture">
+    <div className="avatar">
       <img src={image} onError={() => setHasError(true)}></img>
     </div>
   );

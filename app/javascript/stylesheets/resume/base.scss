@@ -1,0 +1,8 @@
+.resume { @apply text-center relative; }
+
+.resume__name {
+  font-family: 'Patua One', sans-serif;
+  @apply text-5xl mb-2;
+}
+
+.resume__summary { @apply mb-8 text-center; }

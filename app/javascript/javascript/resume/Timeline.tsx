@@ -37,7 +37,7 @@ export function TimelineEvent({
   const website = rawWebsite && addProtocol(rawWebsite);
 
   return (
-    <li className={className}>
+    <li>
       <div className="timeline__event__summary">
         <h3>{title}</h3>
         <aside />
@@ -48,7 +48,7 @@ export function TimelineEvent({
         )}
         <div>{`${from} - ${to}`}</div>
       </div>
-      <div className="timeline__event__details">{children}</div>
+      <div className={`timeline__event__details ${className}`}>{children}</div>
     </li>
   );
 }

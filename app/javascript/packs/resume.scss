@@ -3,9 +3,11 @@
 @import "tailwindcss/utilities";
 @import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
 
-@import '../stylesheets/resume.scss';
+@import '../stylesheets/avatar.scss';
+@import '../stylesheets/resume/base.scss';
 @import '../stylesheets/resume/section.scss';
 @import '../stylesheets/resume/timeline.scss';
 @import '../stylesheets/resume/employment.scss';
+@import '../stylesheets/resume/technology-stack.scss';
 
 .centered-container { @apply p-5 max-w-screen-xl mx-auto text-center relative; }
