@@ -1,0 +1,43 @@
+.timeline {
+  @apply flex flex-col;
+
+  > aside { font-family: 'Patua One', sans-serif; }
+
+  > aside:first-child {
+    background-image: url(../images/timeline-arrow.svg);
+    @apply flex-grow-0 flex-shrink-0 text-gray-300 pb-6 h-11 bg-no-repeat text-center bg-left-bottom w-12 text-sm sm:bg-bottom sm:w-full sm:text-base;
+  }
+
+  > aside:last-child {
+    background-image: url(../images/timeline-start.svg);
+    @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat text-center w-12 sm:w-full;
+  }
+
+  > div {
+    background-image: url(../images/timeline-line.svg);
+    @apply flex flex-row py-4 bg-repeat-y bg-left sm:bg-center;
+  }
+
+  > div > ul { @apply block w-full m-0 p-0 space-y-9; }
+  > div > ul > li { @apply flex flex-col w-full sm:flex-row; }
+  > div > ul > li > *:first-child { @apply relative flex-none w-full pl-12 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right; }
+  > div > ul > li > *:last-child { @apply relative flex-none text-left pl-12 text-base w-full sm:w-1/2 sm:pl-6; }
+}
+
+.timeline__event__summary {
+  > h3 {
+    font-family: 'Patua One', sans-serif;
+
+    @apply text-xl m-0 p-0 leading-5;
+  }
+
+  > aside { @apply absolute rounded-full bg-black w-4 h-4 top-0.5 left-4 right-auto sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto; }
+  > div { @apply text-xs text-gray-600; }
+  > a,
+  > span { @apply text-gray-400 text-xs block; }
+  > a { @apply hover:underline; }
+}
+
+.timeline__event__details {
+  @apply text-gray-600 mb-4 leading-5;
+}

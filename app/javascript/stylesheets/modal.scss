@@ -1,18 +1,18 @@
 .modal {
   @apply fixed z-10 inset-0 h-full overflow-hidden;
 
-  > div { @apply flex items-center h-full justify-center p-4 text-center max-h-full; }
+  > div { @apply flex items-center h-full justify-center text-center max-h-full; }
 
   .modal-overlay { @apply fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity; }
-  .modal-dialog { @apply flex bg-white rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform w-full max-h-full max-w-2xl; }
+  .modal-dialog { @apply flex bg-white rounded-lg text-left shadow-xl transform w-full max-h-full max-w-2xl; }
   .modal-dialog strong { @apply text-lg leading-6 font-medium text-gray-900; }
 
-  .modal-dialog > div { @apply max-h-full flex flex-col; }
-  header { @apply mb-3; }
-  header > strong { @apply text-lg; }
+  .modal-dialog > div { @apply max-h-full flex flex-col flex-grow; }
+  header { @apply p-4 mb-4 pb-0; }
+  header > strong { @apply text-2xl; }
 
-  section { @apply flex-grow overflow-y-scroll; }
+  section { @apply px-4 flex-grow overflow-y-scroll; }
 
-  footer { @apply mt-3 text-right; }
+  footer { @apply p-4 pt-0 mt-4 text-right; }
   footer > .button + .button { @apply ml-3; }
 }

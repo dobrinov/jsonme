@@ -53,7 +53,7 @@ export function TextInput({
   );
 }
 
-export function FormTextInput({
+export function FormTextInput<T>({
   form,
   name,
   label,
