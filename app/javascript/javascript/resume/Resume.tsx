@@ -3,10 +3,7 @@ import { addProtocol, capitalize, startingYear } from "../utils";
 import { Avatar } from "../Avatar";
 import { Section } from "./Section";
 import { Timeline, TimelineEvent } from "./Timeline";
-import { Name } from "./Name";
-import { Summary } from "./Summary";
 import { EmptyCollectionButton } from "./EmptyCollectionButton";
-import { Description } from "@headlessui/react/dist/components/description/description";
 
 type Period = { from: string; to: string | null };
 
@@ -74,8 +71,8 @@ export type SideProject = {
 };
 
 type Resume = {
-  name: string;
-  summary: string;
+  name?: string;
+  summary?: string;
   image?: string;
   location?: Location;
   employments?: Employment[];
@@ -105,55 +102,52 @@ export function Resume({
 
   return (
     <div className="resume">
-      <Avatar url={image} />
-      <Name value={name} />
-      <Summary value={summary} />
+      <Picture url={image} editable={editable} />
+      <Name value={name} editable={editable} />
+      <Summary value={summary} editable={editable} />
       <Location value={location} editable={editable} />
       <Experience employments={employments} editable={editable} />
       <Education trainings={trainings} editable={editable} />
       <SideHustle projects={sideProjects} editable={editable} />
       <TechnologyStack technologies={technologies} editable={editable} />
-
-      {technologies && technologies.length > 0 && (
-        <Section title="Technologies" subtitle="self evaluation">
-          <div className="technology-stack">
-            <table>
-              <thead>
-                <tr>
-                  <th>&nbsp;</th>
-                  <th>Task complexity</th>
-                  <th>Knowledge of features</th>
-                  <th>Knowledge of best practices</th>
-                  <th>Can mentor others?</th>
-                  <th>Used recently?</th>
-                </tr>
-              </thead>
-              <tbody>
-                {technologies.map((technology) => (
-                  <tr key={technology.name}>
-                    <th>
-                      <a
-                        href={addProtocol(technology.website)}
-                        target="_blank"
-                        rel="nofollow"
-                      >
-                        {technology.name}
-                      </a>
-                    </th>
-                    <td>{capitalize(technology.taskComplexity)}</td>
-                    <td>{capitalize(technology.knowledgeOfFeatures)}</td>
-                    <td>{capitalize(technology.knowledgeOfBestPractices)}</td>
-                    <td>{technology.canMentor ? "Yes" : "No"}</td>
-                    <td>{technology.recentlyUsed ? "Yes" : "No"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Section>
-      )}
     </div>
   );
+}
+
+function Picture({ url, editable }: { url?: string; editable: boolean }) {
+  if (url === undefined) {
+    if (editable) {
+      return <p>PICTURE PLACEHOLDER</p>;
+    } else {
+      return null;
+    }
+  }
+
+  return <Avatar url={url} />;
+}
+
+function Name({ value, editable }: { value?: string; editable: boolean }) {
+  if (value === undefined) {
+    if (editable) {
+      return <p>NAME PLACEHOLDER</p>;
+    } else {
+      return null;
+    }
+  }
+
+  return <h1 className="resume__name">{value}</h1>;
+}
+
+function Summary({ value, editable }: { value?: string; editable: boolean }) {
+  if (value === undefined) {
+    if (editable) {
+      return <p>SUMMARY PLACEHOLDER</p>;
+    } else {
+      return null;
+    }
+  }
+
+  return <div className="resume__summary">{value}</div>;
 }
 
 function Location({
