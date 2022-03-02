@@ -1,10 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { addProtocol, capitalize, startingYear } from "../utils";
 import { Avatar } from "../Avatar";
 import { Section } from "./Section";
 import { Timeline, TimelineEvent } from "./Timeline";
 import { Name } from "./Name";
 import { Summary } from "./Summary";
+import { EmptyCollectionButton } from "./EmptyCollectionButton";
+import { Description } from "@headlessui/react/dist/components/description/description";
 
 type Period = { from: string; to: string | null };
 
@@ -82,6 +84,8 @@ type Resume = {
   technologies?: Technology[];
 };
 
+type EditableResume = { editable?: boolean } & Resume;
+
 export function parseResume(raw: any) {
   return JSON.parse(raw) as Resume;
 }
@@ -95,68 +99,20 @@ export function Resume({
   trainings,
   sideProjects,
   technologies,
-}: Resume) {
+  editable: rawEditable,
+}: EditableResume) {
+  const editable = !!rawEditable;
+
   return (
     <div className="resume">
       <Avatar url={image} />
       <Name value={name} />
       <Summary value={summary} />
-
-      {location && (
-        <Section title="Location">
-          <p>{`${location.city}, ${location.country}`}</p>
-        </Section>
-      )}
-
-      {employments && employments.length > 0 && (
-        <Section title="Experience">
-          <Timeline startingYear={startingYear(employments)}>
-            {employments.map((employment) => (
-              <TimelineEvent
-                title={employment.employer.name}
-                website={employment.employer.website}
-                period={employment.period}
-                className="employment"
-              >
-                <p>{employment.summary}</p>
-                <Roles roles={employment.roles} />
-              </TimelineEvent>
-            ))}
-          </Timeline>
-        </Section>
-      )}
-
-      {trainings && trainings.length > 0 && (
-        <Section title="Education">
-          <Timeline startingYear={startingYear(trainings)}>
-            {trainings.map((training) => (
-              <TimelineEvent
-                title={training.institution.name}
-                website={training.institution.website}
-                period={training.period}
-              >
-                {training.summary}
-              </TimelineEvent>
-            ))}
-          </Timeline>
-        </Section>
-      )}
-
-      {sideProjects && sideProjects.length > 0 && (
-        <Section title="Side projects">
-          <Timeline startingYear={startingYear(sideProjects)}>
-            {sideProjects.map((sideProject) => (
-              <TimelineEvent
-                title={sideProject.name}
-                website={sideProject.website}
-                period={sideProject.period}
-              >
-                {sideProject.summary}
-              </TimelineEvent>
-            ))}
-          </Timeline>
-        </Section>
-      )}
+      <Location value={location} editable={editable} />
+      <Experience employments={employments} editable={editable} />
+      <Education trainings={trainings} editable={editable} />
+      <SideHustle projects={sideProjects} editable={editable} />
+      <TechnologyStack technologies={technologies} editable={editable} />
 
       {technologies && technologies.length > 0 && (
         <Section title="Technologies" subtitle="self evaluation">
@@ -174,7 +130,7 @@ export function Resume({
               </thead>
               <tbody>
                 {technologies.map((technology) => (
-                  <tr>
+                  <tr key={technology.name}>
                     <th>
                       <a
                         href={addProtocol(technology.website)}
@@ -200,13 +156,82 @@ export function Resume({
   );
 }
 
+function Location({
+  value,
+  editable,
+}: {
+  value?: Location;
+  editable: boolean;
+}) {
+  if (value === undefined) {
+    if (editable) {
+      return <p>LOCATION PLACEHOLDER</p>;
+    } else {
+      return null;
+    }
+  }
+
+  const { city, country } = value;
+
+  return (
+    <Section title="Location">
+      <p>{`${city}, ${country}`}</p>
+    </Section>
+  );
+}
+
+function Experience({
+  employments,
+  editable,
+}: {
+  employments?: Employment[];
+  editable: boolean;
+}) {
+  if (employments === undefined || employments.length === 0) {
+    if (editable) {
+      return (
+        <Section title="Experience" isPlaceholder>
+          <EmptyCollectionButton
+            title="Add an employment"
+            description="This here is a description about the section"
+            onClick={() => {
+              alert("clicked");
+            }}
+          />
+        </Section>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  return (
+    <Section title="Experience">
+      <Timeline startingYear={startingYear(employments)}>
+        {employments.map((employment) => (
+          <TimelineEvent
+            key={employment.employer.name}
+            title={employment.employer.name}
+            website={employment.employer.website}
+            period={employment.period}
+            className="employment"
+          >
+            <p>{employment.summary}</p>
+            <Roles roles={employment.roles} />
+          </TimelineEvent>
+        ))}
+      </Timeline>
+    </Section>
+  );
+}
+
 function Roles({ roles }: { roles?: Role[] }) {
   if (!roles) return null;
 
   return (
     <ul>
       {roles.map((role) => (
-        <li className="enployment__role">
+        <li key={role.title} className="enployment__role">
           <h4>{role.title}</h4>
           <p>{role.summary}</p>
           {role.majorAchievements && role.majorAchievements.length > 0 && (
@@ -214,12 +239,15 @@ function Roles({ roles }: { roles?: Role[] }) {
               <aside>Major achievements:</aside>
               <ul>
                 {role.majorAchievements?.map((achievement) => (
-                  <li className="enployment__achievement">
+                  <li
+                    key={achievement.title}
+                    className="enployment__achievement"
+                  >
                     <h5>{achievement.title}</h5>
                     <p>{achievement.summary}</p>
                     <ul>
                       {achievement.technologies.map((technology) => (
-                        <li>
+                        <li key={technology}>
                           <span className="badge">{technology}</span>
                         </li>
                       ))}
@@ -232,5 +260,184 @@ function Roles({ roles }: { roles?: Role[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+function Education({
+  trainings,
+  editable,
+}: {
+  trainings?: Training[];
+  editable: boolean;
+}) {
+  return (
+    <EditableTimelineSection
+      collection={trainings}
+      editable={editable}
+      sectionTitle="Education"
+      placeholder={{
+        title: "Add a training",
+        description: "This here is a description about the section",
+      }}
+      renderEntry={(training: Training) => (
+        <TimelineEvent
+          key={training.institution.name}
+          title={training.institution.name}
+          website={training.institution.website}
+          period={training.period}
+        >
+          {training.summary}
+        </TimelineEvent>
+      )}
+    />
+  );
+}
+
+function SideHustle({
+  projects,
+  editable,
+}: {
+  projects?: SideProject[];
+  editable: boolean;
+}) {
+  return (
+    <EditableTimelineSection
+      collection={projects}
+      editable={editable}
+      sectionTitle="Side projects"
+      placeholder={{
+        title: "Add a side project",
+        description: "This here is a description about the section",
+      }}
+      renderEntry={(project: SideProject) => (
+        <TimelineEvent
+          key={project.name}
+          title={project.name}
+          website={project.website}
+          period={project.period}
+        >
+          {project.summary}
+        </TimelineEvent>
+      )}
+    />
+  );
+}
+
+function TechnologyStack({
+  technologies,
+  editable,
+}: {
+  technologies?: Technology[];
+  editable: boolean;
+}) {
+  return (
+    <EditableSection
+      collection={technologies}
+      editable={editable}
+      sectionTitle="Technologies"
+      placeholder={{
+        title: "Add a technology",
+        description: "This here is a description about the section",
+      }}
+    >
+      {technologies && technologies.length > 0 && (
+        <div className="technology-stack">
+          <table>
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Task complexity</th>
+                <th>Knowledge of features</th>
+                <th>Knowledge of best practices</th>
+                <th>Can mentor others?</th>
+                <th>Used recently?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {technologies.map((technology) => (
+                <tr key={technology.name}>
+                  <th>
+                    <a
+                      href={addProtocol(technology.website)}
+                      target="_blank"
+                      rel="nofollow"
+                    >
+                      {technology.name}
+                    </a>
+                  </th>
+                  <td>{capitalize(technology.taskComplexity)}</td>
+                  <td>{capitalize(technology.knowledgeOfFeatures)}</td>
+                  <td>{capitalize(technology.knowledgeOfBestPractices)}</td>
+                  <td>{technology.canMentor ? "Yes" : "No"}</td>
+                  <td>{technology.recentlyUsed ? "Yes" : "No"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </EditableSection>
+  );
+}
+
+function EditableSection<T>({
+  collection,
+  editable,
+  sectionTitle,
+  placeholder,
+  children,
+}: {
+  collection?: T[];
+  editable: boolean;
+  sectionTitle: string;
+  placeholder: { title: string; description: string };
+  children: ReactNode;
+}) {
+  if (collection === undefined || collection.length === 0) {
+    if (editable) {
+      return (
+        <Section title={sectionTitle} isPlaceholder>
+          <EmptyCollectionButton
+            {...placeholder}
+            onClick={() => {
+              alert("clicked");
+            }}
+          />
+        </Section>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  return <Section title={sectionTitle}>{children}</Section>;
+}
+
+function EditableTimelineSection<T extends { period: { from: string } }>({
+  collection,
+  editable,
+  sectionTitle,
+  placeholder,
+  renderEntry,
+}: {
+  collection?: T[];
+  editable: boolean;
+  sectionTitle: string;
+  placeholder: { title: string; description: string };
+  renderEntry: (entry: T) => ReactNode;
+}) {
+  return (
+    <EditableSection
+      collection={collection}
+      editable={editable}
+      sectionTitle={sectionTitle}
+      placeholder={placeholder}
+    >
+      {collection && collection.length > 0 && (
+        <Timeline startingYear={startingYear(collection)}>
+          {collection.map(renderEntry)}
+        </Timeline>
+      )}
+    </EditableSection>
   );
 }

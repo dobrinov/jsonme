@@ -1,6 +1,7 @@
 class SubmissionsController < ApplicationController
   def resume
-    @resume = GithubFetcher.execute('dobrinov').to_s
+    # @resume = GithubFetcher.execute('dobrinov').to_s
+    @resume = File.read Rails.root.join('resume.json')
     render layout: 'resume'
   end
 

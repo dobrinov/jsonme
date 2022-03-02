@@ -7,3 +7,8 @@
   }
 }
 
+.section--placeholder {
+  .section__heading {
+    @apply text-gray-200;
+  }
+}
