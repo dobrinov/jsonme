@@ -68,26 +68,3 @@ export class MonthAndYear {
     });
   }
 }
-
-export class Period {
-  from: MonthAndYear;
-  to: MonthAndYear | null;
-
-  static parse(from: string, to: string) {
-    const parsedFrom = MonthAndYear.parse(from);
-    const parsedTo = MonthAndYear.parse(to) ?? null;
-
-    return parsedFrom ? new Period(parsedFrom, parsedTo) : undefined;
-  }
-
-  constructor(from: MonthAndYear, to: MonthAndYear | null) {
-    this.from = from;
-    this.to = to;
-  }
-
-  toString(): string {
-    return `${this.from.toFormattedString()} - ${
-      this.to !== null ? this.to.toFormattedString() : "Present"
-    }`;
-  }
-}

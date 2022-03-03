@@ -1,8 +1,22 @@
 .resume { @apply text-center relative; }
 
+.resume__picture-placeholder {
+  @apply relative inline-flex items-center justify-center text-center bg-white h-40 w-40 mb-4 border-2 border-dashed rounded-full text-gray-400 border-gray-200 mt-3 p-5 hover:border-gray-400 hover:text-gray-600 hover:cursor-pointer;
+}
+
+.resume__picture-placeholder svg {
+  width: 85%;
+  height: 85%;
+}
+
 .resume__name {
   font-family: 'Patua One', sans-serif;
   @apply text-5xl mb-2;
 }
 
+.resume__name--blank {
+  @apply inline-block border-2 border-dashed rounded-md text-gray-400 border-gray-200 px-5 -mx-5 py-1 -my-1 hover:border-gray-400 hover:text-gray-600 hover:cursor-pointer;
+}
+
 .resume__summary { @apply mb-8 text-center; }
+.resume__summary--placeholder { @apply border-2 border-dashed rounded-md text-gray-400 border-gray-200 mt-3 p-5 hover:border-gray-400 hover:text-gray-600 hover:cursor-pointer; }

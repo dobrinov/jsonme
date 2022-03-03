@@ -1,6 +1,6 @@
 import React from "react";
 
-export function EmptyCollectionButton({
+export function Blank({
   title,
   description,
   onClick,
@@ -10,7 +10,7 @@ export function EmptyCollectionButton({
   onClick?: () => void;
 }) {
   return (
-    <div className="empty-collection-button" onClick={onClick}>
+    <div className="blank" onClick={onClick}>
       <strong>{title}</strong>
       <p>{description}</p>
     </div>

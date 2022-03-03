@@ -1,22 +1,21 @@
 import classnames from "classnames";
 import React, { ReactNode } from "react";
-import { EmptyCollectionButton } from "./EmptyCollectionButton";
 
 export function Section({
   title,
   subtitle,
-  isPlaceholder,
+  blank,
   children,
 }: {
   title: string;
   subtitle?: string;
-  isPlaceholder?: boolean;
+  blank?: boolean;
   children: ReactNode;
 }) {
   return (
     <div
       className={classnames("section", {
-        "section--placeholder": isPlaceholder,
+        "section--blank": blank,
       })}
     >
       <h2 className="section__heading">{title}</h2>

@@ -3,7 +3,7 @@ import { addProtocol, capitalize, startingYear } from "../utils";
 import { Avatar } from "../Avatar";
 import { Section } from "./Section";
 import { Timeline, TimelineEvent } from "./Timeline";
-import { EmptyCollectionButton } from "./EmptyCollectionButton";
+import { Blank } from "./Blank";
 
 type Period = { from: string; to: string | null };
 
@@ -81,7 +81,10 @@ type Resume = {
   technologies?: Technology[];
 };
 
-type EditableResume = { editable?: boolean } & Resume;
+type EditableResume = {
+  editable: boolean;
+  onEdit: (resume: Resume) => void;
+} & Resume;
 
 export function parseResume(raw: any) {
   return JSON.parse(raw) as Resume;
@@ -97,6 +100,7 @@ export function Resume({
   sideProjects,
   technologies,
   editable: rawEditable,
+  onEdit,
 }: EditableResume) {
   const editable = !!rawEditable;
 
@@ -117,7 +121,28 @@ export function Resume({
 function Picture({ url, editable }: { url?: string; editable: boolean }) {
   if (url === undefined) {
     if (editable) {
-      return <p>PICTURE PLACEHOLDER</p>;
+      return (
+        <div>
+          <div
+            className="resume__picture-placeholder"
+            onClick={() => {
+              alert("clicked");
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              className="bi bi-incognito"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.736 1.968l-.892 3.269-.014.058C2.113 5.568 1 6.006 1 6.5 1 7.328 4.134 8 8 8s7-.672 7-1.5c0-.494-1.113-.932-2.83-1.205a1.032 1.032 0 00-.014-.058l-.892-3.27c-.146-.533-.698-.849-1.239-.734C9.411 1.363 8.62 1.5 8 1.5c-.62 0-1.411-.136-2.025-.267-.541-.115-1.093.2-1.239.735zm.015 3.867a.25.25 0 01.274-.224c.9.092 1.91.143 2.975.143a29.58 29.58 0 002.975-.143.25.25 0 01.05.498c-.918.093-1.944.145-3.025.145s-2.107-.052-3.025-.145a.25.25 0 01-.224-.274zM3.5 10h2a.5.5 0 01.5.5v1a1.5 1.5 0 01-3 0v-1a.5.5 0 01.5-.5zm-1.5.5c0-.175.03-.344.085-.5H2a.5.5 0 010-1h3.5a1.5 1.5 0 011.488 1.312 3.5 3.5 0 012.024 0A1.5 1.5 0 0110.5 9H14a.5.5 0 010 1h-.085c.055.156.085.325.085.5v1a2.5 2.5 0 01-5 0v-.14l-.21-.07a2.5 2.5 0 00-1.58 0l-.21.07v.14a2.5 2.5 0 01-5 0v-1zm8.5-.5h2a.5.5 0 01.5.5v1a1.5 1.5 0 01-3 0v-1a.5.5 0 01.5-.5z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      );
     } else {
       return null;
     }
@@ -129,7 +154,16 @@ function Picture({ url, editable }: { url?: string; editable: boolean }) {
 function Name({ value, editable }: { value?: string; editable: boolean }) {
   if (value === undefined) {
     if (editable) {
-      return <p>NAME PLACEHOLDER</p>;
+      return (
+        <h1
+          className="resume__name resume__name--blank"
+          onClick={() => {
+            alert("clicked");
+          }}
+        >
+          John Doe
+        </h1>
+      );
     } else {
       return null;
     }
@@ -141,7 +175,17 @@ function Name({ value, editable }: { value?: string; editable: boolean }) {
 function Summary({ value, editable }: { value?: string; editable: boolean }) {
   if (value === undefined) {
     if (editable) {
-      return <p>SUMMARY PLACEHOLDER</p>;
+      return (
+        <div className="resume__summary">
+          <Blank
+            title="Add a summary"
+            description="This here is a description about the section"
+            onClick={() => {
+              alert("clicked");
+            }}
+          />
+        </div>
+      );
     } else {
       return null;
     }
@@ -159,7 +203,17 @@ function Location({
 }) {
   if (value === undefined) {
     if (editable) {
-      return <p>LOCATION PLACEHOLDER</p>;
+      return (
+        <Section title="Location" blank>
+          <Blank
+            title="Add a location"
+            description="This here is a description about the section"
+            onClick={() => {
+              alert("clicked");
+            }}
+          />
+        </Section>
+      );
     } else {
       return null;
     }
@@ -184,8 +238,8 @@ function Experience({
   if (employments === undefined || employments.length === 0) {
     if (editable) {
       return (
-        <Section title="Experience" isPlaceholder>
-          <EmptyCollectionButton
+        <Section title="Experience" blank>
+          <Blank
             title="Add an employment"
             description="This here is a description about the section"
             onClick={() => {
@@ -390,8 +444,8 @@ function EditableSection<T>({
   if (collection === undefined || collection.length === 0) {
     if (editable) {
       return (
-        <Section title={sectionTitle} isPlaceholder>
-          <EmptyCollectionButton
+        <Section title={sectionTitle} blank>
+          <Blank
             {...placeholder}
             onClick={() => {
               alert("clicked");
