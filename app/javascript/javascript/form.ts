@@ -20,10 +20,10 @@ type FormSpec<F> = {
 type FormErrors<F> = { [K in keyof F]: string[] };
 
 export type Form<T> = {
-  values: { [K in keyof T]: T[K] };
+  values: T;
   errors: FormErrors<T>;
   validate: (fieldsToValidate?: (keyof T)[]) => boolean;
-  update: ({ field, value }: { field: keyof T; value: T[keyof T] }) => void;
+  update: ({ field, value }: { field: keyof T; value: any }) => void;
 };
 
 const URL_REGEX =
@@ -167,3 +167,7 @@ export function monthAndYearBeforeOrEqualTo<Form>({
     return value.isBeforeOrEqual(otherValue) ? null : message;
   };
 }
+
+export type KeysOfType<O, T> = {
+  [K in keyof O]: O[K] extends T ? K : never;
+}[keyof O];

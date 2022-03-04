@@ -9,15 +9,16 @@ import { FormTextInput } from "../TextInput";
 import { FormDatepickerInput } from "../DatepickerInput";
 import { ToggleInput } from "../ToggleInput";
 import { FormTextAreaInput } from "../TextAreaInput";
-import { useForm, validatePresence, validateUrlFormat } from "../form";
+import { useForm, validatePresence } from "../form";
+import { MonthAndYear } from "../time";
 
 type Persistable = { index: number };
 
-type Period = { from: string; to: string | null };
+export type Period = { from: MonthAndYear; to: MonthAndYear | null };
 
 type Employer = {
   name: string;
-  website: string;
+  website?: string;
 };
 
 export type Achievement = {
@@ -96,10 +97,6 @@ type EditableResume = {
   editable: boolean;
   onUpdate: (resume: Resume) => void;
 } & Resume;
-
-export function parseResume(raw: any) {
-  return JSON.parse(raw) as Resume;
-}
 
 export function Resume({
   name,
@@ -306,7 +303,10 @@ function Experience({
             period={employment.period}
             className="employment"
           >
-            <p>{employment.summary}</p>
+            <p>
+              {employment.summary ??
+                "The employment summary is missing or cannot be parsed"}
+            </p>
             <Roles roles={employment.roles} />
           </TimelineEvent>
         ))}
@@ -318,8 +318,8 @@ function Experience({
 type EmploymentForm = {
   name: string;
   website: string | null;
-  from: string | null;
-  to: string | null;
+  from: MonthAndYear | null;
+  to: MonthAndYear | null;
   summary: string;
 };
 
@@ -626,7 +626,7 @@ function EditableSection<T>({
   return <Section title={sectionTitle}>{children}</Section>;
 }
 
-function EditableTimelineSection<T extends { period: { from: string } }>({
+function EditableTimelineSection<T extends { period: Period }>({
   collection,
   editable,
   sectionTitle,
@@ -657,4 +657,80 @@ function EditableTimelineSection<T extends { period: { from: string } }>({
 
 function isPersisted(object?: Persistable | {}): object is Persistable {
   return object !== undefined && "index" in object;
+}
+
+export function parseResume(raw: any) {
+  const parsed = JSON.parse(raw);
+
+  const resume: Resume = {};
+
+  if ("image" in parsed) {
+    resume.image = parsed.image;
+  }
+
+  if ("name" in parsed) {
+    resume.name = parsed.name;
+  }
+
+  if ("summary" in parsed) {
+    resume.summary = parsed.summary;
+  }
+
+  if ("location" in parsed) {
+    resume.location = {
+      city: parsed.location.city,
+      country: parsed.location.country,
+    };
+  }
+
+  if ("employments" in parsed) {
+    parsed.employments.forEach((entry: any) => {
+      const employment: Employment = {
+        summary: "summary" in entry ? entry.summary : null,
+        employer: parseEmployer(entry.employer),
+        period: parsePeriod(entry.period),
+        roles: [],
+      };
+
+      resume.employments = [...(resume.employments ?? []), employment];
+    });
+  }
+
+  if ("trainings" in parsed) {
+  }
+
+  if ("sideProjects" in parsed) {
+  }
+
+  if ("technologies" in parsed) {
+  }
+
+  return resume;
+}
+
+function parseEmployer(raw: any) {
+  const employer: Employer = { name: "Unknown" };
+
+  if (!raw) return employer;
+
+  if ("name" in raw) {
+    employer.name = raw.name;
+  }
+
+  if ("website" in raw) {
+    employer.website = raw.website;
+  }
+
+  return employer;
+}
+
+function parsePeriod(raw: any) {
+  const period: Period = { from: MonthAndYear.current(), to: null };
+
+  if ("from" in raw) {
+    const from = MonthAndYear.parse(raw.from);
+    if (from) period.from = from;
+  }
+
+  return period;
 }

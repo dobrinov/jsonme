@@ -1,7 +1,7 @@
-export function startingYear(temporals: { period: { from: string } }[]) {
-  return Math.min(
-    ...temporals.map((temporal) => parseInt(temporal.period.from.split("-")[1]))
-  );
+import { Period } from "./resume/Resume";
+
+export function startingYear(temporals: { period: Period }[]) {
+  return Math.min(...temporals.map((temporal) => temporal.period.from.year));
 }
 
 export function monthAndYearToString(value: string | null | undefined) {

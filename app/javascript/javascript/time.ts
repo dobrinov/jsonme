@@ -3,9 +3,13 @@ export class MonthAndYear {
   year: number;
 
   static parse(value: string) {
-    const date = new Date(value);
+    try {
+      const [year, month] = value.split("-");
 
-    return new MonthAndYear(date.getFullYear(), date.getMonth() + 1);
+      return new MonthAndYear(parseInt(year), parseInt(month));
+    } catch {
+      return null;
+    }
   }
 
   static current() {

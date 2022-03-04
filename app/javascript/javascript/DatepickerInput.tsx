@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
+import { Form, KeysOfType } from "./form";
 import { InputState } from "./InputState";
 import { MonthAndYear } from "./time";
 
@@ -14,7 +15,7 @@ export function DatepickerInput({
 }: {
   name: string;
   label: string;
-  value?: string;
+  value: MonthAndYear | null;
   addendum?: string;
   state?: InputState;
   onChange?: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
@@ -24,7 +25,7 @@ export function DatepickerInput({
 
   useEffect(() => {
     if (!ref.current) return;
-    ref.current.value = value ?? "";
+    ref.current.value = value?.toString() ?? "";
   }, [value]);
 
   return (
@@ -47,29 +48,29 @@ export function DatepickerInput({
   );
 }
 
-export function FormDatepickerInput({
+export function FormDatepickerInput<T>({
   form,
   name,
   label,
   addendum,
 }: {
-  form: any;
-  name: string;
+  form: Form<T>;
+  name: KeysOfType<T, MonthAndYear | null>;
   label: string;
   addendum?: string;
 }) {
+  const value = form.values[name] as unknown as MonthAndYear | null;
+
   return (
     <DatepickerInput
-      name={name}
-      value={form.values[name]?.toString()}
+      name={name as string}
+      value={value}
       state={form.errors[name].length === 0 ? "normal" : "error"}
       addendum={form.errors[name][0] || addendum}
       onChange={(event) =>
         form.update({
           field: name,
-          value: event.target.value
-            ? MonthAndYear.parse(event.target.value).toString()
-            : null,
+          value: MonthAndYear.parse(event.target.value),
         })
       }
       label={label}

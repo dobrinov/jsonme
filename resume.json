@@ -1,2 +1,422 @@
 {
+  "public": true,
+  "name": "Deyan Dobrinov",
+  "image": "https://avatars.githubusercontent.com/u/996877?v=4",
+  "summary": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from. I enjoy doing that. I like good UX, and I fight for it.",
+  "employments": [
+    {
+      "employer": {
+        "name": "Dext",
+        "website": "https://www.dext.com/"
+      },
+      "period": {
+        "from": "2016-05",
+        "to": null
+      },
+      "summary": "Dext is my current employer. It is a company developing products for more efficient accounting and bookkeeping. Lately, I am spending my time there on the development of various high-profile projects.",
+      "roles": [
+        {
+          "title": "Development lead",
+          "summary": "I am currently a direct report of the CTO. I lead a small team involved in projects that aim to improve system design (strategic refactoring, major updates, etc.).",
+          "majorAchievements": [
+            {
+              "title": "Migration to a new technology stack",
+              "summary": "Led a team of 8 which goal was to introduce a new front-end technology stack for Dext’s main application. As part of this task, we had to re-write a big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with a low amount of risk.",
+              "technologies": [
+                "Typescript",
+                "React",
+                "GraphQL",
+                "Ruby on Rails",
+                "Ruby",
+                "SASS",
+                "Ruby Slim"
+              ]
+            },
+            {
+              "title": "Implementation of an internal CSS design library",
+              "summary": "We re-designed (at that time our main product), and since we became a multi-product company we wanted to have the same look and feel across all of our applications. Because of this, we decided to create our own CSS design library.",
+              "technologies": ["Storybook", "SASS", "React", "Typescript"]
+            }
+          ]
+        },
+        {
+          "title": "Team lead",
+          "summary": "I led a team of 2 software engineers and 1 QA. It was responsible for the application on which I worked during my previous role.",
+          "majorAchievements": [
+            {
+              "title": "Implementation of a tool for extracting tabular data from OCR responses",
+              "summary": "We needed a way to extract line items and bank transactions more efficiently. Such type of information is usually organized in a table. I came with the idea to overlay the OCR data over the payment document image and make it possible to be selected. Then using simple mathematics I was able to recognize the rows and colls of the table and extract information out of them.",
+              "technologies": ["Raphaël", "JavaScript", "Backbone.js"]
+            },
+            {
+              "title": "Improved the data extraction capabilities of the application",
+              "summary": "Implemented flows for extracting transactions from bank statements, line items from receipts and invoices, splitting of PDFs containing multiple financial documents.",
+              "technologies": ["Ruby on Rails", "Ruby", "PostgreSQL"]
+            },
+            {
+              "title": "Replaced custom search implementation with Elasticsearch",
+              "summary": "One of Dext's internal applications keeps information about the relationship between brands, legal entities and other properties of a company. It helps us identify that two (or more) financial documents are issued by the same business. It had search functionallity based on PostgreSQL features which was too complex and not working very well. I replaced it with Elasticsearch and the application became a thin layer and a UI around the search engine.",
+              "technologies": ["Ruby on Rails", "Ruby", "Elasticsearch"]
+            }
+          ]
+        },
+        {
+          "title": "Software engineer",
+          "summary": "I worked for a while on Dext's main product and then my main goal became to extract part of it which was dealing with manual (done by people) data extraction into a separate service.",
+          "majorAchievements": [
+            {
+              "title": "Extracted part of a monolithic application into a service",
+              "summary": "We identified that part of our main monolithic application dealing with manual data extraction can be organised into a separate service. I performed the task and delivered the end result in series of incremental releases.",
+              "technologies": [
+                "Ruby on Rails",
+                "Ruby",
+                "SASS",
+                "JavaScript",
+                "Backbone.js",
+                "PostgreSQL"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "employer": {
+        "name": "Funding Circle",
+        "website": "https://www.fundingcircle.com/"
+      },
+      "period": {
+        "from": "2015-03",
+        "to": "2016-05"
+      },
+      "summary": "Funding Circle is a British peer to peer lending platform. I was part of a team responsible for technical debt. Most of the time I was investigating bugs and refactoring legacy code.",
+      "roles": [
+        {
+          "title": "Software engineer",
+          "summary": "I was part of a team which was dealing with legacy code. My main responsibilities were refactoring old code and investigating and fixing production issues.",
+          "majorAchievements": [
+            {
+              "title": "Prototype of a monitoring system",
+              "summary": "Evaluating and deploying a prototype of an open source monitoring tool based on Riemann.",
+              "technologies": ["Clojure", "Riemann"]
+            },
+            {
+              "title": "Migration from Resque to Sidekiq",
+              "summary": "I performed a migration of the library which we were using for background job processing.",
+              "technologies": ["Ruby on Rails", "Ruby", "Redis"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "employer": {
+        "name": "Secret",
+        "website": "https://www.secret.de/"
+      },
+      "period": {
+        "from": "2011-10",
+        "to": "2015-03"
+      },
+      "summary": "Secret.de (not operating anymore) was a \"casual\" dating website. It was ran by FriendScout24 and targeted to German speaking countries (Germany, Austria, Switzerland). It was a monolithic Ruby on Rails application with MongoDB database and Elasticsearch search engine. The most interesting thing about it was that the website had to be fully operational with disabled JavaScript but at the same time it had significant amounts of it. It also supported browser versions down to Internet Explorer 7.",
+      "roles": [
+        {
+          "title": "Frontend engineer",
+          "summary": "I was one of the two frontend engineers working on the project. I was mostly interacting with Rails view/controller code + the javascript and css of the application.",
+          "majorAchievements": [
+            {
+              "title": "Implementation of gamification features",
+              "summary": "The product was heavily relying on gamification features to sell an internal currency with which the users were able to pay for features. My most interesting tasks were the implementation of two games \"Whell of fortune\" and \"Slot machine\".",
+              "technologies": ["Ruby on Rails", "Ruby", "JavaScript", "SCSS"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "employer": {
+        "name": "SAP",
+        "website": "https://www.sap.com/"
+      },
+      "period": {
+        "from": "2007-04",
+        "to": "2011-10"
+      },
+      "summary": "SAP AG is one of the biggest producers of enterprice software in the world. Most of the time there I was responsible for the tooling required for the internationalization of an application server (NetWeaver) developed by the company.",
+      "roles": [
+        {
+          "title": "Software engineer",
+          "majorAchievements": [
+            {
+              "title": "Migration of an internal knowledge base system from MediaWiki to Confluence",
+              "summary": "We decided to move away from MediaWiki and my job was to implement a tool and use it to migrate our documentation to Confluence.",
+              "technologies": ["PHP", "Java"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "trainings": [
+    {
+      "institution": {
+        "name": "New Bulgarian University",
+        "website": "https://nbu.bg/"
+      },
+      "period": {
+        "from": "2008-10",
+        "to": "2011-05"
+      },
+      "summary": "Informatics"
+    },
+    {
+      "institution": {
+        "name": "Sofia University",
+        "website": "https://www.uni-sofia.bg/"
+      },
+      "period": {
+        "from": "2006-10",
+        "to": "2008-05"
+      },
+      "summary": "Applied mathematics"
+    }
+  ],
+  "sideProjects": [
+    {
+      "name": "JsonMe",
+      "website": "https://www.jsonme.com/",
+      "online": true,
+      "period": {
+        "from": "2021-09",
+        "to": null
+      },
+      "summary": "JsonMe is a web application allowing software engineers to maintain a resume in json format and keep it in their Github/Gitlab profile. The CV that you are looking at the moment is generated with it."
+    },
+    {
+      "name": "Textstandup",
+      "website": "https://www.textstandup.com/",
+      "online": false,
+      "period": {
+        "from": "2019-08",
+        "to": "2020-06"
+      },
+      "summary": "Web application for text based stand-ups. I was not happy with the efficiency of the stand-up meetings so I started doing them in a text form in my team. This was working well so I wrote a web application for this. More about the motivation behind the project could be found here - https://medium.com/@ddobrinov/text-based- stand-ups-de741fa6c724."
+    },
+    {
+      "name": "DEV wanted",
+      "website": "https://www.devwanted.com/",
+      "online": false,
+      "period": {
+        "from": "2018-05",
+        "to": "2018-06"
+      },
+      "summary": "This was a website for jobs offering a referral bonus. Unfortunately it was more difficult than I expected to collect them and I was not able to use my main marketing channel (Facebook Ads), because it turned out that advertising jobs is considered as discrimination when you target based on age, gender, etc."
+    },
+    {
+      "name": "Carpass",
+      "website": "https://www.carpass.bg/",
+      "online": false,
+      "period": {
+        "from": "2016-03",
+        "to": "2020-08"
+      },
+      "summary": "Web application for maintaining a vehicle maintenance logs. I needed a tool to log the maintenance history of my car and I decided to build one. It is still being used by 3000+ people."
+    }
+  ],
+  "technologies": [
+    {
+      "name": "Ruby",
+      "website": "https://www.ruby-lang.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Ruby on Rails",
+      "website": "https://rubyonrails.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Typescript",
+      "website": "https://www.typescriptlang.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "GraphQL",
+      "website": "https://graphql.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "React",
+      "website": "https://reactjs.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "PostgreSQL",
+      "website": "https://www.postgresql.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "medium",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "SASS",
+      "website": "https://sass-lang.com/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "HTML",
+      "website": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Storybook",
+      "website": "https://storybook.js.org/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "medium",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Git",
+      "website": "https://git-scm.com/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Javascript",
+      "website": "https://www.ecma-international.org/publications-and-standards/standards/ecma-262/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "high",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Tailwind CSS",
+      "website": "https://tailwindcss.com/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "medium",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "CoffeeScript",
+      "website": "https://coffeescript.org/",
+      "recentlyUsed": false,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "medium",
+      "knowledgeOfFeatures": "high",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Cypress",
+      "website": "https://www.cypress.io/",
+      "recentlyUsed": true,
+      "canMentor": true,
+      "knowledgeOfBestPractices": "medium",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "hard"
+    },
+    {
+      "name": "Bash",
+      "website": "https://www.ecma-international.org/publications-and-standards/standards/ecma-262/",
+      "recentlyUsed": true,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "intermediate"
+    },
+    {
+      "name": "Elasticsearch",
+      "website": "https://www.elastic.co/elasticsearch/",
+      "recentlyUsed": false,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "intermediate"
+    },
+    {
+      "name": "Redis",
+      "website": "https://redis.io/",
+      "recentlyUsed": false,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "medium",
+      "taskComplexity": "intermediate"
+    },
+    {
+      "name": "Backbone.js",
+      "website": "https://www.ecma-international.org/publications-and-standards/standards/ecma-262/",
+      "recentlyUsed": false,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "low",
+      "taskComplexity": "easy"
+    },
+    {
+      "name": "PHP",
+      "website": "https://www.php.net/",
+      "recentlyUsed": false,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "low",
+      "taskComplexity": "easy"
+    },
+    {
+      "name": "Clojure",
+      "website": "https://clojure.org/",
+      "recentlyUsed": false,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "low",
+      "taskComplexity": "easy"
+    },
+    {
+      "name": "Java",
+      "website": "https://www.java.com/",
+      "recentlyUsed": false,
+      "canMentor": false,
+      "knowledgeOfBestPractices": "low",
+      "knowledgeOfFeatures": "low",
+      "taskComplexity": "easy"
+    }
+  ],
+  "location": {
+    "city": "Sofia",
+    "state": null,
+    "country": "Bulgaria"
+  }
 }

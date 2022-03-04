@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { addProtocol, monthAndYearToString } from "../utils";
+import { Period } from "./Resume";
 
 export function Timeline({
   startingYear,
@@ -27,13 +28,13 @@ export function TimelineEvent({
   className,
 }: {
   title: string;
-  period: { from: string; to: string | null };
+  period: Period;
   website?: string;
   className?: string;
   children: ReactNode;
 }) {
-  const from = monthAndYearToString(period.from);
-  const to = period.to !== null ? monthAndYearToString(period.to) : "Present";
+  const from = period.from.toFormattedString();
+  const to = period.to !== null ? period.to.toFormattedString() : "Present";
   const website = rawWebsite && addProtocol(rawWebsite);
 
   return (
