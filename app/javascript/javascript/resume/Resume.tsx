@@ -732,5 +732,10 @@ function parsePeriod(raw: any) {
     if (from) period.from = from;
   }
 
+  if ("to" in raw) {
+    const to = MonthAndYear.parse(raw.to);
+    if (to) period.to = to;
+  }
+
   return period;
 }
