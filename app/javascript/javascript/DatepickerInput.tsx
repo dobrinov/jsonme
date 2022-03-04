@@ -68,7 +68,7 @@ export function FormDatepickerInput({
         form.update({
           field: name,
           value: event.target.value
-            ? MonthAndYear.parse(event.target.value)
+            ? MonthAndYear.parse(event.target.value).toString()
             : null,
         })
       }

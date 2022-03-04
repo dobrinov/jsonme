@@ -1,9 +1,17 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { addProtocol, capitalize, startingYear } from "../utils";
 import { Avatar } from "../Avatar";
 import { Section } from "./Section";
 import { Timeline, TimelineEvent } from "./Timeline";
 import { Blank } from "./Blank";
+import { useModal } from "../ModalProvider";
+import { FormTextInput } from "../TextInput";
+import { FormDatepickerInput } from "../DatepickerInput";
+import { ToggleInput } from "../ToggleInput";
+import { FormTextAreaInput } from "../TextAreaInput";
+import { useForm, validatePresence, validateUrlFormat } from "../form";
+
+type Persistable = { index: number };
 
 type Period = { from: string; to: string | null };
 
@@ -30,6 +38,9 @@ export type Employment = {
   period: Period;
   roles?: Role[];
 };
+
+type PersistedEmployment = Employment & Persistable;
+type EditableEmployment = Employment | PersistedEmployment;
 
 type Location = {
   city: string;
@@ -70,7 +81,7 @@ export type SideProject = {
   summary: string;
 };
 
-type Resume = {
+export type Resume = {
   name?: string;
   summary?: string;
   image?: string;
@@ -83,7 +94,7 @@ type Resume = {
 
 type EditableResume = {
   editable: boolean;
-  onEdit: (resume: Resume) => void;
+  onUpdate: (resume: Resume) => void;
 } & Resume;
 
 export function parseResume(raw: any) {
@@ -100,7 +111,7 @@ export function Resume({
   sideProjects,
   technologies,
   editable: rawEditable,
-  onEdit,
+  onUpdate,
 }: EditableResume) {
   const editable = !!rawEditable;
 
@@ -110,7 +121,24 @@ export function Resume({
       <Name value={name} editable={editable} />
       <Summary value={summary} editable={editable} />
       <Location value={location} editable={editable} />
-      <Experience employments={employments} editable={editable} />
+      <Experience
+        employments={employments}
+        editable={editable}
+        onAddEmployment={(employment) => {
+          onUpdate({
+            name,
+            image,
+            summary,
+            location,
+            employments: employments
+              ? [...employments, employment]
+              : [employment],
+            trainings,
+            sideProjects,
+            technologies,
+          });
+        }}
+      />
       <Education trainings={trainings} editable={editable} />
       <SideHustle projects={sideProjects} editable={editable} />
       <TechnologyStack technologies={technologies} editable={editable} />
@@ -231,10 +259,14 @@ function Location({
 function Experience({
   employments,
   editable,
+  onAddEmployment,
 }: {
   employments?: Employment[];
   editable: boolean;
+  onAddEmployment: (employment: Employment) => void;
 }) {
+  const { showModal, hideModal } = useModal();
+
   if (employments === undefined || employments.length === 0) {
     if (editable) {
       return (
@@ -243,7 +275,17 @@ function Experience({
             title="Add an employment"
             description="This here is a description about the section"
             onClick={() => {
-              alert("clicked");
+              showModal(
+                <EmploymentFormModal
+                  onSubmit={(newEmployment: Employment) => {
+                    onAddEmployment(newEmployment);
+                    hideModal();
+                  }}
+                  onCancel={() => {
+                    hideModal();
+                  }}
+                />
+              );
             }}
           />
         </Section>
@@ -270,6 +312,129 @@ function Experience({
         ))}
       </Timeline>
     </Section>
+  );
+}
+
+type EmploymentForm = {
+  name: string;
+  website: string | null;
+  from: string | null;
+  to: string | null;
+  summary: string;
+};
+
+function EmploymentFormModal({
+  employment: initialEmployment,
+  onSubmit,
+  onCancel,
+}: {
+  employment?: EditableEmployment;
+  onSubmit: (training: EditableEmployment) => void;
+  onCancel: () => void;
+}) {
+  const [ongoing, setOngoing] = useState<boolean>(
+    isPersisted(initialEmployment)
+      ? initialEmployment.period.to === null
+      : false
+  );
+
+  const form = useForm<EmploymentForm>({
+    name: {
+      value: initialEmployment?.employer.name ?? "",
+      validations: [validatePresence],
+    },
+    website: {
+      value: initialEmployment?.employer.website ?? "",
+      validations: [validatePresence],
+    },
+    from: {
+      value: initialEmployment?.period.from ?? null,
+      validations: [validatePresence],
+    },
+    to: {
+      value: initialEmployment?.period.to ?? null,
+      validations: [validatePresence],
+      validateUnless: ongoing,
+    },
+    summary: {
+      value: initialEmployment?.summary ?? "",
+      validations: [validatePresence],
+    },
+  });
+
+  return (
+    <div>
+      <header>
+        <strong>Add employment</strong>
+      </header>
+      <section>
+        <FormTextInput
+          form={form}
+          name="name"
+          label="Name"
+          placeholder="The name of your employer."
+        />
+        <FormTextInput
+          form={form}
+          name="website"
+          label="Website"
+          placeholder="The webisite of the employer"
+        />
+        <FormDatepickerInput form={form} name="from" label="From" />
+        <ToggleInput
+          on={ongoing}
+          name="ongoing"
+          label="Ongoing"
+          onChange={(value: boolean) => {
+            setOngoing(value);
+            if (!value) form.update({ field: "to", value: null });
+          }}
+        />
+        {!ongoing && <FormDatepickerInput form={form} name="to" label="To" />}
+        <FormTextAreaInput
+          form={form}
+          name="summary"
+          label="Summary"
+          placeholder="What was the business of the company for which you have been working/are working."
+        />
+      </section>
+      <footer>
+        <button type="button" className="button" onClick={onCancel}>
+          Close
+        </button>
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={() => {
+            if (!form.validate()) return;
+            if (
+              !form.values.name ||
+              !form.values.website ||
+              !form.values.from ||
+              !form.values.summary
+            )
+              return;
+
+            const employment: Employment = {
+              employer: {
+                name: form.values.name,
+                website: addProtocol(form.values.website),
+              },
+              period: { from: form.values.from, to: form.values.to },
+              summary: form.values.summary,
+            };
+
+            if (isPersisted(initialEmployment)) {
+              onSubmit({ ...employment, index: initialEmployment.index });
+            } else {
+              onSubmit(employment);
+            }
+          }}
+        >
+          {isPersisted(initialEmployment) ? "Update" : "Add"}
+        </button>
+      </footer>
+    </div>
   );
 }
 
@@ -488,4 +653,8 @@ function EditableTimelineSection<T extends { period: { from: string } }>({
       )}
     </EditableSection>
   );
+}
+
+function isPersisted(object?: Persistable | {}): object is Persistable {
+  return object !== undefined && "index" in object;
 }

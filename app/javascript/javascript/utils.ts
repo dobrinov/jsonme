@@ -4,7 +4,9 @@ export function startingYear(temporals: { period: { from: string } }[]) {
   );
 }
 
-export function monthAndYearToString(value: string) {
+export function monthAndYearToString(value: string | null | undefined) {
+  if (!value) return null;
+
   const [month, year] = value.split("-");
 
   return new Date(`${month}-1-${year}`).toLocaleDateString("en-US", {
