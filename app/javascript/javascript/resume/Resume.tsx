@@ -808,7 +808,11 @@ function parseAchievement(raw: any) {
   }
 
   if ("technologies" in raw && Array.isArray(raw.technologies)) {
-    achievement.technologies = raw.technologies;
+    let technologies: string[] = [];
+    raw.technologies.forEach((entry: unknown) => {
+      if (typeof entry === "string") technologies = [...technologies, entry];
+    });
+    achievement.technologies = technologies;
   }
 
   return achievement;
