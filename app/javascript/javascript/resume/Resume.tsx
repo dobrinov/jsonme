@@ -769,10 +769,16 @@ function parseInstitution(raw: any) {
 }
 
 function parseRole(raw: any) {
+  let majorAchievements: Achievement[] = [];
+
+  if ("majorAchievements" in raw && Array.isArray(raw.majorAchievements)) {
+    majorAchievements = raw.majorAchievements.map(parseAchievement);
+  }
+
   const role: Role = {
     title: "Unknown",
     summary: "Could not parse role summary",
-    majorAchievements: [],
+    majorAchievements,
   };
 
   if ("title" in raw) {
@@ -784,6 +790,28 @@ function parseRole(raw: any) {
   }
 
   return role;
+}
+
+function parseAchievement(raw: any) {
+  const achievement: Achievement = {
+    title: "Unknown",
+    summary: "Could not parse achievement summary",
+    technologies: [],
+  };
+
+  if ("title" in raw) {
+    achievement.title = raw.title;
+  }
+
+  if ("summary" in raw) {
+    achievement.summary = raw.summary;
+  }
+
+  if ("technologies" in raw && Array.isArray(raw.technologies)) {
+    achievement.technologies = raw.technologies;
+  }
+
+  return achievement;
 }
 
 function parseEmployer(raw: any) {
