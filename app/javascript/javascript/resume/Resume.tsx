@@ -11,6 +11,7 @@ import { ToggleInput } from "../ToggleInput";
 import { FormTextAreaInput } from "../TextAreaInput";
 import { useForm, validatePresence } from "../form";
 import { MonthAndYear } from "../time";
+import { parse } from "postcss";
 
 type Persistable = { index: number };
 
@@ -683,29 +684,106 @@ export function parseResume(raw: any) {
     };
   }
 
-  if ("employments" in parsed) {
+  if ("employments" in parsed && Array.isArray(parsed.employments)) {
     parsed.employments.forEach((entry: any) => {
+      let roles: Role[] = [];
+
+      if ("roles" in entry && Array.isArray(entry.roles)) {
+        roles = entry.roles.map(parseRole);
+      }
+
       const employment: Employment = {
         summary: "summary" in entry ? entry.summary : null,
         employer: parseEmployer(entry.employer),
         period: parsePeriod(entry.period),
-        roles: [],
+        roles,
       };
 
       resume.employments = [...(resume.employments ?? []), employment];
     });
   }
 
-  if ("trainings" in parsed) {
+  if ("trainings" in parsed && Array.isArray(parsed.trainings)) {
+    parsed.trainings.forEach((entry: any) => {
+      const training: Training = {
+        institution: parseInstitution(entry.institution),
+        summary: "summary" in entry ? entry.summary : null,
+        period: parsePeriod(entry.period),
+      };
+
+      resume.trainings = [...(resume.trainings ?? []), training];
+    });
   }
 
-  if ("sideProjects" in parsed) {
+  if ("sideProjects" in parsed && Array.isArray(parsed.sideProjects)) {
+    parsed.sideProjects.forEach((entry: any) => {
+      const project: SideProject = {
+        name: "name" in entry ? entry.name : null,
+        website: "website" in entry ? entry.website : null,
+        online: "online" in entry ? entry.online : null,
+        summary: "summary" in entry ? entry.summary : null,
+        period: parsePeriod(entry.period),
+      };
+
+      resume.sideProjects = [...(resume.sideProjects ?? []), project];
+    });
   }
 
-  if ("technologies" in parsed) {
+  if ("technologies" in parsed && Array.isArray(parsed.technologies)) {
+    parsed.technologies.forEach((entry: any) => {
+      const technology: Technology = {
+        name: "name" in entry ? entry.name : null,
+        website: "website" in entry ? entry.website : null,
+        recentlyUsed: "recentlyUsed" in entry ? entry.recentlyUsed : null,
+        canMentor: "canMentor" in entry ? entry.canMentor : null,
+        taskComplexity: "taskComplexity" in entry ? entry.taskComplexity : null,
+        knowledgeOfBestPractices:
+          "knowledgeOfBestPractices" in entry
+            ? entry.knowledgeOfBestPractices
+            : null,
+        knowledgeOfFeatures:
+          "knowledgeOfFeatures" in entry ? entry.knowledgeOfFeatures : null,
+      };
+
+      resume.technologies = [...(resume.technologies ?? []), technology];
+    });
   }
 
   return resume;
+}
+
+function parseInstitution(raw: any) {
+  const institution: Institution = {
+    name: "Unknown",
+  };
+
+  if ("name" in raw) {
+    institution.name = raw.name;
+  }
+
+  if ("website" in raw) {
+    institution.website = raw.website;
+  }
+
+  return institution;
+}
+
+function parseRole(raw: any) {
+  const role: Role = {
+    title: "Unknown",
+    summary: "Could not parse role summary",
+    majorAchievements: [],
+  };
+
+  if ("title" in raw) {
+    role.title = raw.title;
+  }
+
+  if ("summary" in raw) {
+    role.summary = raw.summary;
+  }
+
+  return role;
 }
 
 function parseEmployer(raw: any) {
