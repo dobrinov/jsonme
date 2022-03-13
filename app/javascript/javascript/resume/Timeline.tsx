@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { addProtocol, monthAndYearToString } from "../utils";
+import { Blank } from "./Blank";
 import { Period } from "./Resume";
 
 export function Timeline({
@@ -13,7 +14,22 @@ export function Timeline({
     <div className="timeline">
       <aside>present</aside>
       <div>
-        <ul>{children}</ul>
+        <ul>
+          {children}
+          <li>
+            <div className="timeline__event__summary">
+              <aside className="timeline__dot timeline__dot--gray timeline__dot--center" />
+              <Blank
+                title="Add an employment"
+                description="This here is a description about the section"
+                style="compact"
+                onClick={() => {
+                  alert("add");
+                }}
+              />
+            </div>
+          </li>
+        </ul>
       </div>
       <aside>{startingYear}</aside>
     </div>
@@ -41,13 +57,13 @@ export function TimelineEvent({
     <li>
       <div className="timeline__event__summary">
         <h3>{title}</h3>
-        <aside />
+        <aside className="timeline__dot" />
         {website && (
           <a href={website} target="_blank" rel="nofollow">
             {website}
           </a>
         )}
-        <div>{`${from} - ${to}`}</div>
+        <div className="timeline__period">{`${from} - ${to}`}</div>
       </div>
       <div className={`timeline__event__details ${className}`}>{children}</div>
     </li>

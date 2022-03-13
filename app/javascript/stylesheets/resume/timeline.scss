@@ -31,12 +31,16 @@
     @apply text-xl m-0 p-0 leading-5;
   }
 
-  > aside { @apply absolute rounded-full bg-black w-4 h-4 top-0.5 left-4 right-auto sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto; }
-  > div { @apply text-xs text-gray-600; }
   > a,
   > span { @apply text-gray-400 text-xs inline-block; }
   > a { @apply hover:underline; }
 }
+
+.timeline__period { @apply text-xs text-gray-600; }
+
+.timeline__dot { @apply absolute rounded-full bg-black w-4 h-4 top-0.5 left-4 right-auto sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto; }
+.timeline__dot--gray { @apply bg-gray-300; }
+.timeline__dot--center { @apply top-1/2; }
 
 .timeline__event__details {
   @apply text-gray-600 leading-5;

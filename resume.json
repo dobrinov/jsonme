@@ -2,14 +2,14 @@
   "employments": [
     {
       "employer": {
-        "name": "Funding Circle",
-        "website": "https://www.fundingcircle.com/"
+        "name": "Dext",
+        "website": "https://www.dext.com/"
       },
       "period": {
-        "from": "2015-03",
-        "to": "2016-05"
+        "from": "2016-05",
+        "to": null
       },
-      "summary": "Funding Circle is a British peer to peer lending platform. I was part of a team responsible for technical debt. Most of the time I was investigating bugs and refactoring legacy code.",
+      "summary": "Dext is my current employer. It is a company developing products for more efficient accounting and bookkeeping. Lately, I am spending my time there on the development of various high-profile projects.",
       "roles": []
     }
   ]

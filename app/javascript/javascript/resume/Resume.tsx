@@ -304,11 +304,62 @@ function Experience({
             period={employment.period}
             className="employment"
           >
-            <p>
+            <p className="employment__summary">
               {employment.summary ??
                 "The employment summary is missing or cannot be parsed"}
+              <Control
+                onEdit={() => alert("edit")}
+                onDelete={() => alert("delete")}
+              />
             </p>
-            <Roles roles={employment.roles} />
+            {employment.roles && employment.roles.length > 0 && (
+              <ul>
+                {employment.roles.map((role) => (
+                  <li key={role.title} className="enployment__role">
+                    <h4>{role.title}</h4>
+                    <p>{role.summary}</p>
+                    {role.majorAchievements &&
+                      role.majorAchievements.length > 0 && (
+                        <>
+                          <aside>Major achievements:</aside>
+                          <ul>
+                            {role.majorAchievements?.map((achievement) => (
+                              <li
+                                key={achievement.title}
+                                className="enployment__achievement"
+                              >
+                                <h5>{achievement.title}</h5>
+                                <p>{achievement.summary}</p>
+                                <ul>
+                                  {achievement.technologies.map(
+                                    (technology) => (
+                                      <li key={technology}>
+                                        <span className="badge">
+                                          {technology}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {editable && (
+              <Blank
+                title="Add a role"
+                description="This here is a description about the section"
+                style="compact"
+                onClick={() => {
+                  alert("add");
+                }}
+              />
+            )}
           </TimelineEvent>
         ))}
       </Timeline>
@@ -436,44 +487,6 @@ function EmploymentFormModal({
         </button>
       </footer>
     </div>
-  );
-}
-
-function Roles({ roles }: { roles?: Role[] }) {
-  if (!roles) return null;
-
-  return (
-    <ul>
-      {roles.map((role) => (
-        <li key={role.title} className="enployment__role">
-          <h4>{role.title}</h4>
-          <p>{role.summary}</p>
-          {role.majorAchievements && role.majorAchievements.length > 0 && (
-            <>
-              <aside>Major achievements:</aside>
-              <ul>
-                {role.majorAchievements?.map((achievement) => (
-                  <li
-                    key={achievement.title}
-                    className="enployment__achievement"
-                  >
-                    <h5>{achievement.title}</h5>
-                    <p>{achievement.summary}</p>
-                    <ul>
-                      {achievement.technologies.map((technology) => (
-                        <li key={technology}>
-                          <span className="badge">{technology}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </li>
-      ))}
-    </ul>
   );
 }
 
@@ -848,4 +861,19 @@ function parsePeriod(raw: any) {
   }
 
   return period;
+}
+
+function Control({
+  onEdit,
+  onDelete,
+}: {
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="management-controls">
+      <a onClick={onEdit}>Edit</a>
+      <a onClick={onDelete}>Delete</a>
+    </div>
+  );
 }
