@@ -297,70 +297,82 @@ function Experience({
     <Section title="Experience">
       <Timeline startingYear={startingYear(employments)}>
         {employments.map((employment) => (
-          <TimelineEvent
-            key={employment.employer.name}
-            title={employment.employer.name}
-            website={employment.employer.website}
-            period={employment.period}
-            className="employment"
-          >
-            <p className="employment__summary">
-              {employment.summary ??
-                "The employment summary is missing or cannot be parsed"}
-              <Control
-                onEdit={() => alert("edit")}
-                onDelete={() => alert("delete")}
-              />
-            </p>
-            {employment.roles && employment.roles.length > 0 && (
-              <ul>
-                {employment.roles.map((role) => (
-                  <li key={role.title} className="enployment__role">
-                    <h4>{role.title}</h4>
-                    <p>{role.summary}</p>
-                    {role.majorAchievements &&
-                      role.majorAchievements.length > 0 && (
-                        <>
-                          <aside>Major achievements:</aside>
-                          <ul>
-                            {role.majorAchievements?.map((achievement) => (
-                              <li
-                                key={achievement.title}
-                                className="enployment__achievement"
-                              >
-                                <h5>{achievement.title}</h5>
-                                <p>{achievement.summary}</p>
-                                <ul>
-                                  {achievement.technologies.map(
-                                    (technology) => (
-                                      <li key={technology}>
-                                        <span className="badge">
-                                          {technology}
-                                        </span>
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </li>
-                            ))}
-                          </ul>
-                        </>
-                      )}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {editable && (
-              <Blank
-                title="Add a role"
-                description="This here is a description about the section"
-                style="compact"
-                onClick={() => {
-                  alert("add");
-                }}
-              />
-            )}
-          </TimelineEvent>
+          <li>
+            <div className="timeline__event__summary">
+              <h3>{employment.employer.name}</h3>
+              <aside className="timeline__dot" />
+              {employment.employer.website && (
+                <a
+                  href={employment.employer.website}
+                  target="_blank"
+                  rel="nofollow"
+                >
+                  {employment.employer.website}
+                </a>
+              )}
+              <div className="timeline__period">
+                <Period value={employment.period} />
+              </div>
+            </div>
+            <div className="timeline__event__details employment">
+              <p className="employment__summary">
+                {employment.summary ??
+                  "The employment summary is missing or cannot be parsed"}
+                <Control
+                  onEdit={() => alert("edit")}
+                  onDelete={() => alert("delete")}
+                />
+              </p>
+              {employment.roles && employment.roles.length > 0 && (
+                <ul>
+                  {employment.roles.map((role) => (
+                    <li key={role.title} className="enployment__role">
+                      <h4>{role.title}</h4>
+                      <p>{role.summary}</p>
+                      {role.majorAchievements &&
+                        role.majorAchievements.length > 0 && (
+                          <>
+                            <aside>Major achievements:</aside>
+                            <ul>
+                              {role.majorAchievements?.map((achievement) => (
+                                <li
+                                  key={achievement.title}
+                                  className="enployment__achievement"
+                                >
+                                  <h5>{achievement.title}</h5>
+                                  <p>{achievement.summary}</p>
+                                  <ul>
+                                    {achievement.technologies.map(
+                                      (technology) => (
+                                        <li key={technology}>
+                                          <span className="badge">
+                                            {technology}
+                                          </span>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {editable && (
+                <Blank
+                  title="Add a role"
+                  description="This here is a description about the section"
+                  style="compact"
+                  onClick={() => {
+                    alert("add");
+                  }}
+                />
+              )}
+            </div>
+          </li>
         ))}
       </Timeline>
     </Section>
@@ -374,6 +386,17 @@ type EmploymentForm = {
   to: MonthAndYear | null;
   summary: string;
 };
+
+function Period({ value }: { value: Period }) {
+  const from = value.from.toFormattedString();
+  const to = value.to !== null ? value.to.toFormattedString() : "Present";
+
+  return (
+    <>
+      {from} - {to}
+    </>
+  );
+}
 
 function EmploymentFormModal({
   employment: initialEmployment,
