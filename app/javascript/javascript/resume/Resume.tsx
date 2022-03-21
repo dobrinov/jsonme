@@ -11,7 +11,6 @@ import { ToggleInput } from "../ToggleInput";
 import { FormTextAreaInput } from "../TextAreaInput";
 import { useForm, validatePresence } from "../form";
 import { MonthAndYear } from "../time";
-import { parse } from "postcss";
 
 type Persistable = { index: number };
 
@@ -113,6 +112,17 @@ export function Resume({
 }: EditableResume) {
   const editable = !!rawEditable;
 
+  const resume = {
+    name,
+    image,
+    summary,
+    location,
+    employments,
+    trainings,
+    sideProjects,
+    technologies,
+  };
+
   return (
     <div className="resume">
       <Picture url={image} editable={editable} />
@@ -122,20 +132,30 @@ export function Resume({
       <Experience
         employments={employments}
         editable={editable}
-        onAddEmployment={(employment) => {
+        onAddEmployment={(employment) =>
           onUpdate({
-            name,
-            image,
-            summary,
-            location,
+            ...resume,
             employments: employments
-              ? [...employments, employment]
+              ? [
+                  ...employments.slice(0, employment.index),
+                  employment,
+                  ...employments.slice(employment.index + 1),
+                ]
               : [employment],
-            trainings,
-            sideProjects,
-            technologies,
-          });
-        }}
+          })
+        }
+        onEditEmployment={(employment) =>
+          onUpdate({
+            ...resume,
+            employments: employments
+              ? [
+                  ...employments.slice(0, employment.index),
+                  employment,
+                  ...employments.slice(employment.index + 1),
+                ]
+              : [employment],
+          })
+        }
       />
       <Education trainings={trainings} editable={editable} />
       <SideHustle projects={sideProjects} editable={editable} />
@@ -258,10 +278,12 @@ function Experience({
   employments,
   editable,
   onAddEmployment,
+  onEditEmployment,
 }: {
   employments?: Employment[];
   editable: boolean;
-  onAddEmployment: (employment: Employment) => void;
+  onAddEmployment: (employment: PersistedEmployment) => void;
+  onEditEmployment: (employment: PersistedEmployment) => void;
 }) {
   const { showModal, hideModal } = useModal();
 
@@ -275,7 +297,7 @@ function Experience({
             onClick={() => {
               showModal(
                 <EmploymentFormModal
-                  onSubmit={(newEmployment: Employment) => {
+                  onSubmit={(newEmployment) => {
                     onAddEmployment(newEmployment);
                     hideModal();
                   }}
@@ -296,8 +318,8 @@ function Experience({
   return (
     <Section title="Experience">
       <Timeline startingYear={startingYear(employments)}>
-        {employments.map((employment) => (
-          <li>
+        {employments.map((employment, index) => (
+          <li key={employment.employer.name}>
             <div className="timeline__event__summary">
               <h3>{employment.employer.name}</h3>
               <aside className="timeline__dot" />
@@ -315,14 +337,27 @@ function Experience({
               </div>
             </div>
             <div className="timeline__event__details employment">
-              <p className="employment__summary">
+              <div className="employment__summary">
                 {employment.summary ??
                   "The employment summary is missing or cannot be parsed"}
                 <Control
-                  onEdit={() => alert("edit")}
+                  onEdit={() =>
+                    showModal(
+                      <EmploymentFormModal
+                        employment={{ index, ...employment }}
+                        onSubmit={(updatedEmployment) => {
+                          onEditEmployment(updatedEmployment);
+                          hideModal();
+                        }}
+                        onCancel={() => {
+                          hideModal();
+                        }}
+                      />
+                    )
+                  }
                   onDelete={() => alert("delete")}
                 />
-              </p>
+              </div>
               {employment.roles && employment.roles.length > 0 && (
                 <ul>
                   {employment.roles.map((role) => (
@@ -404,7 +439,7 @@ function EmploymentFormModal({
   onCancel,
 }: {
   employment?: EditableEmployment;
-  onSubmit: (training: EditableEmployment) => void;
+  onSubmit: (training: PersistedEmployment) => void;
   onCancel: () => void;
 }) {
   const [ongoing, setOngoing] = useState<boolean>(
@@ -490,20 +525,19 @@ function EmploymentFormModal({
             )
               return;
 
-            const employment: Employment = {
+            const employment: PersistedEmployment = {
               employer: {
                 name: form.values.name,
                 website: addProtocol(form.values.website),
               },
               period: { from: form.values.from, to: form.values.to },
               summary: form.values.summary,
+              index: isPersisted(initialEmployment)
+                ? initialEmployment.index
+                : 0,
             };
 
-            if (isPersisted(initialEmployment)) {
-              onSubmit({ ...employment, index: initialEmployment.index });
-            } else {
-              onSubmit(employment);
-            }
+            onSubmit(employment);
           }}
         >
           {isPersisted(initialEmployment) ? "Update" : "Add"}

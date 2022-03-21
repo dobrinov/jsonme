@@ -37,6 +37,17 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
   const hideModal = () => setModal(undefined);
   const contextValue: ModalContext = { showModal, hideModal };
 
+  useEffect(() => {
+    if (!modal) return;
+
+    const previous = document.body.style.position;
+
+    document.body.style.position = "fixed";
+    return () => {
+      document.body.style.position = previous;
+    };
+  }, [!!modal]);
+
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
