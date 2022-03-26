@@ -475,7 +475,9 @@ function EmploymentFormModal({
   return (
     <div>
       <header>
-        <strong>Add employment</strong>
+        <strong>
+          {isPersisted(initialEmployment) ? "Edit" : "Add"} employment
+        </strong>
       </header>
       <section>
         <FormTextInput
