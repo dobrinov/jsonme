@@ -156,6 +156,20 @@ export function Resume({
               : [employment],
           })
         }
+        onDeleteEmployment={(employment) =>
+          onUpdate({
+            ...resume,
+            employments: employments
+              ? [
+                  ...employments.slice(0, employment.index),
+                  ...employments.slice(
+                    employment.index + 1,
+                    employments.length
+                  ),
+                ]
+              : [],
+          })
+        }
       />
       <Education trainings={trainings} editable={editable} />
       <SideHustle projects={sideProjects} editable={editable} />
@@ -279,11 +293,13 @@ function Experience({
   editable,
   onAddEmployment,
   onEditEmployment,
+  onDeleteEmployment,
 }: {
   employments?: Employment[];
   editable: boolean;
   onAddEmployment: (employment: PersistedEmployment) => void;
   onEditEmployment: (employment: PersistedEmployment) => void;
+  onDeleteEmployment: (employment: PersistedEmployment) => void;
 }) {
   const { showModal, hideModal } = useModal();
 
@@ -355,7 +371,18 @@ function Experience({
                       />
                     )
                   }
-                  onDelete={() => alert("delete")}
+                  onDelete={() =>
+                    showModal(
+                      <ConfirmationModal
+                        question="Are you sure that you want to delete this employment?"
+                        onConfirm={() => {
+                          onDeleteEmployment({ index, ...employment });
+                          hideModal();
+                        }}
+                        onDecline={() => hideModal()}
+                      />
+                    )
+                  }
                 />
               </div>
               {employment.roles && employment.roles.length > 0 && (
@@ -430,6 +457,39 @@ function Period({ value }: { value: Period }) {
     <>
       {from} - {to}
     </>
+  );
+}
+
+function ConfirmationModal({
+  question,
+  onConfirm,
+  onDecline,
+}: {
+  question: string;
+  onConfirm: () => void;
+  onDecline: () => void;
+}) {
+  return (
+    <div>
+      <header>
+        <strong>Are you sure?</strong>
+      </header>
+      <section>
+        <p>{question}</p>
+      </section>
+      <footer>
+        <button type="button" className="button" onClick={onDecline}>
+          No
+        </button>
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={onConfirm}
+        >
+          Yes
+        </button>
+      </footer>
+    </div>
   );
 }
 
