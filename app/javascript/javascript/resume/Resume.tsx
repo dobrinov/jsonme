@@ -135,39 +135,19 @@ export function Resume({
         onAddEmployment={(employment) =>
           onUpdate({
             ...resume,
-            employments: employments
-              ? [
-                  ...employments.slice(0, employment.index),
-                  employment,
-                  ...employments.slice(employment.index + 1),
-                ]
-              : [employment],
+            employments: addToCollection(employment, employments),
           })
         }
         onEditEmployment={(employment) =>
           onUpdate({
             ...resume,
-            employments: employments
-              ? [
-                  ...employments.slice(0, employment.index),
-                  employment,
-                  ...employments.slice(employment.index + 1),
-                ]
-              : [employment],
+            employments: updateCollection(employment, employments),
           })
         }
         onDeleteEmployment={(employment) =>
           onUpdate({
             ...resume,
-            employments: employments
-              ? [
-                  ...employments.slice(0, employment.index),
-                  ...employments.slice(
-                    employment.index + 1,
-                    employments.length
-                  ),
-                ]
-              : [],
+            employments: removeFromCollection(employment, employments),
           })
         }
       />
@@ -297,7 +277,7 @@ function Experience({
 }: {
   employments?: Employment[];
   editable: boolean;
-  onAddEmployment: (employment: PersistedEmployment) => void;
+  onAddEmployment: (employment: Employment) => void;
   onEditEmployment: (employment: PersistedEmployment) => void;
   onDeleteEmployment: (employment: PersistedEmployment) => void;
 }) {
@@ -333,7 +313,26 @@ function Experience({
 
   return (
     <Section title="Experience">
-      <Timeline startingYear={startingYear(employments)}>
+      <Timeline
+        startingYear={startingYear(employments)}
+        newEventButton={{
+          title: "Add an employment",
+          description: "This here is a description about the section",
+          onClick: () => {
+            showModal(
+              <EmploymentFormModal
+                onSubmit={(newEmployment) => {
+                  onAddEmployment(newEmployment);
+                  hideModal();
+                }}
+                onCancel={() => {
+                  hideModal();
+                }}
+              />
+            );
+          },
+        }}
+      >
         {employments.map((employment, index) => (
           <li key={employment.employer.name}>
             <div className="timeline__event__summary">
@@ -362,6 +361,11 @@ function Experience({
                       <EmploymentFormModal
                         employment={{ index, ...employment }}
                         onSubmit={(updatedEmployment) => {
+                          if (!isPersisted(updatedEmployment))
+                            throw new Error(
+                              "Cannot update unpersisted employment"
+                            );
+
                           onEditEmployment(updatedEmployment);
                           hideModal();
                         }}
@@ -499,7 +503,7 @@ function EmploymentFormModal({
   onCancel,
 }: {
   employment?: EditableEmployment;
-  onSubmit: (training: PersistedEmployment) => void;
+  onSubmit: (employment: Employment | PersistedEmployment) => void;
   onCancel: () => void;
 }) {
   const [ongoing, setOngoing] = useState<boolean>(
@@ -587,19 +591,15 @@ function EmploymentFormModal({
             )
               return;
 
-            const employment: PersistedEmployment = {
+            onSubmit({
+              ...initialEmployment,
               employer: {
                 name: form.values.name,
                 website: addProtocol(form.values.website),
               },
               period: { from: form.values.from, to: form.values.to },
               summary: form.values.summary,
-              index: isPersisted(initialEmployment)
-                ? initialEmployment.index
-                : 0,
-            };
-
-            onSubmit(employment);
+            });
           }}
         >
           {isPersisted(initialEmployment) ? "Update" : "Add"}
@@ -780,7 +780,14 @@ function EditableTimelineSection<T extends { period: Period }>({
       placeholder={placeholder}
     >
       {collection && collection.length > 0 && (
-        <Timeline startingYear={startingYear(collection)}>
+        <Timeline
+          startingYear={startingYear(collection)}
+          newEventButton={{
+            title: "Foo",
+            description: "Bar",
+            onClick: () => alert("baz"),
+          }}
+        >
           {collection.map(renderEntry)}
         </Timeline>
       )}
@@ -995,4 +1002,50 @@ function Control({
       <a onClick={onDelete}>Delete</a>
     </div>
   );
+}
+
+function addToCollection<T>(item: T, collection?: T[]) {
+  if (collection && collection.length > 0) {
+    return [...collection, { ...item, index: collection.length }];
+  } else {
+    return [item];
+  }
+}
+
+function removeFromCollection<T, U extends T & Persistable>(
+  item: U,
+  collection?: T[]
+) {
+  if (collection === undefined)
+    throw new Error("Cannot update collection that does not exist");
+
+  if (collection.length === 0)
+    throw new Error("Cannot remove elements from an empty collection");
+
+  if (collection.length === 1) {
+    return [];
+  } else {
+    return [
+      ...collection.slice(0, item.index),
+      ...collection.slice(item.index + 1),
+    ];
+  }
+}
+
+function updateCollection<T, U extends T & Persistable>(
+  item: U,
+  collection?: T[]
+) {
+  if (collection === undefined)
+    throw new Error("Cannot update collection that does not exist");
+
+  if (collection.length > 0) {
+    return [
+      ...collection.slice(0, item.index),
+      item,
+      ...collection.slice(item.index + 1),
+    ];
+  } else {
+    return [item];
+  }
 }

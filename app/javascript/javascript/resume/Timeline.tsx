@@ -6,9 +6,11 @@ import { Period } from "./Resume";
 export function Timeline({
   startingYear,
   children,
+  newEventButton,
 }: {
   startingYear: number;
   children: ReactNode;
+  newEventButton: { title: string; description: string; onClick: () => void };
 }) {
   return (
     <div className="timeline">
@@ -20,12 +22,10 @@ export function Timeline({
             <div className="timeline__event__summary">
               <aside className="timeline__dot timeline__dot--gray timeline__dot--center" />
               <Blank
-                title="Add an employment"
-                description="This here is a description about the section"
+                title={newEventButton.title}
+                description={newEventButton.description}
+                onClick={newEventButton.onClick}
                 style="compact"
-                onClick={() => {
-                  alert("add");
-                }}
               />
             </div>
           </li>
