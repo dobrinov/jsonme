@@ -43,6 +43,9 @@ export type Employment = {
 type PersistedEmployment = Employment & Persistable;
 type EditableEmployment = Employment | PersistedEmployment;
 
+type PersistedRole = Role & Persistable;
+type EditableRole = Role | PersistedRole;
+
 type Location = {
   city: string;
   state?: string;
@@ -433,7 +436,15 @@ function Experience({
                   description="This here is a description about the section"
                   style="compact"
                   onClick={() => {
-                    alert("add");
+                    showModal(
+                      <RoleFormModal
+                        onSubmit={(newRole) => {
+                          onEditEmployment({...employment, index, roles: addToCollection(newRole, employment.roles) })
+                          hideModal();
+                        }}
+                        onCancel={() => hideModal()}
+                      />
+                    );
                   }}
                 />
               )}
@@ -450,6 +461,11 @@ type EmploymentForm = {
   website: string | null;
   from: MonthAndYear | null;
   to: MonthAndYear | null;
+  summary: string;
+};
+
+type RoleForm = {
+  title: string;
   summary: string;
 };
 
@@ -503,7 +519,7 @@ function EmploymentFormModal({
   onCancel,
 }: {
   employment?: EditableEmployment;
-  onSubmit: (employment: Employment | PersistedEmployment) => void;
+  onSubmit: (employment: EditableEmployment) => void;
   onCancel: () => void;
 }) {
   const [ongoing, setOngoing] = useState<boolean>(
@@ -603,6 +619,74 @@ function EmploymentFormModal({
           }}
         >
           {isPersisted(initialEmployment) ? "Update" : "Add"}
+        </button>
+      </footer>
+    </div>
+  );
+}
+
+function RoleFormModal({
+  role: initialRole,
+  onSubmit,
+  onCancel,
+}: {
+  role?: EditableRole;
+  onSubmit: (role: EditableRole) => void;
+  onCancel: () => void;
+}) {
+  const form = useForm<RoleForm>({
+    title: {
+      value: initialRole?.title ?? "",
+      validations: [validatePresence],
+    },
+    summary: {
+      value: initialRole?.summary ?? "",
+      validations: [validatePresence],
+    },
+  });
+
+  return (
+    <div>
+      <header>
+        <strong>Add role</strong>
+      </header>
+      <section>
+        <FormTextInput
+          form={form}
+          name="title"
+          label="Title"
+          placeholder="Your role's title"
+        />
+        <FormTextAreaInput
+          form={form}
+          name="summary"
+          label="Summary"
+          placeholder="Summarize your role and responsibilities."
+        />
+      </section>
+      <footer>
+        <button type="button" className="button" onClick={onCancel}>
+          Close
+        </button>
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={() => {
+            if (!form.validate()) return;
+            if (
+              !form.values.title ||
+              !form.values.summary
+            )
+              return;
+
+            onSubmit({
+              ...initialRole,
+              title: form.values.title,
+              summary: form.values.summary,
+            });
+          }}
+        >
+          Add
         </button>
       </footer>
     </div>
