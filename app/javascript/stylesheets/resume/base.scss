@@ -37,7 +37,7 @@
 }
 
 .enployment__role {
-  @apply mt-4;
+  @apply mt-4 relative;
 
   > h4 { @apply text-base font-bold leading-4 mb-1; }
   > aside { @apply mb-0 text-xs leading-3 text-gray-300; }

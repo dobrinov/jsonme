@@ -397,7 +397,38 @@ function Experience({
                   {employment.roles.map((role) => (
                     <li key={role.title} className="enployment__role">
                       <h4>{role.title}</h4>
-                      <p>{role.summary}</p>
+                      <p>
+                        {role.summary}
+                        <Control
+                          onEdit={() => showModal(
+                            <RoleFormModal
+                              role={{ index, ...role }}
+                              onSubmit={(updatedRole) => {
+                                if (!isPersisted(updatedRole))
+                                  throw new Error(
+                                    "Cannot update unpersisted employment"
+                                  );
+
+                                onEditEmployment({...employment, index, roles: updateCollection(updatedRole, employment.roles) })
+                                hideModal();
+                              }}
+                              onCancel={() => {
+                                hideModal();
+                              }}
+                            />
+                          ) }
+                          onDelete={() =>                     showModal(
+                            <ConfirmationModal
+                              question="Are you sure that you want to delete this role?"
+                              onConfirm={() => {
+                                onEditEmployment({...employment, index, roles: removeFromCollection({...role, index}, employment.roles) })
+                                hideModal();
+                              }}
+                              onDecline={() => hideModal()}
+                            />
+                          ) }
+                        />
+                      </p>
                       {role.majorAchievements &&
                         role.majorAchievements.length > 0 && (
                           <>
