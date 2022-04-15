@@ -1,1 +1,1 @@
-export type InputState = "normal" | "error";
+export type InputState = 'normal' | 'error'

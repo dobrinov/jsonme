@@ -1,38 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from 'react'
 
-const TICK = 10;
-const DELTA = 15;
+const TICK = 10
+const DELTA = 15
 
 export function Drilldown() {
-  const firstRef = useRef<HTMLUListElement>(null);
-  const secondRef = useRef<HTMLDivElement>(null);
+  const firstRef = useRef<HTMLUListElement>(null)
+  const secondRef = useRef<HTMLDivElement>(null)
 
-  const [level, setLevel] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!firstRef.current || !secondRef.current) return;
-    firstRef.current.style.position = "relative";
-    firstRef.current.style.top = "0";
-    firstRef.current.style.marginTop = "0";
-    secondRef.current.style.marginTop = `-${secondRef.current.offsetHeight}px`;
-  }, [firstRef, secondRef]);
+  const [level, setLevel] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!firstRef.current || !secondRef.current || level === null) return;
+    if (!firstRef.current || !secondRef.current) return
+    firstRef.current.style.position = 'relative'
+    firstRef.current.style.top = '0'
+    firstRef.current.style.marginTop = '0'
+    secondRef.current.style.marginTop = `-${secondRef.current.offsetHeight}px`
+  }, [firstRef, secondRef])
+
+  useEffect(() => {
+    if (!firstRef.current || !secondRef.current || level === null) return
 
     switch (level) {
       case 0: {
-        resetFirstOffset(firstRef.current);
-        animateSecondOffset(secondRef.current);
-        break;
+        resetFirstOffset(firstRef.current)
+        animateSecondOffset(secondRef.current)
+        break
       }
       case 1: {
-        resetSecondOffset(secondRef.current);
-        animateFirstOffset(firstRef.current);
-        break;
+        resetSecondOffset(secondRef.current)
+        animateFirstOffset(firstRef.current)
+        break
       }
     }
-  }, [level]);
+  }, [level])
 
   return (
     <div className="panel">
@@ -40,7 +40,7 @@ export function Drilldown() {
         <div className="second" ref={secondRef}>
           <a
             onClick={() => {
-              setLevel(0);
+              setLevel(0)
             }}
           >
             Close
@@ -66,7 +66,7 @@ export function Drilldown() {
           <li
             className="new"
             onClick={() => {
-              setLevel(1);
+              setLevel(1)
             }}
           >
             <strong>Add +</strong>
@@ -74,71 +74,71 @@ export function Drilldown() {
         </ul>
       </div>
     </div>
-  );
+  )
 }
 
 function animateFirstOffset(element: HTMLElement) {
-  const target = element.offsetHeight;
-  let current = 0;
+  const target = element.offsetHeight
+  let current = 0
 
   let timer = setInterval(() => {
-    current += DELTA;
+    current += DELTA
 
     if (current >= target) {
-      current = target;
-      clearInterval(timer);
+      current = target
+      clearInterval(timer)
     }
 
-    element.style.top = `${current}px`;
-    element.style.marginTop = `-${current}px`;
-  }, TICK);
+    element.style.top = `${current}px`
+    element.style.marginTop = `-${current}px`
+  }, TICK)
 }
 
 function resetFirstOffset(element: HTMLElement) {
-  const target = 0;
-  let current = element.offsetHeight;
+  const target = 0
+  let current = element.offsetHeight
 
   let timer = setInterval(() => {
-    current -= DELTA;
+    current -= DELTA
 
     if (current <= target) {
-      current = target;
-      clearInterval(timer);
+      current = target
+      clearInterval(timer)
     }
 
-    element.style.top = `${current}px`;
-    element.style.marginTop = `-${current}px`;
-  }, TICK);
+    element.style.top = `${current}px`
+    element.style.marginTop = `-${current}px`
+  }, TICK)
 }
 
 function animateSecondOffset(element: HTMLElement) {
-  const target = element.offsetHeight;
-  let current = 10;
+  const target = element.offsetHeight
+  let current = 10
 
   let timer = setInterval(() => {
-    current += DELTA;
+    current += DELTA
 
     if (current >= target) {
-      current = target;
-      clearInterval(timer);
+      current = target
+      clearInterval(timer)
     }
 
-    element.style.marginTop = `-${current}px`;
-  }, TICK);
+    element.style.marginTop = `-${current}px`
+  }, TICK)
 }
 
 function resetSecondOffset(element: HTMLElement) {
-  const target = 0;
-  let current = element.offsetHeight;
+  const target = 0
+  let current = element.offsetHeight
 
   let timer = setInterval(() => {
-    current -= DELTA;
+    current -= DELTA
 
     if (current <= target) {
-      current = target;
-      clearInterval(timer);
+      current = target
+      clearInterval(timer)
     }
 
-    element.style.marginTop = `-${current}px`;
-  }, TICK);
+    element.style.marginTop = `-${current}px`
+  }, TICK)
 }

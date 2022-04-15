@@ -1,16 +1,16 @@
-import React, { ReactNode } from "react";
-import { addProtocol, monthAndYearToString } from "../utils";
-import { Blank } from "./Blank";
-import { Period } from "./Resume";
+import React, {ReactNode} from 'react'
+import {addProtocol, monthAndYearToString} from '../utils'
+import {Blank} from './Blank'
+import {Period} from './Resume'
 
 export function Timeline({
   startingYear,
   children,
-  newEventButton,
+  newEventButton
 }: {
-  startingYear: number;
-  children: ReactNode;
-  newEventButton: { title: string; description: string; onClick: () => void };
+  startingYear: number
+  children: ReactNode
+  newEventButton: {title: string; description: string; onClick: () => void}
 }) {
   return (
     <div className="timeline">
@@ -33,7 +33,7 @@ export function Timeline({
       </div>
       <aside>{startingYear}</aside>
     </div>
-  );
+  )
 }
 
 export function TimelineEvent({
@@ -41,17 +41,17 @@ export function TimelineEvent({
   title,
   period,
   website: rawWebsite,
-  className,
+  className
 }: {
-  title: string;
-  period: Period;
-  website?: string;
-  className?: string;
-  children: ReactNode;
+  title: string
+  period: Period
+  website?: string
+  className?: string
+  children: ReactNode
 }) {
-  const from = period.from.toFormattedString();
-  const to = period.to !== null ? period.to.toFormattedString() : "Present";
-  const website = rawWebsite && addProtocol(rawWebsite);
+  const from = period.from.toFormattedString()
+  const to = period.to !== null ? period.to.toFormattedString() : 'Present'
+  const website = rawWebsite && addProtocol(rawWebsite)
 
   return (
     <li>
@@ -67,5 +67,5 @@ export function TimelineEvent({
       </div>
       <div className={`timeline__event__details ${className}`}>{children}</div>
     </li>
-  );
+  )
 }

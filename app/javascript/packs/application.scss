@@ -1,6 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 @import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
 
 @import '../stylesheets/tabs';
@@ -11,17 +11,27 @@ body {
   @apply w-full text-lg leading-snug m-0 p-0;
 }
 
-.responsive-table { @apply overflow-x-auto; }
+.responsive-table {
+  @apply overflow-x-auto;
+}
 
 table {
   @apply mt-5 min-w-full divide-y divide-gray-200;
 
-  thead th { @apply px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center; }
+  thead th {
+    @apply px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center;
+  }
 
-  tbody tr { @apply border-b border-dashed; }
+  tbody tr {
+    @apply border-b border-dashed;
+  }
   tbody th,
-  tbody td { @apply px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-center text-sm; }
-  tbody th { @apply font-bold underline; }
+  tbody td {
+    @apply px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-center text-sm;
+  }
+  tbody th {
+    @apply font-bold underline;
+  }
 }
 
 .logo {
@@ -37,26 +47,54 @@ table {
     @apply text-3xl font-bold mb-8;
   }
 
-  .general-summary { @apply mb-8; }
-  .general-summary > a { @apply text-indigo-600 underline hover:no-underline; }
-  .method > p { @apply text-left mb-3; }
-  .method > p:last-of-type { @apply mb-5; }
+  .general-summary {
+    @apply mb-8;
+  }
+  .general-summary > a {
+    @apply text-indigo-600 underline hover:no-underline;
+  }
+  .method > p {
+    @apply text-left mb-3;
+  }
+  .method > p:last-of-type {
+    @apply mb-5;
+  }
 
-  .tabs { @apply mb-5; }
-  .input > textarea { @apply h-60; }
+  .tabs {
+    @apply mb-5;
+  }
+  .input > textarea {
+    @apply h-60;
+  }
 
-  .errors { @apply mb-5; }
-  .errors > .error { @apply bg-yellow-50 border-l-4 border-yellow-400 py-2 px-4 text-left space-y-2;}
+  .errors {
+    @apply mb-5;
+  }
+  .errors > .error {
+    @apply bg-yellow-50 border-l-4 border-yellow-400 py-2 px-4 text-left space-y-2;
+  }
 }
 
-.input { @apply border border-gray-300 rounded-md px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600 mb-5; }
-.input > label { @apply block text-sm font-medium text-gray-900 text-left; }
+.input {
+  @apply border border-gray-300 rounded-md px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600 mb-5;
+}
+.input > label {
+  @apply block text-sm font-medium text-gray-900 text-left;
+}
 .input > input,
-.input > textarea { @apply block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 outline-none; }
+.input > textarea {
+  @apply block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 outline-none;
+}
 
-.button { @apply cursor-pointer; }
-.button.button-primary { @apply inline-flex items-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500; }
-.button.button-lg { @apply px-6 py-3 text-base font-medium rounded-md shadow-sm focus:ring-2 focus:ring-offset-2; }
+.button {
+  @apply cursor-pointer;
+}
+.button.button-primary {
+  @apply inline-flex items-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+.button.button-lg {
+  @apply px-6 py-3 text-base font-medium rounded-md shadow-sm focus:ring-2 focus:ring-offset-2;
+}
 
 // RESUME
 
@@ -64,8 +102,12 @@ body {
   @apply text-lg leading-snug m-0 p-0;
 }
 
-.container { @apply p-5 max-w-screen-xl mx-auto; }
-.centered-container { @apply p-5 max-w-screen-xl mx-auto text-center relative; }
+.container {
+  @apply p-5 max-w-screen-xl mx-auto;
+}
+.centered-container {
+  @apply p-5 max-w-screen-xl mx-auto text-center relative;
+}
 
 .section {
   @apply mb-8;
@@ -77,10 +119,18 @@ body {
   }
 }
 
-.created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
-.pdf { @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;}
-.profile-picture { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4 bg-gray-300; }
-.profile-picture > img { @apply w-full h-full; }
+.created-with {
+  @apply w-24 mx-auto mt-2 mb-10 hover:scale-105;
+}
+.pdf {
+  @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;
+}
+.profile-picture {
+  @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4 bg-gray-300;
+}
+.profile-picture > img {
+  @apply w-full h-full;
+}
 
 .name {
   font-family: 'Patua One', sans-serif;
@@ -88,7 +138,9 @@ body {
   @apply text-5xl mb-2;
 }
 
-.summary { @apply mb-8 text-left; }
+.summary {
+  @apply mb-8 text-left;
+}
 
 .timeline {
   @apply flex flex-col;
@@ -105,7 +157,9 @@ body {
   > div {
     background-image: url(../images/timeline-line.svg);
 
-    > ul { @apply block w-full m-0 p-0 space-y-9; }
+    > ul {
+      @apply block w-full m-0 p-0 space-y-9;
+    }
     > ul > li {
       @apply flex flex-col w-full;
       @apply flex-col;
@@ -150,29 +204,52 @@ body {
     @apply sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto;
   }
   > a,
-  > span { @apply text-gray-400 text-xs block; }
-  > a { @apply hover:underline; }
-  > div { @apply text-xs text-gray-600; }
+  > span {
+    @apply text-gray-400 text-xs block;
+  }
+  > a {
+    @apply hover:underline;
+  }
+  > div {
+    @apply text-xs text-gray-600;
+  }
 }
 
 .employment {
-  > p { @apply text-gray-600 mb-4 leading-5; }
-  > ul { @apply space-y-6; }
+  > p {
+    @apply text-gray-600 mb-4 leading-5;
+  }
+  > ul {
+    @apply space-y-6;
+  }
 }
 
 .role {
-  > p { @apply mb-2 text-gray-600 leading-5; }
-  > h4 { @apply text-base font-bold leading-4 mb-1; }
-  > aside { @apply mb-0 text-xs leading-3 text-gray-300; }
-  > ul { @apply space-y-2; }
+  > p {
+    @apply mb-2 text-gray-600 leading-5;
+  }
+  > h4 {
+    @apply text-base font-bold leading-4 mb-1;
+  }
+  > aside {
+    @apply mb-0 text-xs leading-3 text-gray-300;
+  }
+  > ul {
+    @apply space-y-2;
+  }
 }
 
 .achievement {
-  > h5 { @apply text-base underline leading-5; }
-  > p { @apply leading-5 text-gray-600; }
-  > ul > li { @apply bg-gray-800 text-white text-xs rounded-full text-center inline-block py-0.5 px-2 mr-0.5 leading-none; }
+  > h5 {
+    @apply text-base underline leading-5;
+  }
+  > p {
+    @apply leading-5 text-gray-600;
+  }
+  > ul > li {
+    @apply bg-gray-800 text-white text-xs rounded-full text-center inline-block py-0.5 px-2 mr-0.5 leading-none;
+  }
 }
-
 
 .schema {
   h1 {
@@ -180,10 +257,18 @@ body {
     @apply text-3xl font-bold mb-3;
   }
 
-  div { @apply sm:grid sm:grid-cols-2 sm:gap-5; }
-  p { @apply mb-8; }
-  a { @apply text-indigo-600 underline hover:no-underline; }
-  pre { @apply text-left rounded-md overflow-hidden mb-5; }
+  div {
+    @apply sm:grid sm:grid-cols-2 sm:gap-5;
+  }
+  p {
+    @apply mb-8;
+  }
+  a {
+    @apply text-indigo-600 underline hover:no-underline;
+  }
+  pre {
+    @apply text-left rounded-md overflow-hidden mb-5;
+  }
 }
 
 .privacy {
@@ -197,7 +282,9 @@ body {
     @apply text-xl font-bold mb-1;
   }
 
-  p { @apply text-center mb-5; }
+  p {
+    @apply text-center mb-5;
+  }
 }
 
 .example {

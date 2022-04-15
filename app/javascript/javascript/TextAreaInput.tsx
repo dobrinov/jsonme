@@ -1,6 +1,6 @@
-import classNames from "classnames";
-import React, { useEffect, useRef } from "react";
-import { InputState } from "./InputState";
+import classNames from 'classnames'
+import React, {useEffect, useRef} from 'react'
+import {InputState} from './InputState'
 
 export function TextAreaInput({
   name,
@@ -11,27 +11,27 @@ export function TextAreaInput({
   state,
   onChange,
   onBlur,
-  onInput,
+  onInput
 }: {
-  name: string;
-  label: string;
-  value?: string;
-  placeholder?: string;
-  addendum?: string;
-  state?: InputState;
-  onChange?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
-  onInput?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
+  name: string
+  label: string
+  value?: string
+  placeholder?: string
+  addendum?: string
+  state?: InputState
+  onChange?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void
+  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void
+  onInput?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void
 }) {
-  const ref = useRef<HTMLTextAreaElement>(null);
+  const ref = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    if (!ref.current) return;
-    ref.current.value = value ?? "";
-  }, [value]);
+    if (!ref.current) return
+    ref.current.value = value ?? ''
+  }, [value])
 
   return (
-    <div className={classNames("input", { "input-error": state === "error" })}>
+    <div className={classNames('input', {'input-error': state === 'error'})}>
       <label htmlFor={name}>{label}</label>
       <div>
         <div>
@@ -49,7 +49,7 @@ export function TextAreaInput({
         {addendum && <p>{addendum}</p>}
       </div>
     </div>
-  );
+  )
 }
 
 export function FormTextAreaInput({
@@ -57,30 +57,28 @@ export function FormTextAreaInput({
   name,
   label,
   placeholder,
-  addendum,
+  addendum
 }: {
-  form: any;
-  name: string;
-  label: string;
-  value?: string;
-  placeholder?: string;
-  addendum?: string;
-  state?: InputState;
-  onChange?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
-  onInput?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void;
+  form: any
+  name: string
+  label: string
+  value?: string
+  placeholder?: string
+  addendum?: string
+  state?: InputState
+  onChange?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void
+  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void
+  onInput?: (event: React.FocusEvent<HTMLTextAreaElement, Element>) => void
 }) {
   return (
     <TextAreaInput
       name={name}
       value={form.values[name]}
-      state={form.errors[name].length === 0 ? "normal" : "error"}
+      state={form.errors[name].length === 0 ? 'normal' : 'error'}
       addendum={form.errors[name][0] || addendum}
-      onBlur={(event) =>
-        form.update({ field: name, value: event.target.value })
-      }
+      onBlur={event => form.update({field: name, value: event.target.value})}
       label={label}
       placeholder={placeholder}
     />
-  );
+  )
 }

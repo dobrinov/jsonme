@@ -4,14 +4,26 @@
   table {
     @apply mt-5 min-w-full divide-y divide-gray-200;
 
-    thead th { @apply px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center; }
+    thead th {
+      @apply px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center;
+    }
 
-    tbody tr { @apply border-b border-dashed; }
+    tbody tr {
+      @apply border-b border-dashed;
+    }
     tbody th,
-    tbody td { @apply px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-center text-sm; }
-    tbody th { @apply font-bold underline; }
-    tbody th:hover { @apply text-blue-700; }
+    tbody td {
+      @apply px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-center text-sm;
+    }
+    tbody th {
+      @apply font-bold underline;
+    }
+    tbody th:hover {
+      @apply text-blue-700;
+    }
   }
 
-  > *:last-child { @apply mb-0; }
+  > *:last-child {
+    @apply mb-0;
+  }
 }

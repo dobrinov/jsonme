@@ -1,6 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 @import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
 
 @import '../stylesheets/avatar.scss';
@@ -14,5 +14,9 @@
 @import '../stylesheets/toggle.scss';
 @import '../stylesheets/resume/technology-stack.scss';
 
-body { @apply w-full; }
-.centered-container { @apply p-5 max-w-screen-xl mx-auto text-center relative; }
+body {
+  @apply w-full;
+}
+.centered-container {
+  @apply p-5 max-w-screen-xl mx-auto text-center relative;
+}
