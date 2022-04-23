@@ -1,4 +1,8 @@
 {
+  "public": true,
+  "name": "Deyan Dobrinov",
+  "image": "https://avatars.githubusercontent.com/u/996877?v=4",
+  "summary": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from. I enjoy doing that. I like good UX, and I fight for it.",
   "employments": [
     {
       "employer": {
@@ -10,7 +14,65 @@
         "to": null
       },
       "summary": "Dext is my current employer. It is a company developing products for more efficient accounting and bookkeeping. Lately, I am spending my time there on the development of various high-profile projects.",
-      "roles": []
+      "roles": [
+        {
+          "title": "Development lead",
+          "summary": "I am currently a direct report of the CTO. I lead a small team involved in projects that aim to improve system design (strategic refactoring, major updates, etc.).",
+          "majorAchievements": [
+            {
+              "title": "Migration to a new technology stack",
+              "summary": "Led a team of 8 which goal was to introduce a new front-end technology stack for Dext’s main application. As part of this task, we had to re-write a big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with a low amount of risk.",
+              "technologies": ["Typescript", "React", "GraphQL", "Ruby on Rails", "Ruby", "SASS", "Ruby Slim"]
+            },
+            {
+              "title": "Implementation of an internal CSS design library",
+              "summary": "We re-designed (at that time our main product), and since we became a multi-product company we wanted to have the same look and feel across all of our applications. Because of this, we decided to create our own CSS design library.",
+              "technologies": ["Storybook", "SASS", "React", "Typescript"]
+            }
+          ]
+        },
+        {
+          "title": "Team lead",
+          "summary": "I led a team of 2 software engineers and 1 QA. It was responsible for the application on which I worked during my previous role.",
+          "majorAchievements": [
+            {
+              "title": "Implementation of a tool for extracting tabular data from OCR responses",
+              "summary": "We needed a way to extract line items and bank transactions more efficiently. Such type of information is usually organized in a table. I came with the idea to overlay the OCR data over the payment document image and make it possible to be selected. Then using simple mathematics I was able to recognize the rows and colls of the table and extract information out of them.",
+              "technologies": ["Raphaël", "JavaScript", "Backbone.js"]
+            },
+            {
+              "title": "Improved the data extraction capabilities of the application",
+              "summary": "Implemented flows for extracting transactions from bank statements, line items from receipts and invoices, splitting of PDFs containing multiple financial documents.",
+              "technologies": ["Ruby on Rails", "Ruby", "PostgreSQL"]
+            },
+            {
+              "title": "Replaced custom search implementation with Elasticsearch",
+              "summary": "One of Dext's internal applications keeps information about the relationship between brands, legal entities and other properties of a company. It helps us identify that two (or more) financial documents are issued by the same business. It had search functionallity based on PostgreSQL features which was too complex and not working very well. I replaced it with Elasticsearch and the application became a thin layer and a UI around the search engine.",
+              "technologies": ["Ruby on Rails", "Ruby", "Elasticsearch"]
+            }
+          ]
+        },
+        {
+          "title": "Software engineer",
+          "summary": "I worked for a while on Dext's main product and then my main goal became to extract part of it which was dealing with manual (done by people) data extraction into a separate service.",
+          "majorAchievements": [
+            {
+              "title": "Extracted part of a monolithic application into a service",
+              "summary": "We identified that part of our main monolithic application dealing with manual data extraction can be organised into a separate service. I performed the task and delivered the end result in series of incremental releases.",
+              "technologies": ["Ruby on Rails", "Ruby", "SASS", "JavaScript", "Backbone.js", "PostgreSQL"]
+            }
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "trainings": [
+  ],
+  "technologies": [
+  ],
+  "location": {
+    "city": "Sofia",
+    "state": null,
+    "country": "Bulgaria"
+  }
 }

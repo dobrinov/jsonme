@@ -40,11 +40,13 @@ export function ModalProvider({children}: {children: React.ReactNode}) {
   useEffect(() => {
     if (!modal) return
 
-    const previous = document.body.style.position
-
+    document.body.style.top = `-${window.scrollY}px`
     document.body.style.position = 'fixed'
     return () => {
-      document.body.style.position = previous
+      const scrollY = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      window.scrollTo(0, parseInt(scrollY || '0') * -1)
     }
   }, [!!modal])
 
