@@ -24,7 +24,7 @@ type Employer = {
 export type Achievement = {
   title: string
   summary: string
-  technologies: string[]
+  technologies?: string[]
 }
 
 export type Role = {
@@ -45,6 +45,9 @@ type EditableEmployment = Employment | PersistedEmployment
 
 type PersistedRole = Role & Persistable
 type EditableRole = Role | PersistedRole
+
+type AchievementRole = Achievement & Persistable
+type EditableAchievement = Achievement | AchievementRole
 
 type Location = {
   city: string
@@ -380,7 +383,7 @@ function Experience({
                       <h4>{role.title}</h4>
                       <p>
                         {role.summary}
-                        <Control
+                        {/* <Control
                           onEdit={() =>
                             showModal(
                               <RoleFormModal
@@ -417,7 +420,7 @@ function Experience({
                               />
                             )
                           }
-                        />
+                        /> */}
                       </p>
                       {role.majorAchievements && role.majorAchievements.length > 0 && (
                         <>
@@ -428,7 +431,7 @@ function Experience({
                                 <h5>{achievement.title}</h5>
                                 <p>{achievement.summary}</p>
                                 <ul>
-                                  {achievement.technologies.map(technology => (
+                                  {achievement.technologies?.map(technology => (
                                     <li key={technology}>
                                       <span className="badge">{technology}</span>
                                     </li>
@@ -438,6 +441,35 @@ function Experience({
                             ))}
                           </ul>
                         </>
+                      )}
+                      {editable && (
+                        <Blank
+                          title="Add an achievement"
+                          description="This here is a description about the section"
+                          style="compact"
+                          onClick={() => {
+                            showModal(
+                              <AchievementFormModal
+                                onSubmit={newAchievement => {
+                                  onEditEmployment({
+                                    ...employment,
+                                    index,
+                                    roles: updateCollection(
+                                      {
+                                        ...role,
+                                        index,
+                                        majorAchievements: addToCollection(newAchievement, role.majorAchievements)
+                                      },
+                                      employment.roles
+                                    )
+                                  })
+                                  hideModal()
+                                }}
+                                onCancel={() => hideModal()}
+                              />
+                            )
+                          }}
+                        />
                       )}
                     </li>
                   ))}
@@ -478,6 +510,11 @@ type EmploymentForm = {
 }
 
 type RoleForm = {
+  title: string
+  summary: string
+}
+
+type AchievementForm = {
   title: string
   summary: string
 }
@@ -661,6 +698,65 @@ function RoleFormModal({
 
             onSubmit({
               ...initialRole,
+              title: form.values.title,
+              summary: form.values.summary
+            })
+          }}
+        >
+          Add
+        </button>
+      </footer>
+    </div>
+  )
+}
+
+function AchievementFormModal({
+  achievement: initialAchievement,
+  onSubmit,
+  onCancel
+}: {
+  achievement?: EditableAchievement
+  onSubmit: (role: EditableAchievement) => void
+  onCancel: () => void
+}) {
+  const form = useForm<AchievementForm>({
+    title: {
+      value: initialAchievement?.title ?? '',
+      validations: [validatePresence]
+    },
+    summary: {
+      value: initialAchievement?.summary ?? '',
+      validations: [validatePresence]
+    }
+  })
+
+  return (
+    <div>
+      <header>
+        <strong>Add achievement</strong>
+      </header>
+      <section>
+        <FormTextInput form={form} name="title" label="Title" placeholder="Your achievement's title" />
+        <FormTextAreaInput
+          form={form}
+          name="summary"
+          label="Summary"
+          placeholder="Provide some details about your achievement."
+        />
+      </section>
+      <footer>
+        <button type="button" className="button" onClick={onCancel}>
+          Close
+        </button>
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={() => {
+            if (!form.validate()) return
+            if (!form.values.title || !form.values.summary) return
+
+            onSubmit({
+              ...initialAchievement,
               title: form.values.title,
               summary: form.values.summary
             })
