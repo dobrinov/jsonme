@@ -21,7 +21,7 @@
           "majorAchievements": [
             {
               "title": "Migration to a new technology stack",
-              "summary": "Led a team of 8 which goal was to introduce a new front-end technology stack for Dext’s main application. As part of this task, we had to re-write a big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with a low amount of risk.",
+              "summary": "Led a team of 8 which goal was to introduce a new front-end technology stack for Dext's main application. As part of this task, we had to re-write a big part of the application in React + Typescript and consume a newly created GraphQL API. As incremental releases were not possible here, one of the big challenges was to roll out the end result with a low amount of risk.",
               "technologies": ["Typescript", "React", "GraphQL", "Ruby on Rails", "Ruby", "SASS", "Ruby Slim"]
             },
             {
@@ -49,17 +49,6 @@
               "title": "Replaced custom search implementation with Elasticsearch",
               "summary": "One of Dext's internal applications keeps information about the relationship between brands, legal entities and other properties of a company. It helps us identify that two (or more) financial documents are issued by the same business. It had search functionallity based on PostgreSQL features which was too complex and not working very well. I replaced it with Elasticsearch and the application became a thin layer and a UI around the search engine.",
               "technologies": ["Ruby on Rails", "Ruby", "Elasticsearch"]
-            }
-          ]
-        },
-        {
-          "title": "Software engineer",
-          "summary": "I worked for a while on Dext's main product and then my main goal became to extract part of it which was dealing with manual (done by people) data extraction into a separate service.",
-          "majorAchievements": [
-            {
-              "title": "Extracted part of a monolithic application into a service",
-              "summary": "We identified that part of our main monolithic application dealing with manual data extraction can be organised into a separate service. I performed the task and delivered the end result in series of incremental releases.",
-              "technologies": ["Ruby on Rails", "Ruby", "SASS", "JavaScript", "Backbone.js", "PostgreSQL"]
             }
           ]
         }

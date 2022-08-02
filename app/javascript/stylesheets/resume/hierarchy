@@ -1,0 +1,14 @@
+Employment:
+  Employer name: Dext
+  Employer website: www.dext.com
+  Employed from: May 2016
+  Employed to:
+  Employment active: true
+  Summary: Blah blah
+  Roles:
+    Title: Simple developer
+    Summary: Blah blah
+    Achievements:
+      Technologies:
+      - ruby
+      - scss
