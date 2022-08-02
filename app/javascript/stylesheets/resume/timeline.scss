@@ -25,7 +25,6 @@
   }
   > div > ul > li {
     @apply flex flex-col w-full relative mb-4 sm:flex-row;
-    &:hover { outline: 1px dotted red; }
   }
   > div > ul > li > .timeline__event__summary {
     @apply relative flex-none w-full pl-12 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right;
@@ -58,9 +57,11 @@
 .timeline__dot {
   @apply absolute rounded-full bg-black w-4 h-4 top-0.5 left-4 right-auto sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto;
 }
+
 .timeline__dot--gray {
   @apply bg-gray-300;
 }
+
 .timeline__dot--center {
   @apply top-1/2;
 }

@@ -5,6 +5,9 @@ class SubmissionsController < ApplicationController
     render layout: 'resume'
   end
 
+  def storybook
+  end
+
   def show
     @method = params[:method]
     @username = params[:username]

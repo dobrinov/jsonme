@@ -1,0 +1,15 @@
+doctype html
+html lang="en"
+  head
+    title Resume
+
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    link rel="icon" href="/favicon.svg" type="image/svg+xml"
+
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_pack_tag 'storybook', media: 'all'
+    = javascript_pack_tag 'storybook'
+
+  body
+    = yield

@@ -16,9 +16,11 @@ Rails.application.routes.draw do
   get 'privacy', to: 'static_pages#privacy', as: :privacy
   get 'sitemap', to: 'sitemaps#show', defaults: { format: 'xml' }, as: :sitemap
 
-  get '/playground', to: 'playgrounds#index'
   get '/resume', to: 'submissions#resume'
+  get '/playground', to: 'submissions#playground'
   get '/drilldown', to: 'playgrounds#drilldown'
+
+  get '/storybook', to: 'storybooks#index'
 
   namespace :admin do
     get 'xyz', to: 'submissions#index'
