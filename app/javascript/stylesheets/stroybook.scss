@@ -22,15 +22,6 @@ body { padding: 2rem; }
   > div > ul { @apply block w-full m-0 p-0; }
   > div > ul > li { @apply flex flex-col w-full relative p-4 sm:flex-row; }
 
-  > div > ul > li > button {
-    @apply absolute top-3 right-3 px-2 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white ease-out duration-75 z-10 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:left-auto sm:left-3;
-
-    &:active { @apply translate-y-0.5; }
-  }
-
-  // > div > ul > li:hover { background: rgba(0, 0, 0, 0.03); @apply rounded; }
-  > div > ul > li.hover { background: rgba(0, 0, 0, 0.03); @apply rounded; }
-
   .summary { @apply relative flex-none w-full pl-7 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right; }
 
   .summary > strong {
@@ -44,10 +35,21 @@ body { padding: 2rem; }
   .summary > aside { @apply absolute rounded-full bg-black w-4 h-4 top-0.5 left-0 right-auto top-1 sm:w-3 sm:h-3 sm:top-1.5 sm:-right-1.5 sm:left-auto; }
   .summary > .period { @apply text-xs text-gray-600; }
 
-  .new { @apply relative flex-none w-full pl-7 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right; }
-  .new > aside { @apply absolute rounded-full bg-gray-300 w-4 h-4 top-0.5 left-0 right-auto sm:w-3 sm:h-3 sm:-right-1.5 sm:left-auto; top: calc(50% - 8px); }
-
   .details { @apply relative flex-none text-left pl-7 text-base w-full sm:w-1/2 sm:pl-6; }
+}
+
+.timeline.editable {
+  > div > ul > li.persisted:hover { background: rgba(0, 0, 0, 0.03); @apply rounded-md; }
+  > div > ul > li.persisted.hover { background: rgba(0, 0, 0, 0.03); @apply rounded-md; }
+
+  .new > div { @apply relative flex-none w-full pl-7 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right; }
+  .new > div > aside { @apply absolute rounded-full bg-gray-300 w-4 h-4 top-0.5 left-0 right-auto sm:w-3 sm:h-3 sm:-right-1.5 sm:left-auto; top: calc(50% - 8px); }
+
+  > div > ul > li > button {
+    @apply absolute top-3 right-3 px-2 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white ease-out duration-75 z-10 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:left-auto sm:left-3;
+
+    &:active { @apply translate-y-0.5; }
+  }
 }
 
 // BLANK
