@@ -22,11 +22,11 @@ body { padding: 2rem; }
   > div > ul { @apply block w-full m-0 p-0; }
   > div > ul > li { @apply flex flex-col w-full relative p-4 sm:flex-row; }
 
-  .summary { @apply relative flex-none w-full pl-7 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right; }
+  .summary { @apply relative flex flex-col items-end w-full pl-7 mb-3 text-left sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right; }
 
   .summary > strong {
     font-family: 'Patua One', sans-serif;
-    @apply block text-xl m-0 p-0 leading-6;
+    @apply text-xl m-0 p-0 leading-6 flex;
   }
 
   .summary > a,
@@ -50,7 +50,33 @@ body { padding: 2rem; }
 
     &:active { @apply translate-y-0.5; }
   }
+
+  .summary > strong:hover,
+  .summary > a:hover,
+  .summary > span:hover,
+  .summary > a:hover,
+  .summary > .period:hover { @apply bg-yellow-50 cursor-pointer; }
+
+  .details > p:hover { @apply bg-yellow-50 cursor-pointer; }
 }
 
 // BLANK
 .blank { @apply border-2 text-center border-dashed rounded-md text-gray-400 border-gray-200 px-5 py-5 hover:border-gray-400 hover:text-gray-600 hover:cursor-pointer; }
+
+
+// POPPER
+.popper {
+  position: absolute;
+  border: none;
+  padding: 0 4px;;
+  text-align: right;
+  border-radius: 4px;
+  background-color: #fff;
+  outline: 1px solid #ddd;
+  box-shadow: none;
+  &:focus { outline: 1px solid #ddd; box-shadow: none; }
+}
+.popper-employer-name {
+  top: 0;
+  right: 16px;
+}
