@@ -16,6 +16,13 @@ gem 'slim-rails'
 gem 'bootsnap', require: false
 
 group :development do
+  gem 'ed25519'
+  gem 'bcrypt_pbkdf'
+  gem 'capistrano', require: false
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-bundler'
+  gem 'capistrano3-puma', github: "seuros/capistrano-puma"
   gem 'listen', '~> 3.3'
   gem 'spring'
 end
