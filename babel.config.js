@@ -25,7 +25,7 @@ module.exports = function(api) {
           },
           modules: 'commonjs'
         },
-        '@babel/preset-react'
+        ['@babel/preset-react', {runtime: "automatic"}]
       ],
       (isProductionEnv || isDevelopmentEnv) && [
         '@babel/preset-env',
@@ -41,9 +41,11 @@ module.exports = function(api) {
         '@babel/preset-react',
         {
           development: isDevelopmentEnv || isTestEnv,
+          runtime: "automatic",
           useBuiltIns: true
         }
-      ]
+      ],
+      ['@babel/preset-typescript', { 'allExtensions': true, 'isTSX': true }]
     ].filter(Boolean),
     plugins: [
       'babel-plugin-macros',

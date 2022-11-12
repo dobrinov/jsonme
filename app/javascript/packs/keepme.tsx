@@ -1,0 +1,1 @@
+// We will need at least one ts file. Otherwise Typescript complains
