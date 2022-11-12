@@ -25,6 +25,7 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "fork-ts-checker-webpack-plugin": "5.1"
+    "fork-ts-checker-webpack-plugin": "5.1",
+    "prettier": "2.7.1"
   }
 }

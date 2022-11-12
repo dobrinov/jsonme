@@ -1,4 +1,4 @@
-module.exports = function(api) {
+module.exports = function (api) {
   var validEnv = ['development', 'test', 'production']
   var currentEnv = api.env()
   var isDevelopmentEnv = api.env('development')
@@ -25,7 +25,7 @@ module.exports = function(api) {
           },
           modules: 'commonjs'
         },
-        ['@babel/preset-react', {runtime: "automatic"}]
+        ['@babel/preset-react', {runtime: 'automatic'}]
       ],
       (isProductionEnv || isDevelopmentEnv) && [
         '@babel/preset-env',
@@ -41,11 +41,11 @@ module.exports = function(api) {
         '@babel/preset-react',
         {
           development: isDevelopmentEnv || isTestEnv,
-          runtime: "automatic",
+          runtime: 'automatic',
           useBuiltIns: true
         }
       ],
-      ['@babel/preset-typescript', { 'allExtensions': true, 'isTSX': true }]
+      ['@babel/preset-typescript', {allExtensions: true, isTSX: true}]
     ].filter(Boolean),
     plugins: [
       'babel-plugin-macros',
