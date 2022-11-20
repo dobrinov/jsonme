@@ -10,4 +10,4 @@
   = link_to submission_path(method: @method, username: @username, format: 'pdf'), target: 'blank' do
     = image_pack_tag 'pdf.svg', class: 'pdf'
 
-= render 'resume', resume: @resume
+  #resume data-resume=@resume.payload
