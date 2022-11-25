@@ -11,6 +11,14 @@ Rails.application.routes.draw do
                   as: :submissions,
                   constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
+  get ':method/:username/posts', to: 'posts#index',
+                                 as: :posts,
+                                 constraints: { method: /#{Submission::METHODS.join('|')}/ }
+
+  get ':method/:username/posts/:id', to: 'posts#show',
+                                     as: :post,
+                                     constraints: { method: /#{Submission::METHODS.join('|')}/ }
+
   get 'example', to: 'static_pages#example', as: :example
   get 'structure', to: 'static_pages#structure', as: :structure
   get 'privacy', to: 'static_pages#privacy', as: :privacy
