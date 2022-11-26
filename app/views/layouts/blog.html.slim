@@ -1,0 +1,26 @@
+doctype html
+html lang="en"
+  head
+    title = yield :title
+
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    meta name="description" content="#{yield :description}"
+    link rel="icon" href="/favicon.svg" type="image/svg+xml"
+
+    - if content_for? :url
+      meta property="og:url" content="#{yield :url}"
+    - if content_for? :image
+      meta property="og:image" content="#{yield :image}"
+    - if content_for? :title
+      meta property="og:title" content="#{yield :title}"
+    - if content_for? :description
+      meta property="og:description" content="#{yield :description}"
+
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_pack_tag 'blog', media: 'all'
+    = javascript_pack_tag 'blog'
+
+  body
+    .container
+      = yield
