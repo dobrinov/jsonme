@@ -1,5 +1,5 @@
 ---
-title:  "Hello blog!"
+title:  "Hello, blogging!"
 date: 2022-11-25
 ---
 

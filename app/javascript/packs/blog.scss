@@ -9,25 +9,35 @@ body {
   @apply text-lg leading-snug m-0 p-0;
 }
 
-article { @apply p-5 max-w-screen-lg mx-auto leading-relaxed relative; outline: 1px dotted red; }
-// font-size: 1.25rem;
-// line-height: 1.8;
+header {
+  @apply max-w-screen-md mx-auto text-center pt-16;
 
-p > code { @apply py-0.5 px-2 bg-gray-50 mb-1 rounded-md }
+  .avatar { @apply rounded-full inline-block h-14 w-14 overflow-hidden; }
+  .avatar > img { @apply w-full h-full; }
 
-h1 { @apply text-4xl font-bold mb-5; }
-h2 { @apply text-3xl font-bold mb-5; }
-h3 { @apply text-2xl font-bold mb-5; }
-h4 { @apply text-xl font-bold mb-5; }
-h5 { @apply font-bold mb-5; }
-h6 { @apply mb-5; }
+  .author-name { @apply text-gray-500 text-base mb-12 tracking-widest uppercase; }
+  .date { @apply text-gray-500 text-base; }
+}
 
-p { @apply mb-5; }
+article {
+  @apply p-5 max-w-screen-md mx-auto leading-relaxed relative;
 
-pre { @apply p-5 bg-gray-50 ring-1 ring-black ring-opacity-5 mb-5 rounded-md; }
+  p > code { @apply py-0.5 px-2 bg-gray-50 mb-1 rounded-md }
 
-table { @apply min-w-full divide-y divide-gray-300 mb-5 ring-1 ring-black ring-opacity-5 overflow-hidden rounded-md; }
-table > thead { @apply bg-gray-50; }
-table > thead th { @apply px-5 py-3.5 text-left font-semibold text-gray-900; }
-table > tbody { @apply divide-y divide-gray-200 bg-white; }
-table > tbody td { @apply whitespace-nowrap px-5 py-4 text-gray-800; }
+  h1 { @apply text-5xl text-center font-bold mb-5; }
+  h2 { @apply text-3xl font-bold mb-5; }
+  h3 { @apply text-2xl font-bold mb-5; }
+  h4 { @apply text-xl font-bold mb-5; }
+  h5 { @apply font-bold mb-5; }
+  h6 { @apply mb-5; }
+
+  p { @apply mb-5; }
+
+  pre { @apply p-5 bg-gray-50 ring-1 ring-black ring-opacity-5 mb-5 rounded-md; }
+
+  table { @apply min-w-full divide-y divide-gray-300 mb-5 ring-1 ring-black ring-opacity-5 overflow-hidden rounded-md; }
+  table > thead { @apply bg-gray-50; }
+  table > thead th { @apply px-5 py-3.5 text-left font-semibold text-gray-900; }
+  table > tbody { @apply divide-y divide-gray-200 bg-white; }
+  table > tbody td { @apply whitespace-nowrap px-5 py-4 text-gray-800; }
+}

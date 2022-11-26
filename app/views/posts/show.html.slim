@@ -1,4 +1,11 @@
-h1 = @post.title
-p = @post.date
+header
+  .avatar
+    img src=@post.author_image
 
-= @post.body
+  p.author-name = @post.author_name
+  p.date = @post.date
+
+article
+  h1 = @post.title
+
+  = @post.body
