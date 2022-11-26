@@ -3,11 +3,13 @@ title:  "Hello markdown!"
 date: 2022-11-25
 ---
 
-# Hello markdown
+# H2
+## H3
+### H4
+#### H5
+##### H6
 
-## I should be an H3
-
-This is a blog served from a markdown file.
+I am a paragraph
 
 ```rb
 def test

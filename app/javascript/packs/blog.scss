@@ -9,6 +9,13 @@ body {
   @apply text-lg leading-snug m-0 p-0;
 }
 
-.container { @apply p-5 max-w-screen-xl mx-auto relative; outline: 1px dotted red; }
+article { @apply p-5 max-w-screen-xl mx-auto relative; outline: 1px dotted red; }
+// font-size: 1.25rem;
+// line-height: 1.8;
 
-h1 { @apply text-2xl; }
+h1 { @apply text-4xl; } // font-size: 2.8em;
+h2 { @apply text-3xl } // 1.5em
+h3 { @apply text-2xl } // 1.5em
+h4 { @apply text-xl } // inherit bold
+h5 { } // inherit
+h6 { } // inherit
