@@ -23,7 +23,7 @@ class BlogPost
       end
 
       # Process content
-      body = Kramdown::Document.new(raw[content_start_index..].join("\n"), input: 'GFM').to_html.html_safe
+      body = Kramdown::Document.new(raw[content_start_index..].join("\n"), input: 'GFM', auto_ids: false, header_offset: 1).to_html.html_safe
 
       new title, date, body
     end
