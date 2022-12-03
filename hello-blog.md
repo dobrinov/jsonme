@@ -45,4 +45,6 @@ I have just started a [jsonme](https://www.jsonme.com) blog.
 
 3. `git commit -am "Create my first jsonme blog post"`
 4. `git push`
-5. **Congratulations!** You have just published your first blog post on jsonme.com. Navigate to https://www.jsonme.com/github/**{yourgithubhandle}**/posts/hello-blogging to see it.
+
+**Congratulations!**
+You have just published your first blog post on jsonme.com. Navigate to https://www.jsonme.com/github/**{yourgithubhandle}**/posts/hello-blogging to see it.
