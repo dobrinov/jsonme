@@ -13,11 +13,13 @@ If you have not guessed yet, you are reading a blog post served by this new func
 Yes, I am fully aware that this is an awesome attack vector, but I am fine with this because the markdown file is actually parsed on your machine and not the jsonme servers.
 
 # How can you create one yourself?
+In order to start blogging on jsonme.com, you will need to create a "profile" - specify what is your name and how you look like. The blog will look nicer if this information is available.
 
-## Creating a "jsonme" profile (skip if you already have such)
-1. Create a folder on your local machine and call it `me`.
-2. Run `git init` inside of it.
-3. Create a `resume.json` file in it with the following content:
+## Creating a jsonme "profile"
+1. Create a **public** Github repository called **me**.
+2. Create a folder on your local machine and call it **me**.
+3. Run `git init` inside of it.
+4. Create a **resume.json** file in it with the following content:
 ```json
 {
   "name": "John Doe",
@@ -25,9 +27,21 @@ Yes, I am fully aware that this is an awesome attack vector, but I am fine with 
 }
 ```
 
-4. `git commit -am "Creating a jsonme profile"`
+5. `git commit -am "Create a jsonme profile"`
+6. `git remote add origin git@github.com:{yourgithubhandle}/me.git`
+7. `git push -u origin main`
 
 ## Writting your first blog post
-2. Create a "me" repository in your Github (works with Gitlab aswell) profile.
-3. In this "me" repository create a directory called "posts" and place the markdown file with your story inside it.
-4. That is it! You blog post is public. Check it out at https://www.jsonme.com/github/{yourgithubhandle}/posts/{}
+1. Create a **posts** directory next to **resume.json** file that you just created.
+2. In the posts directory create a file called **hello-blogging.md** with the following content:
+```json
+---
+title:  "Hello, blogging!"
+date: 2022-11-26
+---
+I have just started a [jsonme](https://www.jsonme.com) blog.
+```
+
+3. `git commit -am "Create my first jsonme blog post"`
+4. `git push`
+5. **Congratulations!** You have just published your first blog post on jsonme.com. Navigate to https://www.jsonme.com/github/**{yourgithubhandle}**/posts/hello-blogging to see it.
