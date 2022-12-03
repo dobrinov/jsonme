@@ -1,0 +1,54 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+
+  @apply text-lg leading-snug m-0 p-0;
+}
+
+header {
+  @apply max-w-screen-md mx-auto text-center pt-16;
+
+  .avatar { @apply rounded-full inline-block h-14 w-14 overflow-hidden; }
+  .avatar > img { @apply w-full h-full; }
+
+  .author-name { @apply text-gray-500 text-base mb-12 tracking-widest uppercase; }
+  .date { @apply text-gray-500 text-base; }
+}
+
+article {
+  @apply p-5 max-w-screen-md mx-auto leading-relaxed relative;
+
+  p > code,
+  li > code { @apply py-0.5 px-2 bg-gray-50 ring-1 ring-black ring-opacity-10 text-red-500 mb-1 rounded-sm; }
+
+  h1 { @apply text-5xl text-center font-bold mb-5; }
+  h2 { @apply text-3xl font-bold mb-3 mt-10; }
+  h3 { @apply text-2xl font-bold mb-3 mt-10; }
+  h4 { @apply text-xl font-bold mb-2 mt-10; }
+  h5 { @apply font-bold mb-1 mt-6; }
+  h6 { @apply mt-4; }
+
+  p { @apply mb-5; }
+  p a { @apply underline text-blue-500; }
+  ul { @apply list-disc pl-5 mb-5; }
+  ul.task-list { @apply list-none p-0 mb-5; }
+  ul.task-list input[type=checkbox] { @apply mr-3; }
+  ol { @apply list-decimal pl-5 mb-5; }
+  img { @apply bg-gray-50 w-full bg-cover mb-5 rounded-md max-h-96; }
+
+  pre { @apply p-5 bg-gray-50 ring-1 ring-black ring-opacity-10 mb-5 rounded-md overflow-x-scroll; }
+  li > pre { @apply mt-2; }
+
+  table { @apply min-w-full divide-y divide-gray-300 mb-5 ring-1 ring-black ring-opacity-5 overflow-hidden rounded-md; }
+  table > thead { @apply bg-gray-50; }
+  table > thead th { @apply px-5 py-3.5 text-left font-semibold text-gray-900; }
+  table > tbody { @apply divide-y divide-gray-200 bg-white; }
+  table > tbody td { @apply whitespace-nowrap px-5 py-4 text-gray-800; }
+
+  .footnote { @apply no-underline ml-1; }
+  .reversefootnote { @apply no-underline; }
+}

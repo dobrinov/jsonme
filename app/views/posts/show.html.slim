@@ -1,0 +1,16 @@
+- content_for :url, request.original_url
+- content_for :image, @post.author_image
+- content_for :title, @post.title
+- content_for :description, 'todo'
+
+header
+  .avatar
+    img src=@post.author_image
+
+  p.author-name = @post.author_name
+  p.date = @post.date
+
+article
+  h1 = @post.title
+
+  = @post.body
