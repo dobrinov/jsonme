@@ -33,7 +33,7 @@ article {
   h6 { @apply mt-4; }
 
   p { @apply mb-5; }
-  p a { @apply underline text-blue-500; }
+  p a { @apply underline text-blue-500 break-all; }
   ul { @apply list-disc pl-5 mb-5; }
   ul.task-list { @apply list-none p-0 mb-5; }
   ul.task-list input[type=checkbox] { @apply mr-3; }
