@@ -64,7 +64,7 @@ class SubmissionsController < ApplicationController
       response = GitlabFetcher.execute decode(params[:username]) if params[:username].present?
       errors << 'Gitlab username must be present' unless params[:username].present?
       if params[:username].present? && response.blank?
-        errors << "Can not find a <strong>\"resume.json\"</strong> in <strong>\"me\"</strong> repository of <strong>#{params[:username]}</strong> Gitlab profile".html_safe
+        errors << "Can not find a <strong>\"me.json\"</strong> in <strong>\"me\"</strong> repository of <strong>#{params[:username]}</strong> Gitlab profile".html_safe
       end
       payload = response.to_s unless errors.any?
 
@@ -72,7 +72,7 @@ class SubmissionsController < ApplicationController
       response = GithubFetcher.execute decode(params[:username]) if params[:username].present?
       errors << 'Github username must be present' unless params[:username].present?
       if params[:username].present? && response.blank?
-        errors << "Can not find a <strong>\"resume.json\"</strong> in <strong>\"me\"</strong> repository of <strong>#{params[:username]}</strong> Github profile".html_safe
+        errors << "Can not find a <strong>\"me.json\"</strong> in <strong>\"me\"</strong> repository of <strong>#{params[:username]}</strong> Github profile".html_safe
       end
       payload = response.to_s unless errors.any?
 

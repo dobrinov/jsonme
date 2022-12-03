@@ -2,6 +2,6 @@ module GitlabFetcher
   extend self
 
   def execute(repository)
-    Fetcher.execute "https://gitlab.com/#{repository}/me/-/raw/main/resume.json"
+    Fetcher.execute "https://gitlab.com/#{repository}/me/-/raw/main/me.json"
   end
 end
