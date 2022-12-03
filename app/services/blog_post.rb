@@ -55,4 +55,8 @@ class BlogPost
     @author_image = author_image
     @body = body
   end
+
+  def teaser
+    "#{body.gsub(/<[^>]*>/,'')[0..100]}..."
+  end
 end
