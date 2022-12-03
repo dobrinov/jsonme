@@ -13,9 +13,10 @@ If you have not guessed yet, you are reading a blog post served by this new func
 Yes, I am fully aware that this is an awesome attack vector, but I am fine with this because the markdown file is actually parsed on your machine and not the jsonme servers.
 
 # How can you create one yourself?
-In order to start blogging on jsonme.com, you will need to create a "profile" - specify what is your name and how you look like. The blog will look nicer if this information is available.
 
 ## Creating a jsonme "profile"
+In order to start blogging on jsonme.com, you will need to create a "profile" - specify what is your name and how you look like. The blog will look nicer if this information is available.
+
 1. Create a **public** Github repository called **me**.
 2. Create a folder on your local machine and call it **me**.
 3. Run `git init` inside of it.
@@ -23,7 +24,7 @@ In order to start blogging on jsonme.com, you will need to create a "profile" - 
 ```json
 {
   "name": "John Doe",
-  "image": "https://avatars.githubusercontent.com/u/996877?v=4"
+  "image": "https://example.com/profile-picture.jpg" //  Hint: You can use the URL of your Github avatar for profile picture.
 }
 ```
 
@@ -31,7 +32,7 @@ In order to start blogging on jsonme.com, you will need to create a "profile" - 
 6. `git remote add origin git@github.com:{yourgithubhandle}/me.git`
 7. `git push -u origin main`
 
-## Writting your first blog post
+## Publishing your first blog post
 1. Create a **posts** directory next to **resume.json** file that you just created.
 2. In the posts directory create a file called **hello-blogging.md** with the following content:
 ```json
