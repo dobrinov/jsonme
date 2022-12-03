@@ -1,13 +1,23 @@
 class BlogPost
-  attr_reader :title, :date, :author_name, :author_image, :body
+  attr_reader :title, :date, :body
+  attr_accessor :author_name, :author_image
 
   class << self
-    def from_file(file_name)
-      parse File.read(Rails.root.join(file_name))
-    end
+    def for(product, username, id)
+      profile = Profile.for product, username
 
-    def parse(text)
-      raw = text.split "\n"
+      payload =
+        if product == 'github'
+          GithubFetcher.post username, id
+        elsif product == 'gitlab'
+          raise 'Not implemented yet'
+        else
+          raise "Unsupported product #{product}"
+        end
+
+      raise "Cannot fetch blog post for #{username}, #{id}" unless payload.present?
+
+      raw = payload.to_s.split "\n"
 
       title = nil
       date = nil
@@ -34,14 +44,11 @@ class BlogPost
           to_html.
           html_safe
 
-      author_name = 'Deyan Dobrinov'
-      author_image = 'https://avatars.githubusercontent.com/u/996877?v=4'
-
-      new title, date, author_name, author_image, body
+      new title: title, date: date, body: body, author_name: profile.name, author_image: profile.image
     end
   end
 
-  def initialize(title, date, author_name, author_image, body)
+  def initialize(title:, date:, body:, author_name: nil, author_image: nil)
     @title = title
     @date = date
     @author_name = author_name

@@ -2,6 +2,6 @@ class PostsController < ApplicationController
   layout 'blog'
 
   def show
-    @post = BlogPost.parse GithubFetcher.post(params[:username], params[:id]).to_s
+    @post = BlogPost.for params[:method], params[:username].gsub('-', '.'), params[:id]
   end
 end
