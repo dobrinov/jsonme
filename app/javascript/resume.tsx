@@ -97,7 +97,15 @@ function Resume({image, name, summary, location, employments, trainings, sidePro
       {location && (
         <Section title="Location">
           <p>
-            {location.city}, {location.state}, {location.country}
+            {location.state ? (
+              <>
+                {location.city}, {location.state}, {location.country}
+              </>
+            ) : (
+              <>
+                {location.city}, {location.country}
+              </>
+            )}
           </p>
         </Section>
       )}
