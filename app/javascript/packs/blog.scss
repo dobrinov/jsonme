@@ -15,8 +15,8 @@ header {
   .avatar { @apply rounded-full inline-block h-14 w-14 overflow-hidden; }
   .avatar > img { @apply w-full h-full; }
 
-  .author-name { @apply text-gray-500 text-base mb-12 tracking-widest uppercase; }
-  .date { @apply text-gray-500 text-base; }
+  .author { @apply text-gray-500 text-base mb-12 tracking-widest uppercase; }
+  time { @apply text-gray-500 text-base; }
 }
 
 article {
