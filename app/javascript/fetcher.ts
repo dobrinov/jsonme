@@ -1,4 +1,5 @@
 import yaml from 'js-yaml'
+import {z} from 'zod'
 
 type Post = {
   date: Date
@@ -85,10 +86,10 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
   }
 }
 
-function parseResume(value: string): Resume {
+function parseResume(json: any): Resume {
   return {
-    name: '',
-    image: ''
+    name: json.name,
+    image: json.image
   }
 }
 
