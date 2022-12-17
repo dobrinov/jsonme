@@ -29,11 +29,17 @@ type FrontMatter = {
   endIndex: number
 }
 
+const EMPTY_RESUME: Resume = {
+  name: 'Unknown Author',
+  image: 'missing'
+}
+
 export const github = {
   resume: (username: string): Promise<Resume> => {
     return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
       .then(response => response.json())
       .then(parseResume)
+      .catch(() => EMPTY_RESUME)
   },
   post: (username: string, handle: string): Promise<PostWithAuthor> => {
     return Promise.all([
