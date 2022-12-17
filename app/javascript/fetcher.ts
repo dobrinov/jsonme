@@ -30,33 +30,22 @@ type FrontMatter = {
 
 export const github = {
   resume: (username: string): Promise<Resume> => {
-    return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`).then(response => response.json())
+    return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
+      .then(response => response.json())
+      .then(parseResume)
   },
   post: (username: string, handle: string): Promise<PostWithAuthor> => {
     return Promise.all([
       github.resume(username),
       fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
         .then(response => response.text())
-        .then(text => {
-          const frontMatter = parseFrontMatter(text)
-          const markdown = text.substring(frontMatter.endIndex)
-
-          return {frontMatter, markdown}
-        })
-    ]).then(([resume, post]) => {
-      const {name, image} = resume
-      const {
-        frontMatter: {title, date},
-        markdown: body
-      } = post
-
-      return {
-        author: {name, image},
-        title,
-        date,
-        body
-      }
-    })
+        .then(parsePost)
+    ]).then(([resume, post]) => ({
+      author: {name: resume.name, image: resume.image},
+      title: post.title,
+      date: post.date,
+      body: post.body
+    }))
   }
 }
 
@@ -77,41 +66,22 @@ const gitlab = {
   // }
 }
 
-function parseFrontMatter(markdown: string): FrontMatter {
+function parseFrontMatter(markdown: string): FrontMatter | undefined {
   const matches = [...markdown.matchAll(/---\s?\n+/g)]
 
   const startMarker = matches[0]
   const endMarker = matches[1]
 
-  if (!startMarker.index || !endMarker.index) {
-    return {
-      title: 'Unknown title',
-      date: new Date(),
-      startIndex: 0,
-      endIndex: 0
-    }
-  }
+  if (!startMarker.index || !endMarker.index) return undefined
 
   const parsed = yaml.load(markdown.substring(startMarker.index + endMarker[0].length - 1, endMarker.index)) as any
 
-  let title: string
-  let date: Date
-
-  if ('title' in parsed && typeof parsed.title === 'string') {
-    title = parsed.title
-  } else {
-    title = 'Unknown title'
-  }
-
-  if ('date' in parsed && parsed.date instanceof Date) {
-    date = parsed.date
-  } else {
-    date = new Date()
-  }
+  if (!('title' in parsed && typeof parsed.title === 'string')) return undefined
+  if (!('date' in parsed && parsed.date instanceof Date)) return undefined
 
   return {
-    title,
-    date,
+    title: parsed.title,
+    date: parsed.date,
     startIndex: startMarker.index,
     endIndex: endMarker.index + endMarker[0].length
   }
@@ -124,10 +94,13 @@ function parseResume(value: string): Resume {
   }
 }
 
-function parsePost(value: string): Post {
+function parsePost(text: string): Post {
+  const frontMatter = parseFrontMatter(text)
+  const body = text.substring(frontMatter ? frontMatter.endIndex : 0)
+
   return {
-    title: '',
-    date: new Date(),
-    body: 'string'
+    title: frontMatter ? frontMatter.title : 'Unknown title',
+    date: frontMatter ? frontMatter.date : new Date(),
+    body
   }
 }
