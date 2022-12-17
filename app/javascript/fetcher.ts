@@ -49,8 +49,6 @@ export const github = {
   }
 }
 
-const x = github.post('dobrinov', 'hello-blogging').then(post => console.log(post))
-
 const gitlab = {
   // post: (username: string, handle: string): Promise<Post & {author: Person}> => {},
   // posts: (username: string): ProfileWithPosts => {
@@ -72,7 +70,7 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
   const startMarker = matches[0]
   const endMarker = matches[1]
 
-  if (!startMarker.index || !endMarker.index) return undefined
+  if (startMarker.index === undefined || endMarker.index === undefined) return undefined
 
   const parsed = yaml.load(markdown.substring(startMarker.index + endMarker[0].length - 1, endMarker.index)) as any
 

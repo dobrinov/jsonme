@@ -1,5 +1,6 @@
 import {marked} from 'marked'
 import yaml from 'js-yaml'
+import {github} from '../fetcher.ts'
 
 function parseFrontMatter(markdown) {
   const matches = [...markdown.matchAll(/---\s?\n+/g)]
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const username = escapedUsername.replace('-', '.')
 
   if (product === 'github') {
+    github.post(username, post).then(post => console.log(post))
     fetchGithubPost(username, post).then(([profile, post]) => renderPost(profile, post))
   } else if (product === 'gitlab') {
     fetchGitlabPost(username, post).then(([profile, post]) => renderPost(profile, post))
