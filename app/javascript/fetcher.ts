@@ -1,23 +1,9 @@
 import yaml from 'js-yaml'
-import {z} from 'zod'
 
-const SCHEMA = {
-  person: z.object({
-    name: z.string(),
-    image: z.string().url()
-  }),
-  post: z.object({
-    title: z.string(),
-    date: z.date(),
-    body: z.string()
-  })
-}
+type ParseResult<T> = Partial<T> & {errors: {[K in keyof T]?: string} & {general?: string[]}}
 
-type ParseResult<T> = T | UnsuccessfullyParsed<T>
-type UnsuccessfullyParsed<T> = Partial<T> & {errors: {[K in keyof T]?: string}}
-
-type Person = z.infer<typeof SCHEMA.person>
-type Post = z.infer<typeof SCHEMA.post>
+type Person = {name: string; image: string}
+type Post = {title: string; date: Date; body: string}
 type Resume = Person & {}
 
 type FrontMatter = {
@@ -26,6 +12,9 @@ type FrontMatter = {
   startIndex: number
   endIndex: number
 }
+
+const URL_REGEX =
+  /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
 
 export const github = {
   resume: (username: string): Promise<ParseResult<Resume>> => {
@@ -82,17 +71,40 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
   }
 }
 
-function parseResume(json: any): ParseResult<Resume> {
-  const result = SCHEMA.person.safeParse({name: 'Didko'})
-  // const result = SCHEMA.person.safeParse(json)
+function parseResume(json: unknown): ParseResult<Resume> {
+  const resume: ParseResult<Resume> = {errors: {}}
 
-  if (result.success) {
-    return result.data
-  } else {
-    console.log(result)
-    const errors = result.error.format()
-    return {errors} as any
+  if (json === null) {
+    return {errors: {general: ['Resume unavailable']}}
   }
+
+  if (typeof json !== 'object') {
+    return {errors: {general: ['The resume should be a JSON object']}}
+  }
+
+  // NAME
+  if ('name' in json) {
+    if (typeof json.name === 'string') {
+      resume.name = json.name
+    } else {
+      resume.errors.image = 'Name is not a string'
+    }
+  } else {
+    resume.errors.image = 'Name is not specified'
+  }
+
+  // IMAGE
+  if ('image' in json) {
+    if (typeof json.image === 'string' && json.image.match(URL_REGEX)) {
+      resume.image = json.image
+    } else {
+      resume.errors.image = 'Image is not an URL'
+    }
+  } else {
+    resume.errors.image = 'Image is not specified'
+  }
+
+  return resume
 }
 
 function parsePost(text: string): ParseResult<Post> {
@@ -100,8 +112,9 @@ function parsePost(text: string): ParseResult<Post> {
   const body = text.substring(frontMatter ? frontMatter.endIndex : 0)
 
   return {
-    title: frontMatter ? frontMatter.title : 'Unknown title',
-    date: frontMatter ? frontMatter.date : new Date(),
-    body
+    title: frontMatter?.title,
+    date: frontMatter?.date,
+    body,
+    errors: {}
   }
 }
