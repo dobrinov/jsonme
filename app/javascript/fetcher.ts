@@ -1,6 +1,15 @@
 import yaml from 'js-yaml'
 import {z} from 'zod'
 
+const SCHEMA = {
+  person: z.object({
+    name: z.string().catch('Unknown author'),
+    image: z.string().catch('missing.png')
+  })
+}
+
+type Person = z.infer<typeof SCHEMA.person>
+
 type Post = {
   date: Date
   title: string
@@ -8,11 +17,6 @@ type Post = {
 }
 
 type PostWithAuthor = Post & {author: Person}
-
-type Person = {
-  name: string
-  image: string
-}
 
 type PostSummary = {}
 
@@ -30,7 +34,7 @@ type FrontMatter = {
 }
 
 const EMPTY_RESUME: Resume = {
-  name: 'Unknown Author',
+  name: 'Unknown author',
   image: 'missing'
 }
 
@@ -93,10 +97,7 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
 }
 
 function parseResume(json: any): Resume {
-  return {
-    name: json.name,
-    image: json.image
-  }
+  return SCHEMA.person.parse(json)
 }
 
 function parsePost(text: string): Post {
