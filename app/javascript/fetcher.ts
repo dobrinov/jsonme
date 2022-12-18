@@ -13,8 +13,8 @@ const SCHEMA = {
   })
 }
 
-type UnsuccessfullyParsed<T> = Partial<T> & {errors: string[]}
 type ParseResult<T> = T | UnsuccessfullyParsed<T>
+type UnsuccessfullyParsed<T> = Partial<T> & {errors: {[K in keyof T]?: string}}
 
 type Person = z.infer<typeof SCHEMA.person>
 type Post = z.infer<typeof SCHEMA.post>
@@ -32,9 +32,6 @@ export const github = {
     return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
       .then(response => response.json())
       .then(parseResume)
-      .catch(() => ({
-        errors: ['Oops. Something went wrong. Try again!']
-      }))
   },
   post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
     return Promise.all([
@@ -42,16 +39,10 @@ export const github = {
       fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
         .then(response => response.text())
         .then(parsePost)
-    ]).then(([resume, post]) => {
-      const x = {
-        author: {name: resume.name, image: resume.image, errors: []},
-        title: post.title,
-        date: post.date,
-        body: post.body,
-        errors: []
-      }
-      return x
-    })
+    ]).then(([resume, post]) => ({
+      author: resume,
+      ...post
+    }))
   }
 }
 
@@ -93,11 +84,14 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
 
 function parseResume(json: any): ParseResult<Resume> {
   const result = SCHEMA.person.safeParse({name: 'Didko'})
+  // const result = SCHEMA.person.safeParse(json)
 
   if (result.success) {
     return result.data
   } else {
-    return {errors: ['fuk']}
+    console.log(result)
+    const errors = result.error.format()
+    return {errors} as any
   }
 }
 
