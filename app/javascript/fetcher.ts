@@ -3,28 +3,22 @@ import {z} from 'zod'
 
 const SCHEMA = {
   person: z.object({
-    name: z.string().catch('Unknown author'),
-    image: z.string().catch('missing.png')
+    name: z.string(),
+    image: z.string().url()
+  }),
+  post: z.object({
+    title: z.string(),
+    date: z.date(),
+    body: z.string()
   })
 }
 
+type UnsuccessfullyParsed<T> = Partial<T> & {errors: string[]}
+type ParseResult<T> = T | UnsuccessfullyParsed<T>
+
 type Person = z.infer<typeof SCHEMA.person>
-
-type Post = {
-  date: Date
-  title: string
-  body: string
-}
-
-type PostWithAuthor = Post & {author: Person}
-
-type PostSummary = {}
-
+type Post = z.infer<typeof SCHEMA.post>
 type Resume = Person & {}
-
-type Profile = {name: string; image: string; summary: string}
-
-type ProfileWithPosts = Profile & {posts: PostSummary[]}
 
 type FrontMatter = {
   title: string
@@ -33,30 +27,31 @@ type FrontMatter = {
   endIndex: number
 }
 
-const EMPTY_RESUME: Resume = {
-  name: 'Unknown author',
-  image: 'missing'
-}
-
 export const github = {
-  resume: (username: string): Promise<Resume> => {
+  resume: (username: string): Promise<ParseResult<Resume>> => {
     return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
       .then(response => response.json())
       .then(parseResume)
-      .catch(() => EMPTY_RESUME)
+      .catch(() => ({
+        errors: ['Oops. Something went wrong. Try again!']
+      }))
   },
-  post: (username: string, handle: string): Promise<PostWithAuthor> => {
+  post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
     return Promise.all([
       github.resume(username),
       fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
         .then(response => response.text())
         .then(parsePost)
-    ]).then(([resume, post]) => ({
-      author: {name: resume.name, image: resume.image},
-      title: post.title,
-      date: post.date,
-      body: post.body
-    }))
+    ]).then(([resume, post]) => {
+      const x = {
+        author: {name: resume.name, image: resume.image, errors: []},
+        title: post.title,
+        date: post.date,
+        body: post.body,
+        errors: []
+      }
+      return x
+    })
   }
 }
 
@@ -96,11 +91,17 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
   }
 }
 
-function parseResume(json: any): Resume {
-  return SCHEMA.person.parse(json)
+function parseResume(json: any): ParseResult<Resume> {
+  const result = SCHEMA.person.safeParse({name: 'Didko'})
+
+  if (result.success) {
+    return result.data
+  } else {
+    return {errors: ['fuk']}
+  }
 }
 
-function parsePost(text: string): Post {
+function parsePost(text: string): ParseResult<Post> {
   const frontMatter = parseFrontMatter(text)
   const body = text.substring(frontMatter ? frontMatter.endIndex : 0)
 
