@@ -50,27 +50,6 @@ const gitlab = {
   // }
 }
 
-function parseFrontMatter(markdown: string): FrontMatter | undefined {
-  const matches = [...markdown.matchAll(/---\s?\n+/g)]
-
-  const startMarker = matches[0]
-  const endMarker = matches[1]
-
-  if (startMarker.index === undefined || endMarker.index === undefined) return undefined
-
-  const parsed = yaml.load(markdown.substring(startMarker.index + endMarker[0].length - 1, endMarker.index)) as any
-
-  if (!('title' in parsed && typeof parsed.title === 'string')) return undefined
-  if (!('date' in parsed && parsed.date instanceof Date)) return undefined
-
-  return {
-    title: parsed.title,
-    date: parsed.date,
-    startIndex: startMarker.index,
-    endIndex: endMarker.index + endMarker[0].length
-  }
-}
-
 function parseResume(json: unknown): ParseResult<Resume> {
   const resume: ParseResult<Resume> = {errors: {}}
 
@@ -103,15 +82,46 @@ function parseResume(json: unknown): ParseResult<Resume> {
 }
 
 function parsePost(text: string): ParseResult<Post> {
-  const frontMatter = parseFrontMatter(text)
-  const body = text.substring(frontMatter ? frontMatter.endIndex : 0)
+  const post: ParseResult<Post> = {errors: {}}
 
-  return {
-    title: frontMatter?.title,
-    date: frontMatter?.date,
-    body,
-    errors: {}
+  const frontMatterMarkers = [...text.matchAll(/---\s?\n+/g)]
+
+  const frontMatterStartMarker = {startIndex: 0, endIndex: 0, length: 0}
+  if (frontMatterMarkers[0] && frontMatterMarkers[0].index !== undefined) {
+    frontMatterStartMarker.startIndex = frontMatterMarkers[0].index
+    frontMatterStartMarker.endIndex = frontMatterMarkers[0].index + frontMatterMarkers[0][0].length - 1
+    frontMatterStartMarker.length = frontMatterMarkers[0].length
   }
+
+  const frontMatterEndMarker = {startIndex: 0, endIndex: 0, length: 0}
+  if (frontMatterMarkers[1] && frontMatterMarkers[1].index !== undefined) {
+    frontMatterEndMarker.startIndex = frontMatterMarkers[1].index
+    frontMatterEndMarker.endIndex = frontMatterMarkers[1].index + frontMatterMarkers[1][0].length - 1
+    frontMatterEndMarker.length = frontMatterMarkers[1].length
+  }
+
+  const hasFrontMatter = frontMatterEndMarker.startIndex !== frontMatterStartMarker.startIndex
+
+  if (hasFrontMatter) {
+    const parsed = yaml.load(text.substring(frontMatterStartMarker.endIndex, frontMatterEndMarker.startIndex)) as any
+
+    if ('title' in parsed && typeof parsed.title === 'string') {
+      post.title = parsed.title
+    } else {
+      post.errors.title = 'fixme'
+    }
+
+    if ('date' in parsed && parsed.date instanceof Date) {
+      post.date = parsed.date
+    } else {
+      console.log(parsed.date)
+      post.errors.date = 'fixmek'
+    }
+  }
+
+  post.body = text.substring(frontMatterEndMarker.endIndex)
+
+  return post
 }
 
 function isObject(value: unknown): value is {[key: string]: unknown} {

@@ -46,18 +46,25 @@ function renderPost(post) {
   name.className = 'author'
   name.innerHTML = post.author.name || 'UNKNOWN AUTHOR'
 
-  const date = document.createElement('time')
+  header.append(avatar)
+  header.append(name)
 
-  date.setAttribute(
-    'datetime',
-    `${post.date.getFullYear()}-${post.date.getMonth() + 1}-${String(post.date.getDate()).padStart(2, '0')}`
-  )
+  if (post.date) {
+    const date = document.createElement('time')
 
-  date.innerHTML = post.date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
+    date.setAttribute(
+      'datetime',
+      `${post.date.getFullYear()}-${post.date.getMonth() + 1}-${String(post.date.getDate()).padStart(2, '0')}`
+    )
+
+    date.innerHTML = post.date.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+
+    header.append(date)
+  }
 
   document.title = post.title
 
@@ -92,9 +99,6 @@ function renderPost(post) {
 
   article.prepend(h1)
   avatar.append(img)
-  header.append(avatar)
-  header.append(name)
-  header.append(date)
   document.body.append(header)
   document.body.append(article)
 }
