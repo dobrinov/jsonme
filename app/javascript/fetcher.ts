@@ -74,13 +74,8 @@ function parseFrontMatter(markdown: string): FrontMatter | undefined {
 function parseResume(json: unknown): ParseResult<Resume> {
   const resume: ParseResult<Resume> = {errors: {}}
 
-  if (json === null) {
-    return {errors: {general: ['Resume unavailable']}}
-  }
-
-  if (typeof json !== 'object') {
-    return {errors: {general: ['The resume should be a JSON object']}}
-  }
+  if (json === null) return {errors: {general: ['Resume unavailable']}}
+  if (!isObject(json)) return {errors: {general: ['The resume should be a JSON object']}}
 
   // NAME
   if ('name' in json) {
@@ -117,4 +112,8 @@ function parsePost(text: string): ParseResult<Post> {
     body,
     errors: {}
   }
+}
+
+function isObject(value: unknown): value is {[key: string]: unknown} {
+  return typeof value === 'object'
 }
