@@ -103,19 +103,24 @@ function parsePost(text: string): ParseResult<Post> {
   const hasFrontMatter = frontMatterEndMarker.startIndex !== frontMatterStartMarker.startIndex
 
   if (hasFrontMatter) {
-    const parsed = yaml.load(text.substring(frontMatterStartMarker.endIndex, frontMatterEndMarker.startIndex)) as any
+    try {
+      const parsed = yaml.load(text.substring(frontMatterStartMarker.endIndex, frontMatterEndMarker.startIndex)) as any
 
-    if ('title' in parsed && typeof parsed.title === 'string') {
-      post.title = parsed.title
-    } else {
-      post.errors.title = 'fixme'
-    }
+      if ('title' in parsed && typeof parsed.title === 'string') {
+        post.title = parsed.title
+      } else {
+        post.errors.title = 'Title is not specified'
+      }
 
-    if ('date' in parsed && parsed.date instanceof Date) {
-      post.date = parsed.date
-    } else {
-      console.log(parsed.date)
-      post.errors.date = 'fixmek'
+      if ('date' in parsed && parsed.date instanceof Date) {
+        post.date = parsed.date
+      } else {
+        post.errors.date = 'Date is not specified'
+      }
+    } catch (error) {
+      if (isYamlParseError(error)) {
+        post.errors.general = [`${error.reason}${error.stack}`]
+      }
     }
   }
 
@@ -126,4 +131,8 @@ function parsePost(text: string): ParseResult<Post> {
 
 function isObject(value: unknown): value is {[key: string]: unknown} {
   return typeof value === 'object'
+}
+
+function isYamlParseError(error: any): error is {reason: string; stack: string} {
+  return 'reason' in error && 'stack' in error
 }

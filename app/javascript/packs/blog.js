@@ -29,8 +29,10 @@ function renderPost(post) {
   const articleHtml = post.body
   article.innerHTML = marked.parse(articleHtml)
 
+  const title = post.title ?? 'Untitled post'
   const h1 = document.createElement('h1')
-  h1.innerHTML = post.title
+  h1.innerHTML = title
+  document.title = title
 
   const avatar = document.createElement('div')
   avatar.className = 'avatar'
@@ -44,7 +46,7 @@ function renderPost(post) {
 
   const name = document.createElement('p')
   name.className = 'author'
-  name.innerHTML = post.author.name || 'UNKNOWN AUTHOR'
+  name.innerHTML = post.author.name || 'Unknown Author'
 
   header.append(avatar)
   header.append(name)
@@ -65,8 +67,6 @@ function renderPost(post) {
 
     header.append(date)
   }
-
-  document.title = post.title
 
   const description = `${articleHtml.replace(/(<([^>]+)>)/gi, '').slice(0, 200)}...`
 
