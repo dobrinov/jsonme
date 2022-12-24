@@ -1,5 +1,5 @@
 import {marked} from 'marked'
-import {github} from '../fetcher.ts'
+import {github, gitlab} from '../fetcher.ts'
 
 document.addEventListener('DOMContentLoaded', () => {
   const trigger = document.querySelector('.js-post')
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (product === 'github') {
     github.post(username, post).then(renderPost)
   } else if (product === 'gitlab') {
+    gitlab.post(username, post).then(renderPost)
   } else {
     throw new Error(`Unsupported product "${product}"`)
   }
@@ -101,77 +102,4 @@ function renderPost(post) {
   avatar.append(img)
   document.body.append(header)
   document.body.append(article)
-}
-
-function fetchGitlabPost(username, post) {
-  const query = `
-    query Post($fullPath: ID!, $postPath: String!) {
-      project(fullPath: $fullPath) {
-        repository {
-          blobs(ref: "main", paths: ["me.json", $postPath]) {
-            nodes {
-              path
-              name
-              rawBlob
-            }
-          }
-        }
-      }
-    }
-  `
-
-  return fetch('https://gitlab.com/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify({query, variables: {fullPath: `${username}/me`, postPath: `posts/${post}.md`}})
-  })
-    .then(r => r.json())
-    .then(data => {
-      const profile = JSON.parse(data.data.project.repository.blobs.nodes[0].rawBlob)
-      const post = data.data.project.repository.blobs.nodes[1].rawBlob
-      const frontMatter = parseFrontMatter(post)
-      const markdown = post.substring(frontMatter.endIndex)
-
-      return [profile, {frontMatter, markdown}]
-    })
-}
-
-function fetchGitlabPosts(username, post) {
-  const fullPath = `${username}/me`
-  const query = `
-    query Post($fullPath: ID!) {
-      project(fullPath: $fullPath) {
-        repository {
-          tree(ref: "main", path: "posts") {
-            blobs {
-              nodes {
-                name
-              }
-            }
-          }
-          blobs(ref: "main", paths: ["me.json"]) {
-            nodes {
-              path
-              name
-              rawBlob
-            }
-          }
-        }
-      }
-    }
-  `
-
-  fetch('https://gitlab.com/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify({query, variables: {fullPath}})
-  })
-    .then(r => r.json())
-    .then(data => console.log('data returned:', data))
 }

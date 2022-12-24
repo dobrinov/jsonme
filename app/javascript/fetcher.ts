@@ -1,4 +1,5 @@
 import yaml from 'js-yaml'
+import {parse} from './resume'
 
 type ParseResult<T> = Partial<T> & {errors: {[K in keyof T]?: string} & {general?: string[]}}
 
@@ -35,19 +36,49 @@ export const github = {
   }
 }
 
-const gitlab = {
-  // post: (username: string, handle: string): Promise<Post & {author: Person}> => {},
-  // posts: (username: string): ProfileWithPosts => {
-  //   return {
-  //     name: 'Jonh Doe',
-  //     image: 'https://www.example.com/',
-  //     summary: 'This is the profile of John Doe',
-  //     posts: []
-  //   }
-  // },
-  // resume: (username: string): Resume => {
-  //   return {}
-  // }
+export const gitlab = {
+  // post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
+  post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
+    const query = `
+    query Post($fullPath: ID!, $postPath: String!) {
+      project(fullPath: $fullPath) {
+        repository {
+          blobs(ref: "main", paths: ["me.json", $postPath]) {
+            nodes {
+              path
+              name
+              rawBlob
+            }
+          }
+        }
+      }
+    }
+  `
+
+    return fetch('https://gitlab.com/api/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({query, variables: {fullPath: `${username}/me`, postPath: `posts/${handle}.md`}})
+    })
+      .then(r => r.json())
+      .then(data => {
+        const rawResume = JSON.parse(data.data.project.repository.blobs.nodes[0].rawBlob)
+        const rawPost = data.data.project.repository.blobs.nodes[1].rawBlob
+
+        // TODO: Handle errors
+
+        const resume = parseResume(rawResume)
+        const post = parsePost(rawPost)
+
+        return {
+          author: resume,
+          ...post
+        }
+      })
+  }
 }
 
 function parseResume(json: unknown): ParseResult<Resume> {
