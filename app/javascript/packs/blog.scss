@@ -40,7 +40,7 @@ article {
   ol { @apply list-decimal pl-5 mb-5; }
   img { @apply bg-gray-50 w-full bg-cover mb-5 rounded-md max-h-96; }
 
-  pre { @apply p-5 bg-gray-50 ring-1 ring-black ring-opacity-10 mb-5 rounded-md overflow-x-scroll; }
+  pre { @apply ring-1 ring-black ring-opacity-10 mb-5 rounded-md overflow-x-scroll; }
   li > pre { @apply mt-2; }
 
   table { @apply min-w-full divide-y divide-gray-300 mb-5 ring-1 ring-black ring-opacity-5 overflow-hidden rounded-md; }

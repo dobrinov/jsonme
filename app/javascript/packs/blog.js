@@ -1,5 +1,7 @@
 import {marked} from 'marked'
 import {github, gitlab} from '../fetcher.ts'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/base16/solarized-dark.css'
 
 document.addEventListener('DOMContentLoaded', () => {
   const trigger = document.querySelector('.js-post')
@@ -102,4 +104,6 @@ function renderPost(post) {
   avatar.append(img)
   document.body.append(header)
   document.body.append(article)
+
+  hljs.highlightAll()
 }
