@@ -1,41 +1,41 @@
-import {Route, Link, createBrowserRouter, createRoutesFromElements, RouterProvider} from 'react-router-dom'
+import {Route, Routes, Link, BrowserRouter} from 'react-router-dom'
 
 export function Application({product, username}: {product: string; username: string}) {
-  const router = createBrowserRouter(
-    createRoutesFromElements([
-      <Route
-        path="/"
-        element={
-          <div>
-            <h1>Resume</h1>
-            <Link to="posts">posts</Link>
-          </div>
-        }
-      />,
-      <Route
-        path="posts"
-        element={
-          <div>
-            <h1>Posts</h1>
-            <Link to="..">resume</Link>
-            <Link to="some-post">post</Link>
-          </div>
-        }
-      />,
-      <Route
-        path="posts/:postId"
-        element={
-          <div>
-            <h1>Post</h1>
-            <Link to="../posts">posts</Link>
-          </div>
-        }
-      />
-    ]),
-    {
-      basename: `/${product}/${username}`
-    }
+  return (
+    <BrowserRouter basename={`/${product}/${username}`}>
+      <Routes>
+        <Route path="/" element={<Resume />} />,
+        <Route path="posts" element={<PostIndex />} />,
+        <Route path="posts/:postId" element={<Post />} />
+      </Routes>
+    </BrowserRouter>
   )
+}
 
-  return <RouterProvider router={router} />
+function Resume() {
+  return (
+    <div>
+      <h1>Resume</h1>
+      <Link to="posts">posts</Link>
+    </div>
+  )
+}
+
+function PostIndex() {
+  return (
+    <div>
+      <h1>Posts</h1>
+      <Link to="..">resume</Link>
+      <Link to="some-post">post</Link>
+    </div>
+  )
+}
+
+function Post() {
+  return (
+    <div>
+      <h1>Post</h1>
+      <Link to="../posts">posts</Link>
+    </div>
+  )
 }
