@@ -1,5 +1,4 @@
 import yaml from 'js-yaml'
-import {parse} from './resume'
 
 type ParseResult<T> = Partial<T> & {errors: {[K in keyof T]?: string} & {general?: string[]}}
 
