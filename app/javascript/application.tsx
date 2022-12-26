@@ -1,9 +1,12 @@
 import {Route, Routes, Link, BrowserRouter, useParams} from 'react-router-dom'
-import React, {useContext} from 'react'
+import React, {ReactNode, useContext} from 'react'
+
+type Product = 'github' | 'gitlab'
 
 interface CacheContext {
-  product?: 'github' | 'gitlab'
+  product?: Product
   username?: string
+  postFor(id: string): any
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -11,7 +14,7 @@ export function Application({product, username}: {product: unknown; username: un
   if (typeof username !== 'string') throw new Error('Username must be a string')
 
   return (
-    <CacheContext.Provider value={{product, username}}>
+    <CacheContextProvider product={product} username={username}>
       <BrowserRouter basename={`${product}/${username}`}>
         <Routes>
           <Route path="/" element={<Resume />} />,
@@ -19,7 +22,7 @@ export function Application({product, username}: {product: unknown; username: un
           <Route path="posts/:postId" element={<Post />} />
         </Routes>
       </BrowserRouter>
-    </CacheContext.Provider>
+    </CacheContextProvider>
   )
 }
 
@@ -49,10 +52,12 @@ function PostIndex() {
 }
 
 function Post() {
-  const {product, username} = useCacheContext()
+  const {postFor} = useCacheContext()
   const {postId} = useParams()
 
-  console.log(product, username, postId)
+  if (postId === undefined) throw new Error('postId is required')
+
+  const post = postFor(postId)
 
   return (
     <div>
@@ -64,11 +69,38 @@ function Post() {
 
 const defaultCacheContext = {
   product: undefined,
-  username: undefined
+  username: undefined,
+  postFor: (id: string) => {
+    throw new Error('invariant variation')
+  }
 }
 
 const CacheContext = React.createContext<CacheContext>(defaultCacheContext)
 
-export function useCacheContext() {
+function useCacheContext() {
   return useContext(CacheContext)
+}
+
+function CacheContextProvider({
+  product,
+  username,
+  children
+}: {
+  product: Product
+  username: string
+  children: ReactNode
+}) {
+  return (
+    <CacheContext.Provider
+      value={{
+        product,
+        username,
+        postFor: (id: string) => {
+          console.log(product, username, id)
+        }
+      }}
+    >
+      {children}
+    </CacheContext.Provider>
+  )
 }
