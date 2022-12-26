@@ -3,17 +3,22 @@ Rails.application.routes.draw do
                      as: :new_submission,
                      constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
-  get ':method/:username', to: 'submissions#show',
-                           as: :submission,
-                           constraints: { method: /#{Submission::WEB_METHODS.join('|')}/ }
+  # get ':method/:username', to: 'submissions#show',
+  #                          as: :submission,
+  #                          constraints: { method: /#{Submission::WEB_METHODS.join('|')}/ }
+
+  # get ':method/:username/posts/:id', to: 'posts#show',
+  #                                    as: :post,
+  #                                    constraints: { method: /#{Submission::METHODS.join('|')}/ }
+
+  get ':method/:username', to: 'accounts#show'
+  get ':method/:username/posts', to: 'accounts#show'
+  get ':method/:username/posts/:post', to: 'accounts#show'
 
   post ':method', to: 'submissions#create',
                   as: :submissions,
                   constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
-  get ':method/:username/posts/:id', to: 'posts#show',
-                                     as: :post,
-                                     constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
   get 'example', to: 'static_pages#example', as: :example
   get 'structure', to: 'static_pages#structure', as: :structure

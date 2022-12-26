@@ -1,16 +1,28 @@
 import Rails from '@rails/ujs'
 import 'channels'
+import React from 'react'
 import {createRoot} from 'react-dom/client'
-import {ResumeParser} from '../resume.tsx'
+import {Application} from '../application.tsx'
 
 Rails.start()
 
 const images = require.context('../images', true)
 name => images(name, true)
 
+// document.addEventListener('DOMContentLoaded', () => {
+//   const container = document.getElementById('resume')
+
+//   const root = createRoot(container)
+//   root.render(<ResumeParser json={container.dataset.resume} />)
+// })
+
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('resume')
+  const container = document.getElementById('application')
 
   const root = createRoot(container)
-  root.render(<ResumeParser json={container.dataset.resume} />)
+  root.render(
+    <React.StrictMode>
+      <Application product={container.dataset.product} username={container.dataset.username} />
+    </React.StrictMode>
+  )
 })
