@@ -73,9 +73,7 @@ function Post() {
 
   const {data: post, loading} = postFor(postId)
 
-  useEffect(() => {
-    hljs.highlightAll()
-  }, [post])
+  useEffect(hljs.highlightAll, [post])
 
   if (loading) {
     return <div>Loading ...</div>
