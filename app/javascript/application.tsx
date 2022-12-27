@@ -1,6 +1,16 @@
 import {Route, Routes, Link, BrowserRouter, useParams} from 'react-router-dom'
-import React, {ReactNode, useContext, useState} from 'react'
+import React, {ReactNode, useContext, useEffect, useState} from 'react'
 import {github, gitlab} from './fetcher'
+import {marked} from 'marked'
+import hljs from 'highlight.js'
+
+marked.use({
+  walkTokens: token => {
+    if (token.type === 'heading') {
+      token.depth += 1
+    }
+  }
+})
 
 type Product = 'github' | 'gitlab'
 type Person = {name: string; image: string}
@@ -63,6 +73,10 @@ function Post() {
 
   const {data: post, loading} = postFor(postId)
 
+  useEffect(() => {
+    hljs.highlightAll()
+  }, [post])
+
   if (loading) {
     return <div>Loading ...</div>
   }
@@ -90,7 +104,7 @@ function Post() {
       </header>
       <article>
         <h1>{post.title}</h1>
-        <div dangerouslySetInnerHTML={{__html: post.body ?? ''}} />
+        {post.body && <div dangerouslySetInnerHTML={{__html: marked.parse(post.body)}} />}
       </article>
     </div>
   )
@@ -123,14 +137,10 @@ function CacheContextProvider({
   const [posts, setPosts] = useState<{[id: string]: Foo}>({})
 
   const postFor = (id: string): NetworkResource<Foo> => {
-    if (posts[id]) {
+    const post = posts[id]
+    if (post) {
       return {
-        data: {
-          author: {name: 'Deyan Dobrinov', image: 'https://avatars.githubusercontent.com/u/996877?v=4'},
-          title: 'Hello, blogging!',
-          date: new Date(),
-          body: '<p>That is the blog folks!</p>'
-        },
+        data: post,
         loading: false
       }
     } else {

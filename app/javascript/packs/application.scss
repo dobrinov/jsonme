@@ -4,208 +4,209 @@
 @import url('https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:wght@400;700;900&display=swap');
 
 @import '../stylesheets/tabs';
+@import 'highlight.js/styles/base16/solarized-dark.css';
 
-body {
-  font-family: 'Roboto', sans-serif;
+// body {
+//   font-family: 'Roboto', sans-serif;
 
-  @apply text-lg leading-snug m-0 p-0;
-}
+//   @apply text-lg leading-snug m-0 p-0;
+// }
 
-.responsive-table { @apply overflow-x-auto; }
+// .responsive-table { @apply overflow-x-auto; }
 
-table {
-  @apply mt-5 min-w-full divide-y divide-gray-200;
+// table {
+//   @apply mt-5 min-w-full divide-y divide-gray-200;
 
-  thead th { @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center; }
+//   thead th { @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center; }
 
-  tbody tr { @apply border-b border-dashed; }
-  tbody th,
-  tbody td { @apply px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center text-sm; }
-  tbody th { @apply font-bold underline; }
-}
+//   tbody tr { @apply border-b border-dashed; }
+//   tbody th,
+//   tbody td { @apply px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center text-sm; }
+//   tbody th { @apply font-bold underline; }
+// }
 
-.logo {
-  @apply inline-block w-16 my-6 hover:scale-105;
-  @apply sm:w-24 sm:my-9;
-}
+// .logo {
+//   @apply inline-block w-16 my-6 hover:scale-105;
+//   @apply sm:w-24 sm:my-9;
+// }
 
-// NEW SUBMISSION
+// // NEW SUBMISSION
 
-.submission {
-  h1 {
-    font-family: 'Patua One', sans-serif;
-    @apply text-3xl font-bold mb-8;
-  }
+// .submission {
+//   h1 {
+//     font-family: 'Patua One', sans-serif;
+//     @apply text-3xl font-bold mb-8;
+//   }
 
-  .general-summary { @apply mb-8; }
-  .general-summary > a { @apply text-indigo-600 underline hover:no-underline; }
-  .method > p { @apply text-left mb-3; }
-  .method > p:last-of-type { @apply mb-5; }
+//   .general-summary { @apply mb-8; }
+//   .general-summary > a { @apply text-indigo-600 underline hover:no-underline; }
+//   .method > p { @apply text-left mb-3; }
+//   .method > p:last-of-type { @apply mb-5; }
 
-  .tabs { @apply mb-5; }
-  .input > textarea { @apply h-60; }
+//   .tabs { @apply mb-5; }
+//   .input > textarea { @apply h-60; }
 
-  .errors { @apply mb-5; }
-  .errors > .error { @apply bg-yellow-50 border-l-4 border-yellow-400 py-2 px-4 text-left space-y-2;}
-}
+//   .errors { @apply mb-5; }
+//   .errors > .error { @apply bg-yellow-50 border-l-4 border-yellow-400 py-2 px-4 text-left space-y-2;}
+// }
 
-.input { @apply border border-gray-300 rounded-md px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600 mb-5; }
-.input > label { @apply block text-sm font-medium text-gray-900 text-left; }
-.input > input,
-.input > textarea { @apply block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 outline-none; }
+// .input { @apply border border-gray-300 rounded-md px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600 mb-5; }
+// .input > label { @apply block text-sm font-medium text-gray-900 text-left; }
+// .input > input,
+// .input > textarea { @apply block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 outline-none; }
 
-.button { @apply cursor-pointer; }
-.button.button-primary { @apply inline-flex items-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500; }
-.button.button-lg { @apply px-6 py-3 text-base font-medium rounded-md shadow-sm focus:ring-2 focus:ring-offset-2; }
+// .button { @apply cursor-pointer; }
+// .button.button-primary { @apply inline-flex items-center px-4 py-2 border border-transparent font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500; }
+// .button.button-lg { @apply px-6 py-3 text-base font-medium rounded-md shadow-sm focus:ring-2 focus:ring-offset-2; }
 
-// RESUME
+// // RESUME
 
-body {
-  @apply text-lg leading-snug m-0 p-0;
-}
+// body {
+//   @apply text-lg leading-snug m-0 p-0;
+// }
 
-.container { @apply p-5 max-w-screen-xl mx-auto; }
-.centered-container { @apply p-5 max-w-screen-xl mx-auto text-center relative; }
+// .container { @apply p-5 max-w-screen-xl mx-auto; }
+// .centered-container { @apply p-5 max-w-screen-xl mx-auto text-center relative; }
 
-.section {
-  @apply mb-8;
+// .section {
+//   @apply mb-8;
 
-  .heading {
-    font-family: 'Patua One', sans-serif;
+//   .heading {
+//     font-family: 'Patua One', sans-serif;
 
-    @apply text-3xl;
-  }
-}
+//     @apply text-3xl;
+//   }
+// }
 
-.created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
-.pdf { @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;}
-.profile-picture { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4; }
-.profile-picture > img { @apply w-full h-full; }
+// .created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
+// .pdf { @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;}
+// .profile-picture { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4; }
+// .profile-picture > img { @apply w-full h-full; }
 
-.name {
-  font-family: 'Patua One', sans-serif;
+// .name {
+//   font-family: 'Patua One', sans-serif;
 
-  @apply text-5xl mb-2;
-}
+//   @apply text-5xl mb-2;
+// }
 
-.summary { @apply mb-8 text-left; }
+// .summary { @apply mb-8 text-left; }
 
-.timeline {
-  @apply flex flex-col;
+// .timeline {
+//   @apply flex flex-col;
 
-  > aside:first-child {
-    background-image: url(../images/timeline-arrow.svg);
-    font-family: 'Patua One', sans-serif;
+//   > aside:first-child {
+//     background-image: url(../images/timeline-arrow.svg);
+//     font-family: 'Patua One', sans-serif;
 
-    @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-no-repeat text-center;
-    @apply bg-left-bottom w-12 text-sm;
-    @apply sm:bg-bottom sm:w-full sm:text-base;
-  }
+//     @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-no-repeat text-center;
+//     @apply bg-left-bottom w-12 text-sm;
+//     @apply sm:bg-bottom sm:w-full sm:text-base;
+//   }
 
-  > div {
-    background-image: url(../images/timeline-line.svg);
+//   > div {
+//     background-image: url(../images/timeline-line.svg);
 
-    > ul { @apply block w-full m-0 p-0 space-y-9; }
-    > ul > li {
-      @apply flex flex-col w-full;
-      @apply flex-col;
-      @apply sm:flex-row;
-    }
-    > ul > li > *:first-child {
-      @apply relative flex-none;
-      @apply w-full pl-12 mb-3 text-left;
-      @apply sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right;
-    }
-    > ul > li > *:last-child {
-      @apply relative flex-none text-left pl-12 text-base;
-      @apply w-full pl-12;
-      @apply sm:w-1/2 sm:pl-6;
-    }
+//     > ul { @apply block w-full m-0 p-0 space-y-9; }
+//     > ul > li {
+//       @apply flex flex-col w-full;
+//       @apply flex-col;
+//       @apply sm:flex-row;
+//     }
+//     > ul > li > *:first-child {
+//       @apply relative flex-none;
+//       @apply w-full pl-12 mb-3 text-left;
+//       @apply sm:w-1/2 sm:pr-4 sm:pl-0 sm:mb-0 sm:text-right;
+//     }
+//     > ul > li > *:last-child {
+//       @apply relative flex-none text-left pl-12 text-base;
+//       @apply w-full pl-12;
+//       @apply sm:w-1/2 sm:pl-6;
+//     }
 
-    @apply flex flex-row py-4 bg-repeat-y;
-    @apply bg-left;
-    @apply sm:bg-center;
-  }
+//     @apply flex flex-row py-4 bg-repeat-y;
+//     @apply bg-left;
+//     @apply sm:bg-center;
+//   }
 
-  > aside:last-child {
-    background-image: url(../images/timeline-start.svg);
-    font-family: 'Patua One', sans-serif;
+//   > aside:last-child {
+//     background-image: url(../images/timeline-start.svg);
+//     font-family: 'Patua One', sans-serif;
 
-    @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat text-center;
-    @apply w-12;
-    @apply sm:w-full;
-  }
-}
+//     @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat text-center;
+//     @apply w-12;
+//     @apply sm:w-full;
+//   }
+// }
 
-.period {
-  > h3 {
-    font-family: 'Patua One', sans-serif;
+// .period {
+//   > h3 {
+//     font-family: 'Patua One', sans-serif;
 
-    @apply text-xl m-0 p-0 leading-5;
-  }
+//     @apply text-xl m-0 p-0 leading-5;
+//   }
 
-  > aside {
-    @apply absolute rounded-full bg-black;
-    @apply w-4 h-4 top-0.5 left-4 right-auto;
-    @apply sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto;
-  }
-  > a,
-  > span { @apply text-gray-400 text-xs block; }
-  > a { @apply hover:underline; }
-  > div { @apply text-xs text-gray-600; }
-}
+//   > aside {
+//     @apply absolute rounded-full bg-black;
+//     @apply w-4 h-4 top-0.5 left-4 right-auto;
+//     @apply sm:w-3 sm:h-3 sm:top-1 sm:-right-1.5 sm:left-auto;
+//   }
+//   > a,
+//   > span { @apply text-gray-400 text-xs block; }
+//   > a { @apply hover:underline; }
+//   > div { @apply text-xs text-gray-600; }
+// }
 
-.employment {
-  > p { @apply text-gray-600 mb-4 leading-5; }
-  > ul { @apply space-y-6; }
-}
+// .employment {
+//   > p { @apply text-gray-600 mb-4 leading-5; }
+//   > ul { @apply space-y-6; }
+// }
 
-.role {
-  > p { @apply mb-2 text-gray-600 leading-5; }
-  > h4 { @apply text-base font-bold leading-4 mb-1; }
-  > aside { @apply mb-0 text-xs leading-3 text-gray-300; }
-  > ul { @apply space-y-2; }
-}
+// .role {
+//   > p { @apply mb-2 text-gray-600 leading-5; }
+//   > h4 { @apply text-base font-bold leading-4 mb-1; }
+//   > aside { @apply mb-0 text-xs leading-3 text-gray-300; }
+//   > ul { @apply space-y-2; }
+// }
 
-.achievement {
-  > h5 { @apply text-base underline leading-5; }
-  > p { @apply leading-5 text-gray-600; }
-  > ul > li { @apply bg-gray-800 text-white text-xs rounded-full text-center inline-block py-0.5 px-2 mr-0.5 leading-none; }
-}
+// .achievement {
+//   > h5 { @apply text-base underline leading-5; }
+//   > p { @apply leading-5 text-gray-600; }
+//   > ul > li { @apply bg-gray-800 text-white text-xs rounded-full text-center inline-block py-0.5 px-2 mr-0.5 leading-none; }
+// }
 
 
-.schema {
-  h1 {
-    font-family: 'Patua One', sans-serif;
-    @apply text-3xl font-bold mb-3;
-  }
+// .schema {
+//   h1 {
+//     font-family: 'Patua One', sans-serif;
+//     @apply text-3xl font-bold mb-3;
+//   }
 
-  div { @apply sm:grid sm:grid-cols-2 sm:gap-5; }
-  p { @apply mb-8; }
-  a { @apply text-indigo-600 underline hover:no-underline; }
-  pre { @apply text-left rounded-md overflow-hidden mb-5; }
-}
+//   div { @apply sm:grid sm:grid-cols-2 sm:gap-5; }
+//   p { @apply mb-8; }
+//   a { @apply text-indigo-600 underline hover:no-underline; }
+//   pre { @apply text-left rounded-md overflow-hidden mb-5; }
+// }
 
-.privacy {
-  h1 {
-    font-family: 'Patua One', sans-serif;
-    @apply text-3xl font-bold mb-8;
-  }
+// .privacy {
+//   h1 {
+//     font-family: 'Patua One', sans-serif;
+//     @apply text-3xl font-bold mb-8;
+//   }
 
-  h2 {
-    font-family: 'Patua One', sans-serif;
-    @apply text-xl font-bold mb-1;
-  }
+//   h2 {
+//     font-family: 'Patua One', sans-serif;
+//     @apply text-xl font-bold mb-1;
+//   }
 
-  p { @apply text-center mb-5; }
-}
+//   p { @apply text-center mb-5; }
+// }
 
-.example {
-  h1 {
-    font-family: 'Patua One', sans-serif;
-    @apply text-3xl font-bold mb-8;
-  }
-}
+// .example {
+//   h1 {
+//     font-family: 'Patua One', sans-serif;
+//     @apply text-3xl font-bold mb-8;
+//   }
+// }
 
 
 .post {
