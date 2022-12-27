@@ -6,7 +6,7 @@ type Product = 'github' | 'gitlab'
 type Person = {name: string; image: string}
 type Post = {title: string; date: Date; body: string}
 type NetworkResource<T> = {data: T; loading: false} | {data: undefined; loading: true}
-type Foo = {author: Partial<Person>} & Partial<Post>
+type Foo = {author?: Partial<Person>} & Partial<Post>
 
 interface CacheContext {
   username?: string
@@ -72,13 +72,20 @@ function Post() {
   const dateAttribute =
     date && `${date.getFullYear()}-${date.getMonth() + 1}-${String(date.getDate()).padStart(2, '0')}`
 
+  const author = post.author
+
   return (
     <div className="post">
       <header>
-        <div className="avatar">
-          <img src={post.author.image} alt={`Image of ${post.author.name}`} />
-        </div>
-        <p className="author">{post.author.name}</p>
+        {author && (
+          <>
+            <div className="avatar">
+              <img src={author.image} alt={`Image of ${author.name}`} />
+            </div>
+            <p className="author">{author.name}</p>
+          </>
+        )}
+
         <time dateTime={dateAttribute}>{dateValue}</time>
       </header>
       <article>
