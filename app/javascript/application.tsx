@@ -1,16 +1,16 @@
 import {Route, Routes, Link, BrowserRouter, useParams} from 'react-router-dom'
 import React, {ReactNode, useContext, useState} from 'react'
+import {github, gitlab} from './fetcher'
 
 type Product = 'github' | 'gitlab'
 type Person = {name: string; image: string}
 type Post = {title: string; date: Date; body: string}
-type PostWithAuthor = {author: Person} & Post
 type NetworkResource<T> = {data: T; loading: false} | {data: undefined; loading: true}
+type Foo = {author: Partial<Person>} & Partial<Post>
 
 interface CacheContext {
-  product?: Product
   username?: string
-  postFor(id: string): NetworkResource<PostWithAuthor>
+  postFor(id: string): NetworkResource<Foo>
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -31,8 +31,8 @@ export function Application({product, username}: {product: unknown; username: un
 }
 
 function Resume() {
-  const {product, username} = useCacheContext()
-  console.log(product, username)
+  const {username} = useCacheContext()
+  console.log(username)
 
   return (
     <div>
@@ -43,8 +43,8 @@ function Resume() {
 }
 
 function PostIndex() {
-  const {product, username} = useCacheContext()
-  console.log(product, username)
+  const {username} = useCacheContext()
+  console.log(username)
 
   return (
     <div>
@@ -68,8 +68,9 @@ function Post() {
   }
 
   const date = post.date
-  const dateValue = date.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})
-  const dateAttribute = `${date.getFullYear()}-${date.getMonth() + 1}-${String(date.getDate()).padStart(2, '0')}`
+  const dateValue = date && date.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})
+  const dateAttribute =
+    date && `${date.getFullYear()}-${date.getMonth() + 1}-${String(date.getDate()).padStart(2, '0')}`
 
   return (
     <div className="post">
@@ -82,7 +83,7 @@ function Post() {
       </header>
       <article>
         <h1>{post.title}</h1>
-        <div dangerouslySetInnerHTML={{__html: post.body}} />
+        <div dangerouslySetInnerHTML={{__html: post.body ?? ''}} />
       </article>
     </div>
   )
@@ -111,29 +112,26 @@ function CacheContextProvider({
   username: string
   children: ReactNode
 }) {
-  const [posts, setPosts] = useState({})
+  const [source, setSource] = useState(product === 'github' ? github : gitlab)
+  const [posts, setPosts] = useState<{[id: string]: Foo}>({})
 
-  const postFor = (id: string): NetworkResource<PostWithAuthor> => {
-    return {
-      data: {
-        author: {name: 'Deyan Dobrinov', image: 'https://avatars.githubusercontent.com/u/996877?v=4'},
-        title: 'Hello, blogging!',
-        date: new Date(),
-        body: '<p>That is the blog folks!</p>'
-      },
-      loading: false
+  const postFor = (id: string): NetworkResource<Foo> => {
+    if (posts[id]) {
+      return {
+        data: {
+          author: {name: 'Deyan Dobrinov', image: 'https://avatars.githubusercontent.com/u/996877?v=4'},
+          title: 'Hello, blogging!',
+          date: new Date(),
+          body: '<p>That is the blog folks!</p>'
+        },
+        loading: false
+      }
+    } else {
+      source.post(username, id).then(post => setPosts(currentPosts => ({...currentPosts, [id]: post})))
+
+      return {data: undefined, loading: true}
     }
   }
 
-  return (
-    <CacheContext.Provider
-      value={{
-        product,
-        username,
-        postFor
-      }}
-    >
-      {children}
-    </CacheContext.Provider>
-  )
+  return <CacheContext.Provider value={{username, postFor}}>{children}</CacheContext.Provider>
 }
