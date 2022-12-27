@@ -7,7 +7,7 @@
   = link_to root_path, target: 'blank' do
     = image_pack_tag 'created-with-me.svg', class: 'created-with'
 
-  = link_to submission_path(method: @method, username: @username, format: 'pdf'), target: 'blank' do
+  = link_to resume_path(method: @method, username: @username, format: 'pdf'), target: 'blank' do
     = image_pack_tag 'pdf.svg', class: 'pdf'
 
   #resume data-resume=@resume.payload

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   #                                    as: :post,
   #                                    constraints: { method: /#{Submission::METHODS.join('|')}/ }
 
-  get ':method/:username', to: 'accounts#show'
+  get ':method/:username', to: 'accounts#show', as: :resume
   get ':method/:username/posts', to: 'accounts#show'
   get ':method/:username/posts/:post', to: 'accounts#show'
 

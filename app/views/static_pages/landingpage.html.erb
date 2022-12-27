@@ -1,6 +1,6 @@
 <%= image_pack_tag 'logo.svg', class: 'logo logo-top', alt: '{me}' %>
 <h1>Your technical resume as JSON</h1>
-<p>Impress your future employer with a delightful, modern-looking resume generated from a json file in your Github/Gitlab profile. Check out mine (this <a href="https://github.com/dobrinov/me/blob/main/me.json" target="_blank" rel="noreferrer">json file</a> turns into a <%= link_to 'web page', submission_path(method: 'github', username: 'dobrinov') %> and/or a <%= link_to 'pdf file', submission_path(method: 'github', username: 'dobrinov', format: 'pdf') %>).</p>
+<p>Impress your future employer with a delightful, modern-looking resume generated from a json file in your Github/Gitlab profile. Check out mine (this <a href="https://github.com/dobrinov/me/blob/main/me.json" target="_blank" rel="noreferrer">json file</a> turns into a <%= link_to 'web page', resume_path(method: 'github', username: 'dobrinov') %> and/or a <%= link_to 'pdf file', resume_path(method: 'github', username: 'dobrinov', format: 'pdf') %>).</p>
 
 <h2>Like it?</h2>
 <%= link_to 'Create yours', default_submission_method_path, class: 'button button-primary' %>
