@@ -1,5 +1,5 @@
 import {Route, Routes, Link, BrowserRouter, useParams} from 'react-router-dom'
-import React, {ReactNode, useContext, useEffect, useState} from 'react'
+import React, {ReactNode, useContext, useEffect, useRef, useState} from 'react'
 import {github, gitlab} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
@@ -13,14 +13,14 @@ marked.use({
 })
 
 type Product = 'github' | 'gitlab'
-type Person = {name: string; image: string}
-type Post = {title: string; date: Date; body: string}
+type Person = {name?: string; image?: string}
+type Post = {title?: string; date?: Date; body?: string}
+type PostWithAuthor = {author?: Person} & Post
 type NetworkResource<T> = {data: T; loading: false} | {data: undefined; loading: true}
-type Foo = {author?: Partial<Person>} & Partial<Post>
 
 interface CacheContext {
   username?: string
-  postFor(id: string): NetworkResource<Foo>
+  postFor(id: string): NetworkResource<PostWithAuthor>
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -28,7 +28,7 @@ export function Application({product, username}: {product: unknown; username: un
   if (typeof username !== 'string') throw new Error('Username must be a string')
 
   return (
-    <CacheContextProvider product={product} username={username}>
+    <CacheProvider product={product} username={username}>
       <BrowserRouter basename={`${product}/${username}`}>
         <Routes>
           <Route path="/" element={<Resume />} />,
@@ -36,7 +36,7 @@ export function Application({product, username}: {product: unknown; username: un
           <Route path="posts/:postId" element={<Post />} />
         </Routes>
       </BrowserRouter>
-    </CacheContextProvider>
+    </CacheProvider>
   )
 }
 
@@ -72,6 +72,8 @@ function Post() {
   if (postId === undefined) throw new Error('postId is required')
 
   const {data: post, loading} = postFor(postId)
+
+  console.log(post, loading)
 
   useEffect(hljs.highlightAll, [post])
 
@@ -122,19 +124,11 @@ function useCacheContext() {
   return useContext(CacheContext)
 }
 
-function CacheContextProvider({
-  product,
-  username,
-  children
-}: {
-  product: Product
-  username: string
-  children: ReactNode
-}) {
-  const [source, setSource] = useState(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: Foo}>({})
+function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
+  const source = useRef(product === 'github' ? github : gitlab)
+  const [posts, setPosts] = useState<{[id: string]: PostWithAuthor}>({})
 
-  const postFor = (id: string): NetworkResource<Foo> => {
+  const postFor = (id: string): NetworkResource<PostWithAuthor> => {
     const post = posts[id]
     if (post) {
       return {
@@ -142,7 +136,7 @@ function CacheContextProvider({
         loading: false
       }
     } else {
-      source.post(username, id).then(post => setPosts(currentPosts => ({...currentPosts, [id]: post})))
+      source.current.post(username, id).then(post => setPosts(currentPosts => ({...currentPosts, [id]: post})))
 
       return {data: undefined, loading: true}
     }

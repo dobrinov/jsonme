@@ -20,9 +20,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('application')
 
   const root = createRoot(container)
-  root.render(
-    <React.StrictMode>
-      <Application product={container.dataset.product} username={container.dataset.username} />
-    </React.StrictMode>
-  )
+  root.render(<Application product={container.dataset.product} username={container.dataset.username} />)
 })
