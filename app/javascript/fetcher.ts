@@ -19,7 +19,13 @@ export const github = {
     return Promise.all([
       github.resume(username),
       fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
-        .then(response => response.text())
+        .then(response => {
+          if (response.status === 200) {
+            return response.text()
+          } else {
+            throw new Error('NOT_FOUND')
+          }
+        })
         .then(parsePost)
     ]).then(([resume, post]) => ({
       author: resume,

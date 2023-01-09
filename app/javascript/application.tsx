@@ -16,7 +16,12 @@ type Product = 'github' | 'gitlab'
 type Person = {name?: string; image?: string}
 type Post = {title?: string; date?: Date; body?: string}
 type PostWithAuthor = {author?: Person} & Post
-type NetworkResource<T> = {data: T; loading: false} | {data: undefined; loading: true}
+type NetworkResource<T> =
+  | {data: T; loading: false; error: undefined}
+  | {data: undefined; loading: true; error: undefined}
+  | {data: undefined; loading: false; error: Error}
+
+type Error = 'NOT_FOUND' | 'SERVER_ERROR'
 
 interface CacheContext {
   username?: string
@@ -71,14 +76,16 @@ function Post() {
 
   if (postId === undefined) throw new Error('postId is required')
 
-  const {data: post, loading} = postFor(postId)
-
-  console.log(post, loading)
+  const {data: post, loading, error} = postFor(postId)
 
   useEffect(hljs.highlightAll, [post])
 
   if (loading) {
     return <div>Loading ...</div>
+  }
+
+  if (error) {
+    return <div>{error}</div>
   }
 
   const date = post.date
@@ -126,19 +133,29 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: PostWithAuthor}>({})
+  const [posts, setPosts] = useState<{[id: string]: PostWithAuthor | Error}>({})
 
   const postFor = (id: string): NetworkResource<PostWithAuthor> => {
     const post = posts[id]
-    if (post) {
+    if (post && typeof post !== 'string') {
       return {
         data: post,
-        loading: false
+        loading: false,
+        error: undefined
       }
+    } else if (post && typeof post === 'string') {
+      return {data: undefined, loading: false, error: post}
     } else {
-      source.current.post(username, id).then(post => setPosts(currentPosts => ({...currentPosts, [id]: post})))
+      source.current
+        .post(username, id)
+        .then(post => {
+          setPosts(currentPosts => ({...currentPosts, [id]: post}))
+        })
+        .catch(error => {
+          setPosts(currentPosts => ({...currentPosts, [id]: 'NOT_FOUND'}))
+        })
 
-      return {data: undefined, loading: true}
+      return {data: undefined, loading: true, error: undefined}
     }
   }
 
