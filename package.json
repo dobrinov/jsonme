@@ -34,5 +34,9 @@
     "fork-ts-checker-webpack-plugin": "5.1",
     "prettier": "2.7.1"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "volta": {
+    "node": "18.13.0",
+    "yarn": "1.22.19"
+  }
 }
