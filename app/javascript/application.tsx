@@ -88,26 +88,19 @@ function Post() {
     return <div>{error}</div>
   }
 
-  const date = post.date
-  const dateValue = date && date.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})
-  const dateAttribute =
-    date && `${date.getFullYear()}-${date.getMonth() + 1}-${String(date.getDate()).padStart(2, '0')}`
-
-  const author = post.author
-
   return (
     <div className="post">
       <header>
-        {author && (
+        {post.author && (
           <>
             <div className="avatar">
-              <img src={author.image} alt={`Image of ${author.name}`} />
+              <img src={post.author.image} alt={`Image of ${post.author.name}`} />
             </div>
-            <p className="author">{author.name}</p>
+            <p className="author">{post.author.name}</p>
           </>
         )}
 
-        <time dateTime={dateAttribute}>{dateValue}</time>
+        <Date value={post.date} />
       </header>
       <article>
         <h1>{post.title}</h1>
@@ -115,6 +108,15 @@ function Post() {
       </article>
     </div>
   )
+}
+
+function Date({value}: {value?: Date}) {
+  if (!value) return null
+
+  const dateValue = value.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})
+  const dateAttribute = `${value.getFullYear()}-${value.getMonth() + 1}-${String(value.getDate()).padStart(2, '0')}`
+
+  return <time dateTime={dateAttribute}>{dateValue}</time>
 }
 
 const defaultCacheContext = {
