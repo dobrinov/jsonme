@@ -9,13 +9,6 @@ Rails.start()
 const images = require.context('../images', true)
 name => images(name, true)
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   const container = document.getElementById('resume')
-
-//   const root = createRoot(container)
-//   root.render(<ResumeParser json={container.dataset.resume} />)
-// })
-
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('application')
 

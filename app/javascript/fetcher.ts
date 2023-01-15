@@ -22,8 +22,10 @@ export const github = {
         .then(response => {
           if (response.status === 200) {
             return response.text()
+          } else if (response.status === 404) {
+            throw new Error('The post cannot be found.')
           } else {
-            throw new Error('NOT_FOUND')
+            throw new Error('Oops. Something went wrong. Try again!')
           }
         })
         .then(parsePost)
@@ -35,7 +37,6 @@ export const github = {
 }
 
 export const gitlab = {
-  // post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
   post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
     const query = `
     query Post($fullPath: ID!, $postPath: String!) {

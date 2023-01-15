@@ -3,6 +3,8 @@ import React, {ReactNode, useContext, useEffect, useRef, useState} from 'react'
 import {github, gitlab} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
+import {Preloader} from './Preloader'
+import {load} from 'js-yaml'
 
 marked.use({
   walkTokens: token => {
@@ -19,9 +21,7 @@ type PostWithAuthor = {author?: Person} & Post
 type NetworkResource<T> =
   | {data: T; loading: false; error: undefined}
   | {data: undefined; loading: true; error: undefined}
-  | {data: undefined; loading: false; error: Error}
-
-type Error = 'NOT_FOUND' | 'SERVER_ERROR'
+  | {data: undefined; loading: false; error: string}
 
 interface CacheContext {
   username?: string
@@ -80,24 +80,22 @@ function Post() {
 
   useEffect(hljs.highlightAll, [post])
 
-  if (loading) {
-    return <div>Loading ...</div>
-  }
+  if (loading) return <Preloader />
 
-  if (error) {
-    return <div>{error}</div>
+  if (error !== undefined) {
+    return <div className="error">{error}</div>
   }
 
   return (
     <div className="post">
       <header>
         {post.author && (
-          <>
+          <Link to="/">
             <div className="avatar">
               <img src={post.author.image} alt={`Image of ${post.author.name}`} />
             </div>
             <p className="author">{post.author.name}</p>
-          </>
+          </Link>
         )}
 
         <Date value={post.date} />
@@ -135,16 +133,12 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: PostWithAuthor | Error}>({})
+  const [posts, setPosts] = useState<{[id: string]: PostWithAuthor | string}>({})
 
   const postFor = (id: string): NetworkResource<PostWithAuthor> => {
     const post = posts[id]
     if (post && typeof post !== 'string') {
-      return {
-        data: post,
-        loading: false,
-        error: undefined
-      }
+      return {data: post, loading: false, error: undefined}
     } else if (post && typeof post === 'string') {
       return {data: undefined, loading: false, error: post}
     } else {
@@ -154,7 +148,7 @@ function CacheProvider({product, username, children}: {product: Product; usernam
           setPosts(currentPosts => ({...currentPosts, [id]: post}))
         })
         .catch(error => {
-          setPosts(currentPosts => ({...currentPosts, [id]: 'NOT_FOUND'}))
+          setPosts(currentPosts => ({...currentPosts, [id]: error}))
         })
 
       return {data: undefined, loading: true, error: undefined}
