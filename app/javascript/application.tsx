@@ -154,16 +154,13 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: Post | string}>({})
+  const [posts, setPosts] = useState<{[id: string]: Post | Error}>({})
   const [resume, setResume] = useState<any | undefined>()
 
   const usePost = (id: string): NetworkResource<Post> => {
     const post = posts[id]
-    if (post && typeof post !== 'string') {
-      return {data: post, loading: false, error: undefined}
-    } else if (post && typeof post === 'string') {
-      return {data: undefined, loading: false, error: post}
-    } else {
+
+    if (!post) {
       source.current
         .post(username, id)
         .then(post => {
@@ -174,6 +171,10 @@ function CacheProvider({product, username, children}: {product: Product; usernam
         })
 
       return {data: undefined, loading: true, error: undefined}
+    } else if (post instanceof Error) {
+      return {data: undefined, loading: false, error: post.message}
+    } else {
+      return {data: post, loading: false, error: undefined}
     }
   }
 
