@@ -13,10 +13,10 @@ marked.use({
   }
 })
 
-type Product = 'github' | 'gitlab'
 type Person = {name?: string; image?: string}
+type Resume = Person & {}
+type Product = 'github' | 'gitlab'
 type Post = {title?: string; date?: Date; body?: string}
-type PostWithAuthor = {author?: Person} & Post
 type NetworkResource<T> =
   | {data: T; loading: false; error: undefined}
   | {data: undefined; loading: true; error: undefined}
@@ -24,8 +24,8 @@ type NetworkResource<T> =
 
 interface CacheContext {
   username?: string
-  usePost(id: string): NetworkResource<PostWithAuthor>
-  useResume(): any // TODO: Fix
+  usePost(id: string): NetworkResource<Post>
+  useResume(): NetworkResource<Resume>
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -70,40 +70,59 @@ function PostIndex() {
 }
 
 function Post() {
-  const {usePost} = useCacheContext()
+  const {useResume, usePost} = useCacheContext()
   const {postId} = useParams()
 
   if (postId === undefined) throw new Error('postId is required')
 
-  const {data: post, loading, error} = usePost(postId)
+  const {data: resume, loading: loadingResume, error: resumeError} = useResume()
+  const {data: post, loading: loadingPost, error: postError} = usePost(postId)
 
-  useEffect(hljs.highlightAll, [post])
-
-  if (loading) return <Preloader />
-
-  if (error !== undefined) {
-    return <div className="error">{error}</div>
-  }
+  if (loadingPost || loadingResume) return <Preloader />
 
   return (
     <div className="post">
       <header>
-        {post.author && (
-          <Link to="/">
-            <div className="avatar">
-              <img src={post.author.image} alt={`Image of ${post.author.name}`} />
-            </div>
-            <p className="author">{post.author.name}</p>
-          </Link>
-        )}
-
-        <Date value={post.date} />
+        <PostAuthor author={resume} error={resumeError} />
+        {post && <Date value={post.date} />}
       </header>
       <article>
-        <h1>{post.title}</h1>
-        {post.body && <div dangerouslySetInnerHTML={{__html: marked.parse(post.body)}} />}
+        <PostBody post={post} error={postError} />
       </article>
     </div>
+  )
+}
+
+function PostAuthor({author, error}: {author: Person | undefined; error?: string}) {
+  if (error || !author) {
+    return <div className="error">{error}</div>
+  }
+
+  return (
+    <Link to="/">
+      <div className="avatar">
+        <img src={author.image} alt={`Image of ${author.name}`} />
+      </div>
+      <p className="author">{author.name}</p>
+    </Link>
+  )
+}
+
+function PostBody({post, error}: {post: Post | undefined; error?: string}) {
+  useEffect(() => {
+    if (!post) return
+    hljs.highlightAll()
+  }, [post])
+
+  if (error || !post) {
+    return <div className="error">{error}</div>
+  }
+
+  return (
+    <>
+      <h1>{post.title}</h1>
+      {post.body && <div dangerouslySetInnerHTML={{__html: marked.parse(post.body)}} />}
+    </>
   )
 }
 
@@ -135,10 +154,10 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: PostWithAuthor | string}>({})
+  const [posts, setPosts] = useState<{[id: string]: Post | string}>({})
   const [resume, setResume] = useState<any | undefined>()
 
-  const usePost = (id: string): NetworkResource<PostWithAuthor> => {
+  const usePost = (id: string): NetworkResource<Post> => {
     const post = posts[id]
     if (post && typeof post !== 'string') {
       return {data: post, loading: false, error: undefined}
@@ -158,7 +177,7 @@ function CacheProvider({product, username, children}: {product: Product; usernam
     }
   }
 
-  const useResume = (): NetworkResource<PostWithAuthor> => {
+  const useResume = (): NetworkResource<Resume> => {
     if (resume && typeof resume !== 'string') {
       return {data: resume, loading: false, error: undefined}
     } else if (resume && typeof resume === 'string') {

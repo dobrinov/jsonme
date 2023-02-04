@@ -15,24 +15,18 @@ export const github = {
       .then(response => response.json())
       .then(parseResume)
   },
-  post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
-    return Promise.all([
-      github.resume(username),
-      fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
-        .then(response => {
-          if (response.status === 200) {
-            return response.text()
-          } else if (response.status === 404) {
-            throw new Error('The post cannot be found.')
-          } else {
-            throw new Error('Oops. Something went wrong. Try again!')
-          }
-        })
-        .then(parsePost)
-    ]).then(([resume, post]) => ({
-      author: resume,
-      ...post
-    }))
+  post: (username: string, handle: string): Promise<ParseResult<Post>> => {
+    return fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
+      .then(response => {
+        if (response.status === 200) {
+          return response.text()
+        } else if (response.status === 404) {
+          throw new Error('The post cannot be found.')
+        } else {
+          throw new Error('Oops. Something went wrong. Try again!')
+        }
+      })
+      .then(parsePost)
   }
 }
 
