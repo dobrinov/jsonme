@@ -4,7 +4,6 @@ import {github, gitlab} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {Preloader} from './Preloader'
-import {load} from 'js-yaml'
 
 marked.use({
   walkTokens: token => {
@@ -25,7 +24,8 @@ type NetworkResource<T> =
 
 interface CacheContext {
   username?: string
-  postFor(id: string): NetworkResource<PostWithAuthor>
+  usePost(id: string): NetworkResource<PostWithAuthor>
+  useResume(): any // TODO: Fix
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -47,7 +47,7 @@ export function Application({product, username}: {product: unknown; username: un
 
 function Resume() {
   const {username} = useCacheContext()
-  console.log(username)
+  // const {data: post, loading, error} = resume()
 
   return (
     <div>
@@ -59,7 +59,6 @@ function Resume() {
 
 function PostIndex() {
   const {username} = useCacheContext()
-  console.log(username)
 
   return (
     <div>
@@ -71,12 +70,12 @@ function PostIndex() {
 }
 
 function Post() {
-  const {postFor} = useCacheContext()
+  const {usePost} = useCacheContext()
   const {postId} = useParams()
 
   if (postId === undefined) throw new Error('postId is required')
 
-  const {data: post, loading, error} = postFor(postId)
+  const {data: post, loading, error} = usePost(postId)
 
   useEffect(hljs.highlightAll, [post])
 
@@ -120,7 +119,10 @@ function Date({value}: {value?: Date}) {
 const defaultCacheContext = {
   product: undefined,
   username: undefined,
-  postFor: (id: string) => {
+  usePost: (id: string) => {
+    throw new Error('invariant variation')
+  },
+  useResume: () => {
     throw new Error('invariant variation')
   }
 }
@@ -134,8 +136,9 @@ function useCacheContext() {
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
   const [posts, setPosts] = useState<{[id: string]: PostWithAuthor | string}>({})
+  const [resume, setResume] = useState<any | undefined>()
 
-  const postFor = (id: string): NetworkResource<PostWithAuthor> => {
+  const usePost = (id: string): NetworkResource<PostWithAuthor> => {
     const post = posts[id]
     if (post && typeof post !== 'string') {
       return {data: post, loading: false, error: undefined}
@@ -155,5 +158,17 @@ function CacheProvider({product, username, children}: {product: Product; usernam
     }
   }
 
-  return <CacheContext.Provider value={{username, postFor}}>{children}</CacheContext.Provider>
+  const useResume = (): NetworkResource<PostWithAuthor> => {
+    if (resume && typeof resume !== 'string') {
+      return {data: resume, loading: false, error: undefined}
+    } else if (resume && typeof resume === 'string') {
+      return {data: undefined, loading: false, error: resume}
+    } else {
+      source.current.resume(username).then(setResume).catch(setResume)
+
+      return {data: undefined, loading: true, error: undefined}
+    }
+  }
+
+  return <CacheContext.Provider value={{username, usePost, useResume}}>{children}</CacheContext.Provider>
 }

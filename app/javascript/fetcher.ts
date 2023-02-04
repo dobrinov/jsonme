@@ -37,6 +37,12 @@ export const github = {
 }
 
 export const gitlab = {
+  resume: (username: string): Promise<ParseResult<Resume>> => {
+    // TODO: Change this with Gitlab logic
+    return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
+      .then(response => response.json())
+      .then(parseResume)
+  },
   post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
     const query = `
     query Post($fullPath: ID!, $postPath: String!) {
