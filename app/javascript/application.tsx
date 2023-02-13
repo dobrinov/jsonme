@@ -59,12 +59,22 @@ function Resume() {
 
 function PostIndex() {
   const {username} = useCacheContext()
+  const {useResume} = useCacheContext()
+
+  const {data: resume, loading: loadingResume, error: resumeError} = useResume()
 
   return (
-    <div>
-      <h1>Posts</h1>
-      <Link to="./..">resume</Link>
-      <Link to="some-post">post</Link>
+    <div className="posts">
+      <header>
+        <Link to="./..">
+          <Avatar {...resume} />
+          <p className="author">{resume?.name}</p>
+        </Link>
+      </header>
+      <div>
+        <h1>Posts</h1>
+        <Link to="hello-blogging">Hello, blogging!</Link>
+      </div>
     </div>
   )
 }
@@ -93,16 +103,24 @@ function Post() {
   )
 }
 
+function Avatar({image, name}: {image?: string; name?: string}) {
+  const alt = name ? `Image of ${name}` : undefined
+
+  return (
+    <div className="avatar">
+      <img src={image} alt={alt} />
+    </div>
+  )
+}
+
 function PostAuthor({author, error}: {author: Person | undefined; error?: string}) {
   if (error || !author) {
     return <div className="error">{error}</div>
   }
 
   return (
-    <Link to="/">
-      <div className="avatar">
-        <img src={author.image} alt={`Image of ${author.name}`} />
-      </div>
+    <Link to="./..">
+      <Avatar {...author} />
       <p className="author">{author.name}</p>
     </Link>
   )
