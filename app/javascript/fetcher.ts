@@ -1,10 +1,7 @@
 import yaml from 'js-yaml'
+import {Person, Post, Resume} from './types'
 
-type ParseResult<T> = Partial<T> & {errors: {[K in keyof T]?: string} & {general?: string[]}}
-
-type Person = {name: string; image: string}
-type Post = {title: string; date: Date; body: string}
-type Resume = Person & {}
+export type ParseResult<T> = Partial<T> & {errors: {[K in keyof T]?: string} & {general?: string[]}}
 
 const URL_REGEX =
   /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
@@ -106,6 +103,15 @@ function parseResume(json: unknown): ParseResult<Resume> {
     }
   } else {
     resume.errors.image = 'Image is not specified'
+  }
+
+  // SUMMARY
+  if ('summary' in json) {
+    if (typeof json.summary === 'string') {
+      resume.summary = json.summary
+    } else {
+      resume.errors.summary = 'The summary must be a string'
+    }
   }
 
   return resume

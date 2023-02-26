@@ -1,9 +1,10 @@
 import {Route, Routes, Link, BrowserRouter, useParams} from 'react-router-dom'
 import React, {ReactNode, useContext, useEffect, useRef, useState} from 'react'
-import {github, gitlab} from './fetcher'
+import {github, gitlab, ParseResult} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {Preloader} from './Preloader'
+import {Person, Post as PostType, Resume as ResumeType} from './types'
 
 marked.use({
   walkTokens: token => {
@@ -13,10 +14,7 @@ marked.use({
   }
 })
 
-type Person = {name?: string; image?: string}
-type Resume = Person & {}
 type Product = 'github' | 'gitlab'
-type Post = {title?: string; date?: Date; body?: string}
 type NetworkResource<T> =
   | {data: T; loading: false; error: undefined}
   | {data: undefined; loading: true; error: undefined}
@@ -24,8 +22,8 @@ type NetworkResource<T> =
 
 interface CacheContext {
   username?: string
-  usePost(id: string): NetworkResource<Post>
-  useResume(): NetworkResource<Resume>
+  usePost(id: string): NetworkResource<PostType>
+  useResume(): NetworkResource<ResumeType>
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -56,13 +54,14 @@ function Resume() {
     return <div className="error">{error}</div>
   }
 
-  const {image, name} = data
+  const {image, name, summary} = data
 
   return (
     <div className="resume-layout">
       <div className="resume">
         {image && <Avatar image={image} name={name} />}
         {name && <h1 className="name">{name}</h1>}
+        {summary && summary}
 
         <Link to="posts">posts</Link>
       </div>
@@ -148,7 +147,7 @@ function PostAuthor({author, error}: {author: Person | undefined; error?: string
   )
 }
 
-function PostBody({post, error}: {post: Post | undefined; error?: string}) {
+function PostBody({post, error}: {post: PostType | undefined; error?: string}) {
   useEffect(() => {
     if (!post) return
     hljs.highlightAll()
@@ -194,10 +193,10 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: Post | Error}>({})
-  const [resume, setResume] = useState<any | undefined>()
+  const [posts, setPosts] = useState<{[id: string]: PostType | Error}>({})
+  const [resume, setResume] = useState<ParseResult<ResumeType> | string | undefined>()
 
-  const usePost = (id: string): NetworkResource<Post> => {
+  const usePost = (id: string): NetworkResource<PostType> => {
     const post = posts[id]
 
     if (!post) {
@@ -218,13 +217,16 @@ function CacheProvider({product, username, children}: {product: Product; usernam
     }
   }
 
-  const useResume = (): NetworkResource<Resume> => {
-    if (resume && typeof resume !== 'string') {
+  const useResume = (): NetworkResource<ParseResult<ResumeType>> => {
+    if (resume) {
       return {data: resume, loading: false, error: undefined}
     } else if (resume && typeof resume === 'string') {
       return {data: undefined, loading: false, error: resume}
     } else {
-      source.current.resume(username).then(setResume).catch(setResume)
+      source.current
+        .resume(username)
+        .then(setResume)
+        .catch(error => setResume(error))
 
       return {data: undefined, loading: true, error: undefined}
     }
