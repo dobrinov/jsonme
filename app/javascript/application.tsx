@@ -4,7 +4,7 @@ import {github, gitlab, ParseResult} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {Preloader} from './Preloader'
-import {Person, Post as PostType, Resume as ResumeType} from './types'
+import {Post as PostType, Resume as ResumeType} from './types'
 
 marked.use({
   walkTokens: token => {
@@ -61,7 +61,7 @@ function Resume() {
       <div className="resume">
         {image && <Avatar image={image} name={name} />}
         {name && <h1 className="name">{name}</h1>}
-        {summary && summary}
+        {summary && <div className="summary">{summary}</div>}
 
         <Link to="posts">posts</Link>
       </div>

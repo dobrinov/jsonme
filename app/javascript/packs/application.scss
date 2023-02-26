@@ -62,13 +62,6 @@
 
 // // RESUME
 
-// body {
-//   @apply text-lg leading-snug m-0 p-0;
-// }
-
-// .container { @apply p-5 max-w-screen-xl mx-auto; }
-// .centered-container { @apply p-5 max-w-screen-xl mx-auto text-center relative; }
-
 // .section {
 //   @apply mb-8;
 
@@ -82,8 +75,6 @@
 // .created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
 // .pdf { @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;}
 
-
-// .summary { @apply mb-8 text-left; }
 
 // .timeline {
 //   @apply flex flex-col;
@@ -219,15 +210,17 @@ html, body, #application { height: 100%; }
 
 .resume  {
   font-family: 'Roboto', sans-serif;
-  @apply text-center relative flex flex-col items-center;
+  @apply text-center relative flex flex-col items-center text-lg leading-snug;
 
   > .avatar { @apply rounded-full inline-block h-40 w-40 overflow-hidden mb-4; }
   > .avatar > img { @apply w-full h-full; }
 
   > .name {
     font-family: 'Patua One', sans-serif;
-    @apply text-5xl mb-2;
+    @apply text-5xl mb-4;
   }
+
+  > .summary { @apply mb-8 text-left; }
 }
 
 .posts {
