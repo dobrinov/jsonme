@@ -22,8 +22,8 @@ type NetworkResource<T> =
 
 interface CacheContext {
   username?: string
-  usePost(id: string): NetworkResource<PostType>
-  useResume(): NetworkResource<ResumeType>
+  usePost(id: string): NetworkResource<ParseResult<PostType>>
+  useResume(): NetworkResource<ParseResult<ResumeType>>
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -104,7 +104,7 @@ function Post() {
   return (
     <div className="post">
       <header>
-        <PostAuthor author={resume} error={resumeError} />
+        <PostAuthor resume={resume} error={resumeError} />
         {post && <Date value={post.date} />}
       </header>
       <article>
@@ -134,20 +134,20 @@ function Avatar({image, name}: {image?: string; name?: string}) {
   )
 }
 
-function PostAuthor({author, error}: {author: Person | undefined; error?: string}) {
-  if (error || !author) {
+function PostAuthor({resume, error}: {resume?: ParseResult<ResumeType>; error?: string}) {
+  if (error || !resume) {
     return <div className="error">{error}</div>
   }
 
   return (
     <Link to="./..">
-      <Avatar {...author} />
-      <p className="author">{author.name}</p>
+      <Avatar {...resume} />
+      <p className="author">{resume.name}</p>
     </Link>
   )
 }
 
-function PostBody({post, error}: {post: PostType | undefined; error?: string}) {
+function PostBody({post, error}: {post: ParseResult<PostType> | undefined; error?: string}) {
   useEffect(() => {
     if (!post) return
     hljs.highlightAll()
@@ -193,32 +193,36 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: PostType | Error}>({})
+  const [posts, setPosts] = useState<{[id: string]: ParseResult<PostType> | string | undefined}>({})
   const [resume, setResume] = useState<ParseResult<ResumeType> | string | undefined>()
 
-  const usePost = (id: string): NetworkResource<PostType> => {
+  const usePost = (id: string): NetworkResource<ParseResult<PostType>> => {
     const post = posts[id]
 
-    if (!post) {
+    if (post && typeof post !== 'string') {
+      return {data: post, loading: false, error: undefined}
+    } else if (post && typeof post === 'string') {
+      return {data: undefined, loading: false, error: post}
+    } else {
       source.current
         .post(username, id)
         .then(post => {
           setPosts(currentPosts => ({...currentPosts, [id]: post}))
         })
         .catch(error => {
-          setPosts(currentPosts => ({...currentPosts, [id]: error}))
+          if (error instanceof Error) {
+            setPosts(currentPosts => ({...currentPosts, [id]: error.message}))
+          } else {
+            setPosts(currentPosts => ({...currentPosts, [id]: 'Cannot fetch post'}))
+          }
         })
 
       return {data: undefined, loading: true, error: undefined}
-    } else if (post instanceof Error) {
-      return {data: undefined, loading: false, error: post.message}
-    } else {
-      return {data: post, loading: false, error: undefined}
     }
   }
 
   const useResume = (): NetworkResource<ParseResult<ResumeType>> => {
-    if (resume) {
+    if (resume && typeof resume !== 'string') {
       return {data: resume, loading: false, error: undefined}
     } else if (resume && typeof resume === 'string') {
       return {data: undefined, loading: false, error: resume}
@@ -226,7 +230,13 @@ function CacheProvider({product, username, children}: {product: Product; usernam
       source.current
         .resume(username)
         .then(setResume)
-        .catch(error => setResume(error))
+        .catch(error => {
+          if (error instanceof Error) {
+            setResume(error.message)
+          } else {
+            setResume('Cannot fetch resume')
+          }
+        })
 
       return {data: undefined, loading: true, error: undefined}
     }
