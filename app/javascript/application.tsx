@@ -59,7 +59,7 @@ function Resume() {
   return (
     <div className="resume-layout">
       <div className="resume">
-        <Avatar {...resume} />
+        {resume.image && <Avatar image={resume.image} name={resume.name} />}
         {resume.name && <h1 className="name">{resume.name}</h1>}
 
         <Link to="posts">posts</Link>
