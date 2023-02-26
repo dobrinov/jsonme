@@ -46,19 +46,29 @@ export function Application({product, username}: {product: unknown; username: un
 }
 
 function Resume() {
-  const {username} = useCacheContext()
-  // const {data: post, loading, error} = resume()
+  const {useResume} = useCacheContext()
+
+  const {data: resume, loading, error} = useResume()
+
+  if (loading) return <Preloader />
+
+  if (error || !resume) {
+    return <div className="error">{error}</div>
+  }
 
   return (
-    <div>
-      <h1>Resume</h1>
-      <Link to="posts">posts</Link>
+    <div className="resume-layout">
+      <div className="resume">
+        <Avatar {...resume} />
+        {resume.name && <h1 className="name">{resume.name}</h1>}
+
+        <Link to="posts">posts</Link>
+      </div>
     </div>
   )
 }
 
 function PostIndex() {
-  const {username} = useCacheContext()
   const {useResume} = useCacheContext()
 
   const {data: resume, loading: loadingResume, error: resumeError} = useResume()
@@ -106,9 +116,19 @@ function Post() {
 function Avatar({image, name}: {image?: string; name?: string}) {
   const alt = name ? `Image of ${name}` : undefined
 
+  const unknown = '/whitenoice.gif'
+
   return (
     <div className="avatar">
-      <img src={image} alt={alt} />
+      <img
+        src={image ?? unknown}
+        alt={alt}
+        onError={event => {
+          if (eventTargetIsHtmlImageElement(event.target)) {
+            event.target.src = unknown
+          }
+        }}
+      />
     </div>
   )
 }
@@ -209,4 +229,8 @@ function CacheProvider({product, username, children}: {product: Product; usernam
   }
 
   return <CacheContext.Provider value={{username, usePost, useResume}}>{children}</CacheContext.Provider>
+}
+
+function eventTargetIsHtmlImageElement(target: EventTarget): target is HTMLImageElement {
+  return 'src' in target
 }
