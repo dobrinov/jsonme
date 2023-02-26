@@ -48,19 +48,21 @@ export function Application({product, username}: {product: unknown; username: un
 function Resume() {
   const {useResume} = useCacheContext()
 
-  const {data: resume, loading, error} = useResume()
+  const {data, loading, error} = useResume()
 
   if (loading) return <Preloader />
 
-  if (error || !resume) {
+  if (error || !data) {
     return <div className="error">{error}</div>
   }
+
+  const {image, name} = data
 
   return (
     <div className="resume-layout">
       <div className="resume">
-        {resume.image && <Avatar image={resume.image} name={resume.name} />}
-        {resume.name && <h1 className="name">{resume.name}</h1>}
+        {image && <Avatar image={image} name={name} />}
+        {name && <h1 className="name">{name}</h1>}
 
         <Link to="posts">posts</Link>
       </div>
