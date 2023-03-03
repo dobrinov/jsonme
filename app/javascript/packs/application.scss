@@ -229,9 +229,9 @@ html, body, #application { height: 100%; }
   > header {
     @apply max-w-screen-md mx-auto text-center pt-16;
 
-    > .avatar { @apply rounded-full inline-block h-14 w-14 overflow-hidden; }
-    > .avatar > img { @apply w-full h-full; }
-    > .author { @apply text-gray-500 text-base mb-6 tracking-widest uppercase; }
+    .avatar { @apply rounded-full inline-block h-14 w-14 overflow-hidden; }
+    .avatar > img { @apply w-full h-full; }
+    .author { @apply text-gray-500 text-base mb-6 tracking-widest uppercase; }
   }
 
   > div {
