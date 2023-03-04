@@ -62,16 +62,6 @@
 
 // // RESUME
 
-// .section {
-//   @apply mb-8;
-
-//   .heading {
-//     font-family: 'Patua One', sans-serif;
-
-//     @apply text-3xl;
-//   }
-// }
-
 // .created-with { @apply w-24 mx-auto mt-2 mb-10 hover:scale-105; }
 // .pdf { @apply h-20 mx-auto mt-2 mb-10 hover:scale-105 absolute right-0 top-0;}
 
@@ -221,6 +211,16 @@ html, body, #application { height: 100%; }
   }
 
   > .summary { @apply mb-8 text-left; }
+
+  .section {
+    @apply mb-8;
+
+    .heading {
+      font-family: 'Patua One', sans-serif;
+
+      @apply text-3xl;
+    }
+  }
 }
 
 .posts {

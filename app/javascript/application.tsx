@@ -54,7 +54,7 @@ function Resume() {
     return <div className="error">{error}</div>
   }
 
-  const {image, name, summary} = data
+  const {image, name, summary, location} = data
 
   return (
     <div className="resume-layout">
@@ -62,6 +62,15 @@ function Resume() {
         {image && <Avatar image={image} name={name} />}
         {name && <h1 className="name">{name}</h1>}
         {summary && <div className="summary">{summary}</div>}
+        {location && (
+          <Section title="Location">
+            <p>
+              {[location.city, location.state, location.country]
+                .filter(component => component !== undefined)
+                .join(', ')}
+            </p>
+          </Section>
+        )}
 
         <Link to="posts">posts</Link>
       </div>
@@ -247,4 +256,13 @@ function CacheProvider({product, username, children}: {product: Product; usernam
 
 function eventTargetIsHtmlImageElement(target: EventTarget): target is HTMLImageElement {
   return 'src' in target
+}
+
+function Section({title, children}: {title: string; children: ReactNode}) {
+  return (
+    <div className="section">
+      <h2 className="heading">{title}</h2>
+      {children}
+    </div>
+  )
 }

@@ -1,7 +1,7 @@
 import yaml from 'js-yaml'
-import {Person, Post, Resume} from './types'
+import {Person, Post, Resume, Location} from './types'
 
-export type ParseResult<T> = Partial<T> & {errors: {[K in keyof T]?: string} & {general?: string[]}}
+export type ParseResult<T> = T & {errors: {[K in keyof T]?: string} & {general?: string[]}}
 
 const URL_REGEX =
   /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
@@ -88,7 +88,7 @@ function parseResume(json: unknown): ParseResult<Resume> {
     if (typeof json.name === 'string') {
       resume.name = json.name
     } else {
-      resume.errors.image = 'Name is not a string'
+      resume.errors.image = 'Name must be a string'
     }
   } else {
     resume.errors.image = 'Name is not specified'
@@ -99,7 +99,7 @@ function parseResume(json: unknown): ParseResult<Resume> {
     if (typeof json.image === 'string' && json.image.match(URL_REGEX)) {
       resume.image = json.image
     } else {
-      resume.errors.image = 'Image is not an URL'
+      resume.errors.image = 'Image must be an URL'
     }
   } else {
     resume.errors.image = 'Image is not specified'
@@ -114,7 +114,57 @@ function parseResume(json: unknown): ParseResult<Resume> {
     }
   }
 
+  // LOCATION
+  if ('location' in json) {
+    const location = parseLocation(json.location)
+
+    if (location) {
+      if (location.errors.general) {
+        resume.errors.location = location.errors.general.join(', ')
+      } else {
+        resume.location = location
+      }
+    }
+  }
+
   return resume
+}
+
+function parseLocation(json: unknown): ParseResult<Location> | undefined {
+  const location: ParseResult<Location> = {errors: {}}
+
+  if (json === null) return undefined
+  if (!isObject(json)) return {errors: {general: ['Location must be an object']}}
+
+  if ('city' in json) {
+    if (typeof json.city === 'string') {
+      location.city = json.city
+    } else {
+      location.errors.city = 'City must be a string'
+    }
+  }
+
+  if ('state' in json) {
+    if (typeof json.state === 'string') {
+      location.state = json.state
+    } else {
+      location.errors.state = 'State must be a string'
+    }
+  }
+
+  if ('country' in json) {
+    if (typeof json.country === 'string') {
+      location.country = json.country
+    } else {
+      location.errors.country = 'Country must be a string'
+    }
+  }
+
+  if (location.city === undefined && location.state === undefined && location.country === undefined) {
+    return {errors: {general: ['Location must be an object with city, state (optional) and coutnry.']}}
+  }
+
+  return location
 }
 
 function parsePost(text: string): ParseResult<Post> {
