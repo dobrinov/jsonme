@@ -1,18 +1,18 @@
 import yaml from 'js-yaml'
-import {Person, Post, Resume, Location} from './types'
+import {Person, Post, Resume, Location, LegacyEmployment, Employment, ParseResult} from './types'
 
-export type ParseResult<T> = T & {errors: {[K in keyof T]?: string} & {general?: string[]}}
+export type LegacyParseResult<T> = T & {errors: {[K in keyof T]?: string} & {general?: string[]}}
 
 const URL_REGEX =
   /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
 
 export const github = {
-  resume: (username: string): Promise<ParseResult<Resume>> => {
+  resume: (username: string): Promise<LegacyParseResult<Resume>> => {
     return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
       .then(response => response.json())
       .then(parseResume)
   },
-  post: (username: string, handle: string): Promise<ParseResult<Post>> => {
+  post: (username: string, handle: string): Promise<LegacyParseResult<Post>> => {
     return fetch(`https://raw.githubusercontent.com/${username}/me/main/posts/${handle}.md`)
       .then(response => {
         if (response.status === 200) {
@@ -28,13 +28,13 @@ export const github = {
 }
 
 export const gitlab = {
-  resume: (username: string): Promise<ParseResult<Resume>> => {
+  resume: (username: string): Promise<LegacyParseResult<Resume>> => {
     // TODO: Change this with Gitlab logic
     return fetch(`https://raw.githubusercontent.com/${username}/me/main/me.json`)
       .then(response => response.json())
       .then(parseResume)
   },
-  post: (username: string, handle: string): Promise<ParseResult<Post> & {author: ParseResult<Person>}> => {
+  post: (username: string, handle: string): Promise<LegacyParseResult<Post> & {author: LegacyParseResult<Person>}> => {
     const query = `
     query Post($fullPath: ID!, $postPath: String!) {
       project(fullPath: $fullPath) {
@@ -77,8 +77,8 @@ export const gitlab = {
   }
 }
 
-function parseResume(json: unknown): ParseResult<Resume> {
-  const resume: ParseResult<Resume> = {errors: {}}
+function parseResume(json: unknown): LegacyParseResult<Resume> {
+  const resume: LegacyParseResult<Resume> = {errors: {}}
 
   if (json === null) return {errors: {general: ['Resume unavailable']}}
   if (!isObject(json)) return {errors: {general: ['The resume should be a JSON object']}}
@@ -127,11 +127,20 @@ function parseResume(json: unknown): ParseResult<Resume> {
     }
   }
 
+  // EMPLOYMENTS
+  if ('employments' in json) {
+    if (Array.isArray(json.employments)) {
+      resume.employments = json.employments.map(employment => Employment.parse(employment))
+    } else {
+      resume.errors.employments = 'Employments must be an array'
+    }
+  }
+
   return resume
 }
 
-function parseLocation(json: unknown): ParseResult<Location> | undefined {
-  const location: ParseResult<Location> = {errors: {}}
+function parseLocation(json: unknown): LegacyParseResult<Location> | undefined {
+  const location: LegacyParseResult<Location> = {errors: {}}
 
   if (json === null) return undefined
   if (!isObject(json)) return {errors: {general: ['Location must be an object']}}
@@ -167,8 +176,8 @@ function parseLocation(json: unknown): ParseResult<Location> | undefined {
   return location
 }
 
-function parsePost(text: string): ParseResult<Post> {
-  const post: ParseResult<Post> = {errors: {}}
+function parsePost(text: string): LegacyParseResult<Post> {
+  const post: LegacyParseResult<Post> = {errors: {}}
 
   const frontMatterMarkers = [...text.matchAll(/---\s?\n+/g)]
 

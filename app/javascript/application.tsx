@@ -1,6 +1,6 @@
 import {Route, Routes, Link, BrowserRouter, useParams} from 'react-router-dom'
 import React, {ReactNode, useContext, useEffect, useRef, useState} from 'react'
-import {github, gitlab, ParseResult} from './fetcher'
+import {github, gitlab, LegacyParseResult} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {Preloader} from './Preloader'
@@ -22,8 +22,8 @@ type NetworkResource<T> =
 
 interface CacheContext {
   username?: string
-  usePost(id: string): NetworkResource<ParseResult<PostType>>
-  useResume(): NetworkResource<ParseResult<ResumeType>>
+  usePost(id: string): NetworkResource<LegacyParseResult<PostType>>
+  useResume(): NetworkResource<LegacyParseResult<ResumeType>>
 }
 
 export function Application({product, username}: {product: unknown; username: unknown}) {
@@ -54,7 +54,9 @@ function Resume() {
     return <div className="error">{error}</div>
   }
 
-  const {image, name, summary, location} = data
+  const {image, name, summary, location, employments} = data
+
+  employments?.map(employment => console.log(employment))
 
   return (
     <div className="resume-layout">
@@ -69,6 +71,32 @@ function Resume() {
                 .filter(component => component !== undefined)
                 .join(', ')}
             </p>
+          </Section>
+        )}
+
+        {employments && employments.length > 0 && (
+          <Section title="Experience">
+            <div className="timeline">
+              <aside>present</aside>
+              <ul>
+                {employments.map(employment => (
+                  <li>
+                    <div className="summary">
+                      <h3>Employer name</h3>
+                      <aside />
+                      <a href="" target="_blank" rel="nofollow">
+                        www.example.com
+                      </a>
+                      <div>May 2010 - present</div>
+                    </div>
+                    <div className="details">
+                      <p>{employment.summary}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <aside>2010</aside>
+            </div>
           </Section>
         )}
 
@@ -143,7 +171,7 @@ function Avatar({image, name}: {image?: string; name?: string}) {
   )
 }
 
-function PostAuthor({resume, error}: {resume?: ParseResult<ResumeType>; error?: string}) {
+function PostAuthor({resume, error}: {resume?: LegacyParseResult<ResumeType>; error?: string}) {
   if (error || !resume) {
     return <div className="error">{error}</div>
   }
@@ -156,7 +184,7 @@ function PostAuthor({resume, error}: {resume?: ParseResult<ResumeType>; error?: 
   )
 }
 
-function PostBody({post, error}: {post: ParseResult<PostType> | undefined; error?: string}) {
+function PostBody({post, error}: {post: LegacyParseResult<PostType> | undefined; error?: string}) {
   useEffect(() => {
     if (!post) return
     hljs.highlightAll()
@@ -202,10 +230,10 @@ function useCacheContext() {
 
 function CacheProvider({product, username, children}: {product: Product; username: string; children: ReactNode}) {
   const source = useRef(product === 'github' ? github : gitlab)
-  const [posts, setPosts] = useState<{[id: string]: ParseResult<PostType> | string | undefined}>({})
-  const [resume, setResume] = useState<ParseResult<ResumeType> | string | undefined>()
+  const [posts, setPosts] = useState<{[id: string]: LegacyParseResult<PostType> | string | undefined}>({})
+  const [resume, setResume] = useState<LegacyParseResult<ResumeType> | string | undefined>()
 
-  const usePost = (id: string): NetworkResource<ParseResult<PostType>> => {
+  const usePost = (id: string): NetworkResource<LegacyParseResult<PostType>> => {
     const post = posts[id]
 
     if (post && typeof post !== 'string') {
@@ -230,7 +258,7 @@ function CacheProvider({product, username, children}: {product: Product; usernam
     }
   }
 
-  const useResume = (): NetworkResource<ParseResult<ResumeType>> => {
+  const useResume = (): NetworkResource<LegacyParseResult<ResumeType>> => {
     if (resume && typeof resume !== 'string') {
       return {data: resume, loading: false, error: undefined}
     } else if (resume && typeof resume === 'string') {

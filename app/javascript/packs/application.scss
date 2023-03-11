@@ -67,17 +67,6 @@
 
 
 // .timeline {
-//   @apply flex flex-col;
-
-//   > aside:first-child {
-//     background-image: url(../images/timeline-arrow.svg);
-//     font-family: 'Patua One', sans-serif;
-
-//     @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-no-repeat text-center;
-//     @apply bg-left-bottom w-12 text-sm;
-//     @apply sm:bg-bottom sm:w-full sm:text-base;
-//   }
-
 //   > div {
 //     background-image: url(../images/timeline-line.svg);
 
@@ -101,15 +90,6 @@
 //     @apply flex flex-row py-4 bg-repeat-y;
 //     @apply bg-left;
 //     @apply sm:bg-center;
-//   }
-
-//   > aside:last-child {
-//     background-image: url(../images/timeline-start.svg);
-//     font-family: 'Patua One', sans-serif;
-
-//     @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat text-center;
-//     @apply w-12;
-//     @apply sm:w-full;
 //   }
 // }
 
@@ -220,6 +200,39 @@ html, body, #application { height: 100%; }
 
       @apply text-3xl;
     }
+  }
+}
+
+.timeline {
+  @apply flex flex-col;
+
+  > aside:first-child {
+    background-image: url(../images/timeline-arrow.svg);
+    font-family: 'Patua One', sans-serif;
+
+    @apply flex-grow-0 flex-shrink-0 text-base text-gray-300 pb-6 h-11 bg-no-repeat text-center;
+    @apply bg-left-bottom w-12 text-sm;
+    @apply sm:bg-bottom sm:w-full sm:text-base;
+  }
+
+  > ul {
+    background-image: url(../images/timeline-line.svg);
+    @apply flex flex-row py-4 bg-repeat-y;
+    @apply bg-left;
+    @apply sm:bg-center;
+  }
+
+  > ul > li {}
+  > ul > li > .summary { outline: 1px dotted red; }
+  > ul > li > .details { outline: 1px dotted blue; }
+
+  > aside:last-child {
+    background-image: url(../images/timeline-start.svg);
+    font-family: 'Patua One', sans-serif;
+
+    @apply text-base h-10 pt-5 text-gray-300 bg-top bg-no-repeat text-center;
+    @apply w-12;
+    @apply sm:w-full;
   }
 }
 
