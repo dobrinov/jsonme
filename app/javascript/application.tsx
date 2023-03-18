@@ -4,7 +4,7 @@ import {github, gitlab, LegacyParseResult} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {Preloader} from './Preloader'
-import {Post as PostType, Resume as ResumeType} from './types'
+import {Period, Post as PostType, Resume as ResumeType} from './types'
 
 marked.use({
   walkTokens: token => {
@@ -64,6 +64,7 @@ function Resume() {
         {image && <Avatar image={image} name={name} />}
         {name && <h1 className="name">{name}</h1>}
         {summary && <div className="summary">{summary}</div>}
+
         {location && (
           <Section title="Location">
             <p>
@@ -76,8 +77,7 @@ function Resume() {
 
         {employments && employments.length > 0 && (
           <Section title="Experience">
-            <div className="timeline">
-              <aside>present</aside>
+            <Timeline startingYear={startingYear(employments)}>
               <ul>
                 {employments.map(employment => (
                   <li>
@@ -95,8 +95,7 @@ function Resume() {
                   </li>
                 ))}
               </ul>
-              <aside>2010</aside>
-            </div>
+            </Timeline>
           </Section>
         )}
 
@@ -293,4 +292,18 @@ function Section({title, children}: {title: string; children: ReactNode}) {
       {children}
     </div>
   )
+}
+
+function Timeline({startingYear, children}: {startingYear: number; children: ReactNode}) {
+  return (
+    <div className="timeline">
+      <aside>present</aside>
+      {children}
+      <aside>{startingYear}</aside>
+    </div>
+  )
+}
+
+function startingYear(temporals: {period: Period}[]): number {
+  return Math.min(...temporals.map(temporal => temporal.period.from.year))
 }
