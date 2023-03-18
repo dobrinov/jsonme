@@ -4,7 +4,7 @@ import {github, gitlab, LegacyParseResult} from './fetcher'
 import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {Preloader} from './Preloader'
-import {Period, Post as PostType, Resume as ResumeType} from './types'
+import {allSuccessfullyParsed, Period, Post as PostType, Resume as ResumeType} from './types'
 
 marked.use({
   walkTokens: token => {
@@ -75,29 +75,33 @@ function Resume() {
           </Section>
         )}
 
-        {employments && employments.length > 0 && (
-          <Section title="Experience">
-            <Timeline startingYear={startingYear(employments)}>
-              <ul>
-                {employments.map(employment => (
-                  <li>
-                    <div className="summary">
-                      <h3>Employer name</h3>
-                      <aside />
-                      <a href="" target="_blank" rel="nofollow">
-                        www.example.com
-                      </a>
-                      <div>May 2010 - present</div>
-                    </div>
-                    <div className="details">
-                      <p>{employment.summary}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Timeline>
-          </Section>
-        )}
+        {employments &&
+          employments.length > 0 &&
+          (allSuccessfullyParsed(employments) ? (
+            <Section title="Experience">
+              <Timeline startingYear={startingYear(employments)}>
+                <ul>
+                  {employments.map(employment => (
+                    <li>
+                      <div className="summary">
+                        <h3>Employer name</h3>
+                        <aside />
+                        <a href="" target="_blank" rel="nofollow">
+                          www.example.com
+                        </a>
+                        <div>May 2010 - present</div>
+                      </div>
+                      <div className="details">
+                        <p>{employment.summary}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Timeline>
+            </Section>
+          ) : (
+            <div>Some employments were not parsed successfully</div>
+          ))}
 
         <Link to="posts">posts</Link>
       </div>

@@ -1,3 +1,5 @@
+import {parse} from './resume'
+
 export type ParseResult<T> = T | UnsuccessfulParse<T>
 type UnsuccessfulParse<T> = {type: 'unsuccessfulParse'; failure?: string} & {[K in keyof T]?: string}
 type FieldParseError = {error: string}
@@ -125,4 +127,12 @@ function isObject(value: unknown): value is {[key: string]: unknown} {
 
 export function isUnsuccessfulParse<T>(value: unknown): value is UnsuccessfulParse<T> {
   return value !== null && typeof value === 'object' && 'type' in value && value.type === 'unsuccessfulParse'
+}
+
+export function allSuccessfullyParsed<T>(parseResults: ParseResult<T>[]): parseResults is T[] {
+  parseResults.forEach(parseResult => {
+    if (isUnsuccessfulParse(parseResult)) return false
+  })
+
+  return true
 }
