@@ -9,7 +9,7 @@ class SubmissionsController < ApplicationController
       format.html
       format.pdf do
         if @method.in? Submission::WEB_METHODS
-          send_data Pdf.generate(@resume), filename: "CV_#{@resume.name.gsub(' ', '')}.pdf", disposition: :inline
+          send_data Pdf.generate(payload), filename: "CV_#{@resume.name.gsub(' ', '')}.pdf", disposition: :inline
         end
       end
     end

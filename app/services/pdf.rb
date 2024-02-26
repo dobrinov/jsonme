@@ -6,8 +6,9 @@ class Pdf
   ROBOTO_BOLD = Rails.root.join('app', 'javascript', 'fonts', 'Roboto-Bold.ttf')
 
   class << self
-    def generate(cv)
-      new(cv).generate
+    def generate(payload)
+      resume = OldParser.execute(payload)
+      new(resume).generate
     end
   end
 
