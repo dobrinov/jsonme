@@ -1,0 +1,89 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dobrinov/jsonme/main/me/schema/v1.json",
+  "basics": {
+    "name": "Your Name",
+    "label": "Senior engineer at Company",
+    "image": "https://github.com/YOUR-GITHUB-USERNAME.png",
+    "summary": "Two or three sentences in your own voice. Shown only when there is no headline.",
+    "location": { "city": "Your city", "country": "Your country" },
+    "profiles": [{ "network": "GitHub", "username": "YOUR-GITHUB-USERNAME", "url": "https://github.com/YOUR-GITHUB-USERNAME" }]
+  },
+  "headline": "One sentence about what you are best at.",
+  "facts": [
+    { "value": "10 yrs", "label": "shipping software. Say how many were before AI coding tools." },
+    { "value": "Team of 5", "label": "the largest team you led, or another number you are proud of." },
+    { "value": "Payments · search", "label": "domains you know deeply." }
+  ],
+  "expertise": {
+    "engineering": [
+      {
+        "name": "Something you are known for",
+        "proof": "One line of evidence a reader can check",
+        "detail": "Two or three sentences: where, what you did, what changed."
+      }
+    ],
+    "ai": [
+      {
+        "name": "How you work with AI",
+        "proof": "One line: what you build or ship with it",
+        "detail": "A concrete example, with a link if you can.",
+        "aiPractice": {
+          "delegated": "What you hand to AI",
+          "owned": "What you keep for yourself",
+          "verifiedBy": ["tests", "code review"]
+        }
+      }
+    ]
+  },
+  "highlights": [
+    {
+      "title": "Your best story",
+      "hook": "One line that makes someone want to open it.",
+      "where": "Company",
+      "when": "Role or years",
+      "tags": ["depth"],
+      "problem": "What was hard, and why it mattered.",
+      "did": "What you did. Say 'I' where it was you.",
+      "outcome": "What changed, with a number if you have one.",
+      "stack": ["Ruby", "PostgreSQL"],
+      "evidence": [{ "url": "https://example.com/write-up", "label": "Write-up" }]
+    },
+    {
+      "title": "A story about people or leadership",
+      "tags": ["leadership"],
+      "problem": "…",
+      "did": "…",
+      "outcome": "…"
+    },
+    {
+      "title": "Something you built yourself",
+      "tags": ["product"],
+      "problem": "…",
+      "did": "…",
+      "outcome": "…"
+    }
+  ],
+  "work": [
+    {
+      "name": "Company",
+      "position": "Senior engineer",
+      "url": "https://example.com",
+      "startDate": "2020-01",
+      "summary": "One line about the role.",
+      "highlights": ["Something you shipped"]
+    }
+  ],
+  "projects": [
+    { "name": "A side project", "description": "What it is and who uses it.", "url": "https://example.com", "startDate": "2022-05" }
+  ],
+  "education": [
+    { "institution": "University", "area": "Computer science", "startDate": "2012", "endDate": "2016" }
+  ],
+  "skills": [
+    { "name": "Can mentor", "keywords": ["Ruby", "PostgreSQL"] },
+    { "name": "Working knowledge", "keywords": ["Go"] }
+  ],
+  "meta": {
+    "me": { "listed": false, "lookingFor": "" }
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dobrinov/jsonme/main/me/schema/v1.json",
+  "basics": {
+    "name": "Deyan Dobrinov",
+    "label": "Development lead at Dext",
+    "image": "https://avatars.githubusercontent.com/u/996877?v=4",
+    "summary": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from. I enjoy doing that. I like good UX, and I fight for it.",
+    "location": {
+      "city": "Sofia",
+      "country": "Bulgaria"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "dobrinov",
+        "url": "https://github.com/dobrinov"
+      }
+    ]
+  },
+  "headline": "I find the simple solution hiding inside complex systems.",
+  "facts": [
+    {
+      "value": "19 yrs",
+      "label": "shipping software, since 2007. 15 of them before AI coding tools."
+    },
+    {
+      "value": "Team of 8",
+      "label": "largest team led, through a full front-end rewrite."
+    },
+    {
+      "value": "3000+",
+      "label": "people on a product I built and ran alone for 4 years."
+    },
+    {
+      "value": "Accounting · document extraction · lending",
+      "label": "domains worked in deeply."
+    }
+  ],
+  "expertise": {
+    "engineering": [
+      {
+        "name": "Making complex systems simple",
+        "proof": "Search rebuilt on Elasticsearch · a monolith split into a service",
+        "detail": "At Dext, replaced an over-complex PostgreSQL search with Elasticsearch, so the app became a thin layer around a search engine. Extracted manual data extraction from the monolith into its own service through incremental releases."
+      },
+      {
+        "name": "Shipping risky change safely",
+        "proof": "Front-end rewrite with no incremental release, team of 8",
+        "detail": "Moved Dext’s main app to React + TypeScript on a new GraphQL API and rolled it out with a low amount of risk."
+      },
+      {
+        "name": "Financial documents and data",
+        "proof": "OCR tables, bank statements, invoices · P2P lending",
+        "detail": "Table extraction from OCR data, transaction and line-item flows and PDF splitting at Dext. Technical-debt work at Funding Circle, a peer-to-peer lending platform."
+      },
+      {
+        "name": "Leading and mentoring",
+        "proof": "Teams of up to 8 · can mentor 14 technologies",
+        "detail": "Team lead for 2 engineers and 1 QA, then development lead reporting to the CTO. Can mentor in Ruby, Rails, TypeScript, React, GraphQL, PostgreSQL and 8 more."
+      }
+    ],
+    "ai": []
+  },
+  "highlights": [
+    {
+      "title": "A front-end rewrite with no incremental release",
+      "hook": "Led 8 people moving Dext’s main app to React, TypeScript and GraphQL, then shipped it in one go.",
+      "where": "Dext",
+      "when": "Development lead",
+      "tags": [
+        "leadership",
+        "depth"
+      ],
+      "problem": "Dext’s main application needed a new front-end stack, and a big part of it had to be rewritten. Incremental releases were not possible.",
+      "did": "Led a team of 8. We rewrote a large part of the app in React + TypeScript on a newly created GraphQL API.",
+      "outcome": "Rolled out with a low amount of risk.",
+      "stack": [
+        "TypeScript",
+        "React",
+        "GraphQL",
+        "Ruby on Rails"
+      ],
+      "evidence": []
+    },
+    {
+      "title": "Reading tables out of OCR with simple maths",
+      "hook": "Before LLMs could read invoices, I found rows and columns by overlaying OCR data on the image.",
+      "where": "Dext",
+      "when": "Team lead",
+      "tags": [
+        "depth"
+      ],
+      "problem": "Line items and bank transactions had to be extracted more efficiently. That data usually sits in tables.",
+      "did": "Overlaid OCR data on the document image so people could select it, then used simple mathematics to recognise the rows and columns.",
+      "outcome": "Rows and columns were recognised automatically, so line items and bank transactions could be extracted from tables.",
+      "stack": [
+        "JavaScript",
+        "Raphaël",
+        "Backbone.js"
+      ],
+      "evidence": []
+    },
+    {
+      "title": "Carpass: built for my car, used by 3000+ people",
+      "hook": "Built a vehicle maintenance log alone and kept it running from 2016 to 2020.",
+      "where": "Own product",
+      "when": "2016 – 2020",
+      "tags": [
+        "product"
+      ],
+      "problem": "I needed a tool to log the maintenance history of my car.",
+      "did": "Designed, built and ran it alone, next to a full-time job, for over four years.",
+      "outcome": "Used by 3000+ people.",
+      "evidence": [
+        "https://www.carpass.bg/"
+      ]
+    }
+  ],
+  "work": [
+    {
+      "name": "Dext",
+      "position": "Development lead",
+      "url": "https://www.dext.com/",
+      "startDate": "2016-05",
+      "summary": "I am currently a direct report of the CTO. I lead a small team involved in projects that aim to improve system design (strategic refactoring, major updates, etc.).",
+      "highlights": [
+        "Migration to a new technology stack",
+        "Implementation of an internal CSS design library"
+      ]
+    },
+    {
+      "name": "Dext",
+      "position": "Team lead",
+      "url": "https://www.dext.com/",
+      "startDate": "2016-05",
+      "summary": "I led a team of 2 software engineers and 1 QA. It was responsible for the application on which I worked during my previous role.",
+      "highlights": [
+        "Implementation of a tool for extracting tabular data from OCR responses",
+        "Improved the data extraction capabilities of the application",
+        "Replaced custom search implementation with Elasticsearch"
+      ]
+    },
+    {
+      "name": "Dext",
+      "position": "Software engineer",
+      "url": "https://www.dext.com/",
+      "startDate": "2016-05",
+      "summary": "I worked for a while on Dext's main product and then my main goal became to extract part of it which was dealing with manual (done by people) data extraction into a separate service.",
+      "highlights": [
+        "Extracted part of a monolithic application into a service"
+      ]
+    },
+    {
+      "name": "Funding Circle",
+      "position": "Software engineer",
+      "url": "https://www.fundingcircle.com/",
+      "startDate": "2015-03",
+      "endDate": "2016-05",
+      "summary": "I was part of a team which was dealing with legacy code. My main responsibilities were refactoring old code and investigating and fixing production issues.",
+      "highlights": [
+        "Prototype of a monitoring system",
+        "Migration from Resque to Sidekiq"
+      ]
+    },
+    {
+      "name": "Secret",
+      "position": "Frontend engineer",
+      "url": "https://www.secret.de/",
+      "startDate": "2011-10",
+      "endDate": "2015-03",
+      "summary": "I was one of the two frontend engineers working on the project. I was mostly interacting with Rails view/controller code + the javascript and css of the application.",
+      "highlights": [
+        "Implementation of gamification features"
+      ]
+    },
+    {
+      "name": "SAP",
+      "position": "Software engineer",
+      "url": "https://www.sap.com/",
+      "startDate": "2007-04",
+      "endDate": "2011-10",
+      "summary": "SAP AG is one of the biggest producers of enterprice software in the world. Most of the time there I was responsible for the tooling required for the internationalization of an application server (NetWeaver) developed by the company.",
+      "highlights": [
+        "Migration of an internal knowledge base system from MediaWiki to Confluence"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "JsonMe",
+      "description": "JsonMe is a web application allowing software engineers to maintain a resume in json format and keep it in their Github/Gitlab profile. The CV that you are looking at the moment is generated with it.",
+      "url": "https://www.jsonme.com/",
+      "startDate": "2021-09"
+    },
+    {
+      "name": "Textstandup",
+      "description": "Web application for text based stand-ups. I was not happy with the efficiency of the stand-up meetings so I started doing them in a text form in my team. This was working well so I wrote a web application for this. More about the motivation behind the project could be found here - https://medium.com/@ddobrinov/text-based- stand-ups-de741fa6c724.",
+      "url": "https://www.textstandup.com/",
+      "startDate": "2019-08",
+      "endDate": "2020-06"
+    },
+    {
+      "name": "DEV wanted",
+      "description": "This was a website for jobs offering a referral bonus. Unfortunately it was more difficult than I expected to collect them and I was not able to use my main marketing channel (Facebook Ads), because it turned out that advertising jobs is considered as discrimination when you target based on age, gender, etc.",
+      "url": "https://www.devwanted.com/",
+      "startDate": "2018-05",
+      "endDate": "2018-06"
+    },
+    {
+      "name": "Carpass",
+      "description": "Web application for maintaining a vehicle maintenance logs. I needed a tool to log the maintenance history of my car and I decided to build one. It is still being used by 3000+ people.",
+      "url": "https://www.carpass.bg/",
+      "startDate": "2016-03",
+      "endDate": "2020-08"
+    }
+  ],
+  "education": [
+    {
+      "institution": "New Bulgarian University",
+      "url": "https://nbu.bg/",
+      "area": "Informatics",
+      "startDate": "2008-10",
+      "endDate": "2011-05"
+    },
+    {
+      "institution": "Sofia University",
+      "url": "https://www.uni-sofia.bg/",
+      "area": "Applied mathematics",
+      "startDate": "2006-10",
+      "endDate": "2008-05"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Can mentor",
+      "keywords": [
+        "Ruby",
+        "Ruby on Rails",
+        "Typescript",
+        "GraphQL",
+        "React",
+        "PostgreSQL",
+        "SASS",
+        "HTML",
+        "Storybook",
+        "Git",
+        "Javascript",
+        "Tailwind CSS",
+        "CoffeeScript",
+        "Cypress"
+      ]
+    },
+    {
+      "name": "Working knowledge",
+      "keywords": [
+        "Bash",
+        "Elasticsearch",
+        "Redis",
+        "Backbone.js",
+        "PHP",
+        "Clojure",
+        "Java"
+      ]
+    }
+  ],
+  "meta": {
+    "me": {
+      "listed": true,
+      "domains": [
+        "Accounting",
+        "Document extraction",
+        "Lending"
+      ]
+    }
+  }
+}

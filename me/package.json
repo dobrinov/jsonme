@@ -1,0 +1,13 @@
+{
+  "name": "me-build",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Builds a {me} CV and blog from me.json and posts/*.md",
+  "type": "module",
+  "bin": { "me-build": "src/build.mjs" },
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test test/",
+    "example": "node src/build.mjs --src examples/dobrinov --out _site"
+  }
+}

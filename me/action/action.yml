@@ -1,0 +1,30 @@
+name: '{me} build'
+description: 'Build a {me} CV and blog (me.json + posts/*.md) into a static site.'
+inputs:
+  src:
+    description: 'Folder that holds me.json and posts/'
+    default: '.'
+  out:
+    description: 'Where the site is written'
+    default: '_site'
+  site-url:
+    description: 'Public URL of the site, used in llms.txt, cv.md and the feed'
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - name: Validate me.json
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/../src/build.mjs" --check --src "$INPUT_SRC"
+      env:
+        INPUT_SRC: ${{ inputs.src }}
+    - name: Build CV, blog, cv.md, llms.txt
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/../src/build.mjs" --src "$INPUT_SRC" --out "$INPUT_OUT" --site-url "$INPUT_SITE_URL" --repo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+      env:
+        INPUT_SRC: ${{ inputs.src }}
+        INPUT_OUT: ${{ inputs.out }}
+        INPUT_SITE_URL: ${{ inputs.site-url }}
