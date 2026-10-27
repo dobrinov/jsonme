@@ -135,44 +135,104 @@ export function employers(work) {
   return groups;
 }
 
+const monthYear = (d) => {
+  if (!d) return 'now';
+  const [y, m] = String(d).split('-');
+  return m ? `${MONTHS[Number(m) - 1]} ${y}` : y;
+};
+const duration = (from, to, now) => {
+  const months = Math.max(1, Math.round((toYear(to, now) - toYear(from, now)) * 12));
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return [y && `${y}y`, m && `${m}m`].filter(Boolean).join(' ');
+};
+const CLOSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
 function career(me, stats, now) {
-  const groups = employers(me.work).sort((a, b) => toYear(a.start, now) - toYear(b.start, now));
-  const products = (me.projects || []).filter((p) => p.startDate);
-  if (!groups.length) return '';
-  const starts = [...groups.map((g) => g.start), ...products.map((p) => p.startDate)].map((d) => toYear(d, now));
+  const jobs = employers(me.work).sort((a, b) => toYear(a.start, now) - toYear(b.start, now));
+  const products = (me.projects || []).filter((p) => p.startDate).sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
+  const schools = (me.education || []).filter((x) => x.startDate).sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
+  if (!jobs.length && !products.length) return '';
+  const starts = [...jobs.map((g) => g.start), ...products.map((p) => p.startDate), ...schools.map((x) => x.startDate)].map((d) => toYear(d, now));
   const START = Math.floor(Math.min(...starts));
   const END = Math.floor(now) + 1;
-  const pct = (y) => (((Math.min(Math.max(y, START), END) - START) / (END - START)) * 100).toFixed(2);
-  const widthOf = (from, to) => (pct(toYear(to, now)) - pct(toYear(from, now))).toFixed(2);
-  const step = Math.max(1, Math.ceil((END - START) / 5));
-  const ticks = [];
-  for (let y = START; y < END - 1; y += step) if (y < stats.aiEra - 1) ticks.push(y);
-  const era = stats.aiEra < END ? pct(stats.aiEra) : null;
+  const pos = (y) => ((Math.min(Math.max(y, START), END) - START) / (END - START)) * 100;
+  const fixed = (n) => n.toFixed(2);
+  const stories = (me.highlights || []).slice(0, 3).map((s, i) => ({ ...s, id: `s${i + 1}` }));
+  const range = (from, to) => `${monthYear(from)} – ${monthYear(to)} · ${duration(from, to, now)}`;
 
-  const bars = groups.map((g) => `<a class="bar" href="#job-${slug(g.name)}" style="left:${pct(toYear(g.start, now))}%;width:calc(${widthOf(g.start, g.end)}% - 3px)" title="${e(g.name)}, ${span(g.start, g.end)}">${e(g.name)}</a>`).join('');
-  // Overlapping products go on separate rows so each one stays visible.
-  const rowEnds = [];
-  const dots = [...products].sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now)).map((p) => {
-    const from = toYear(p.startDate, now);
-    let row = rowEnds.findIndex((end) => end <= from);
-    if (row === -1) row = rowEnds.push(0) - 1;
-    rowEnds[row] = Math.max(toYear(p.endDate, now), from + 0.5);
-    return `<span class="bar product" style="left:${pct(from)}%;width:calc(${widthOf(p.startDate, p.endDate)}% - 3px);top:${row * 44}px" title="${e(p.name)}, ${span(p.startDate, p.endDate)}">${e(p.name)}</span>`;
-  }).join('');
-  const panels = [...groups].reverse().map((g) => `<div class="job" id="job-${slug(g.name)}">
-<div class="top"><h3>${g.url ? `<a href="${e(href(g.url))}" style="color:inherit">${e(g.name)}</a>` : e(g.name)}</h3><span class="top-right"><span class="period">${span(g.start, g.end)}</span><a class="close" href="#career" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a></span></div>
-<div class="rows">${g.roles.map((r) => `<div class="row"><span class="a">${e(r.position || '')}</span><span class="b">${r.summary ? inline(r.summary) : ''}${r.highlights && r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${inline(h)}</li>`).join('')}</ul>` : ''}</span></div>`).join('')}</div>
-</div>`).join('\n');
+  // One bar per span; spans too short to show text become a dot with the duration beside it.
+  const segment = (target, from, to, { cls, text, tip, minWidth = 6, role }) => {
+    const L = pos(toYear(from, now));
+    const W = pos(toYear(to, now)) - L;
+    const mid = L + W / 2;
+    const edge = mid < 10 ? ' tip-start' : mid > 90 ? ' tip-end' : '';
+    const attrs = `type="button" popovertarget="${target}"${role == null ? '' : ` data-role="${role}"`} data-tip="${e(tip)}" aria-label="${e(tip)}"`;
+    if (W < 2.4) return `<button class="dot ${cls}${edge}" ${attrs} style="left:${fixed(mid)}%"></button><span class="dot-label" style="left:calc(${fixed(mid)}% + 14px)" aria-hidden="true">${e(duration(from, to, now))}</span>`;
+    return `<button class="seg ${cls}${edge}" ${attrs} style="left:${fixed(L)}%;width:calc(${fixed(W)}% - 2px)"><span class="seg-text">${W >= minWidth ? e(text) : ''}</span></button>`;
+  };
+  const row = (id, name, sub, segments) => `<div class="tl-row"><button type="button" class="tl-who" popovertarget="${id}"><span class="n">${e(name)}</span><span class="s">${e(sub)}</span></button><div class="track">${era == null ? '' : `<span class="era" style="left:${fixed(era)}%;right:${fixed(100 - pos(now))}%"></span>`}${segments}</div></div>`;
+  const item = (title, from, to, body, story, n) => `<div class="pop-item" data-item="${n}"><div class="pop-item-head"><span class="t">${e(title || '')}</span><span class="period">${range(from, to)}</span></div>${body}${story ? `<a class="story-link" href="#${story.id}">Signature work: ${e(story.title)} →</a>` : ''}</div>`;
+  const popover = (id, cls, name, url, from, to, items) => `<div class="pop ${cls}" id="${id}" popover>
+<div class="pop-head"><div><h3>${url ? `<a href="${e(href(url))}">${e(name)}</a>` : e(name)}</h3><span class="period">${range(from, to)}</span></div><button type="button" class="pop-close" popovertarget="${id}" popovertargetaction="hide" aria-label="Close">${CLOSE}</button></div>
+${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a>` : ''}
+</div>`;
+  const era = stats.aiEra < END ? pos(stats.aiEra) : null;
+
+  const rows = [];
+  const pops = [];
+  if (jobs.length) rows.push('<p class="tl-group">Work</p>');
+  for (const g of jobs) {
+    const id = `job-${slug(g.name)}`;
+    // Roles are drawn as steps only when their start dates tell them apart.
+    const asc = [...g.roles].sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
+    const steps = asc.length > 1 && new Set(asc.map((r) => r.startDate)).size === asc.length;
+    const order = steps ? [...asc].reverse() : g.roles;
+    const ends = new Map(asc.map((r, i) => [r, steps ? (asc[i + 1] ? asc[i + 1].startDate : g.end) : r.endDate || g.end]));
+    const sub = g.roles.length > 1 ? (steps ? asc : [...g.roles].reverse()).map((r) => r.position).filter(Boolean).join(' → ') : `${g.roles[0].position || ''} · ${duration(g.start, g.end, now)}`;
+    const segments = steps
+      ? asc.map((r, i) => segment(id, r.startDate, ends.get(r), { cls: `job r${Math.min(i, 2) + 1}`, text: r.position, tip: `${r.position} · ${range(r.startDate, ends.get(r))}`, minWidth: 9, role: order.indexOf(r) })).join('')
+      : segment(id, g.start, g.end, { cls: 'job mono', text: duration(g.start, g.end, now), tip: `${g.name} · ${range(g.start, g.end)}` });
+    rows.push(row(id, g.name, sub, segments));
+    pops.push(popover(id, 'job-pop', g.name, g.url, g.start, g.end, order.map((r, n) => {
+      const story = stories.find((s) => s.where === g.name && (g.roles.length === 1 || s.when === r.position));
+      const body = `${r.summary ? `<p>${inline(r.summary)}</p>` : ''}${r.highlights && r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${inline(h)}</li>`).join('')}</ul>` : ''}`;
+      return item(r.position, steps ? r.startDate : r.startDate || g.start, steps ? ends.get(r) : r.endDate || g.end, body, story, n);
+    }).join('')));
+  }
+  if (products.length) rows.push('<p class="tl-group">Own products</p>');
+  for (const p of products) {
+    const id = `product-${slug(p.name)}`;
+    const story = stories.find((s) => s.title.toLowerCase().includes(p.name.toLowerCase()));
+    rows.push(row(id, p.name, duration(p.startDate, p.endDate, now), segment(id, p.startDate, p.endDate, { cls: 'product mono', text: duration(p.startDate, p.endDate, now), tip: `${p.name} · ${range(p.startDate, p.endDate)}` })));
+    pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, item('Own product', p.startDate, p.endDate, p.description ? `<p>${inline(p.description)}</p>` : '', story, 0)));
+  }
+  if (schools.length) rows.push('<p class="tl-group">Education</p>');
+  for (const x of schools) {
+    const id = `edu-${slug(x.institution)}`;
+    const study = [x.studyType, x.area].filter(Boolean).join(', ');
+    rows.push(row(id, x.institution, study, segment(id, x.startDate, x.endDate, { cls: 'edu mono', text: duration(x.startDate, x.endDate, now), tip: `${x.institution} · ${range(x.startDate, x.endDate)}` })));
+    pops.push(popover(id, 'edu-pop', x.institution, x.url, x.startDate, x.endDate, item(study, x.startDate, x.endDate, '', null, 0)));
+  }
+
+  const step = END - START > 24 ? Math.ceil((END - START) / 10) : 2;
+  const ticks = [];
+  for (let y = START; y < END; y += step) if (era == null || Math.abs(y - stats.aiEra) >= 1.5) ticks.push(y);
+  const summary = [
+    stats.years && `${stats.years} years shipping software`,
+    jobs.length && `${jobs.length} ${jobs.length === 1 ? 'employer' : 'employers'}`,
+    products.length && `${products.length} own ${products.length === 1 ? 'product' : 'products'}`
+  ].filter(Boolean).join(' · ');
 
   return `<section aria-labelledby="career">
-<div class="section-head"><h2 class="eyebrow" id="career">Career</h2><span class="legend"><span><i></i>Employers</span>${products.length ? '<span><i class="dot"></i>Own products</span>' : ''}</span></div>
-<div class="strip-scroll"><div class="strip">
-${era ? `<span class="era" style="left:${era}%"></span>` : ''}
-<div class="lane">${bars}</div>
-${products.length ? `<div class="lane products" style="height:${rowEnds.length * 44 - 4}px">${dots}</div>` : ''}
-<div class="axis">${ticks.map((y) => `<span style="left:${pct(y)}%">${y}</span>`).join('')}${era ? `<span class="era-label" style="left:calc(${era}% + 8px)">AI era →</span>` : ''}</div>
+<div class="section-head"><h2 class="eyebrow" id="career">Career</h2><span class="legend">${jobs.length ? '<span><i></i>Employers</span>' : ''}${products.length ? '<span><i class="product"></i>Own products</span>' : ''}${schools.length ? '<span><i class="edu"></i>Education</span>' : ''}${era == null ? '' : '<span><i class="era-key"></i>AI era</span>'}</span></div>
+${summary ? `<p class="tl-summary">${e(summary)}</p>` : ''}
+<p class="tl-hint">Hover a bar for dates. Click a bar or a name for the full story.</p>
+<div class="timeline-scroll"><div class="timeline">
+${rows.join('\n')}
+<div class="tl-row tl-axis"><span></span><div class="axis">${ticks.map((y, i) => `<span style="left:${fixed(pos(y))}%${i ? ';transform:translateX(-50%)' : ''}">${y}</span>`).join('')}${era == null ? '' : `<span class="era-label" style="left:calc(${fixed(era)}% + 6px)">AI era →</span>`}</div></div>
 </div></div>
-<div class="panels">${panels}</div>
+<div class="pops">${pops.join('\n')}</div>
 </section>`;
 }
 

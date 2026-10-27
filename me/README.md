@@ -35,6 +35,8 @@ Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `ll
 - `highlights`: at most 3 stories `{ title, hook, where, when, tags, problem, did, outcome, stack, evidence }`.
 - `meta.me`: `listed`, `lookingFor`, `domains`, `aiEraStart` (default `2023-01`).
 
+The career line has one row per employer (`work` entries with the same `name`), product (`projects`) and school (`education`). Hover shows dates, click opens the details. Several roles at one employer are drawn as steps when each has its own `startDate`; with equal start dates they share one bar. A story in `highlights` is linked from a role when its `where` is the employer and its `when` is the position, and from a product when its title contains the product name.
+
 Only `basics.name` is required. Old jsonme files (`employments`, `technologies`, …) are converted automatically during the build.
 
 Posts are `posts/*.md` with frontmatter: `title`, `date`, `summary`, `tags`, `draft`.

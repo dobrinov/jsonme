@@ -42,7 +42,10 @@ test('builds the example site', async () => {
   const index = await readFile(join(out, 'index.html'), 'utf8');
   assert.match(index, /<h1 class="headline">I find the simple solution hiding inside complex systems.<\/h1>/);
   assert.equal((index.match(/class="card"/g) || []).length, 3);
-  assert.match(index, /href="#job-dext"/);
+  assert.match(index, /popovertarget="job-dext"/);
+  assert.match(index, /id="job-dext" popover/);
+  assert.match(index, /class="dot product[^"]*" type="button" popovertarget="product-dev-wanted"/, "a one-month product is a dot");
+  assert.match(index, /data-tip="DEV wanted · May 2018 – Jun 2018 · 1m"/);
   assert.match(index, /href="posts\/hello-blogging\/"/);
   assert.doesNotMatch(index, /class="col ai"/, 'empty AI column is not rendered');
 
@@ -81,4 +84,16 @@ test('rejects an invalid me.json', async () => {
   const src = await mkdtemp(join(tmpdir(), 'me-bad-'));
   await writeFile(join(src, 'me.json'), JSON.stringify({ basics: {} }));
   await assert.rejects(build({ src, out: join(src, '_site'), log: quiet }), /1 error/);
+});
+
+test('draws roles at one employer as steps when their dates differ', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, work: [
+    { name: 'Acme', position: 'Lead', startDate: '2020-01' },
+    { name: 'Acme', position: 'Engineer', startDate: '2016-01' }
+  ] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /class="seg job r1"[^>]*data-role="1"[^>]*data-tip="Engineer · Jan 2016 – Jan 2020 · 4y"/);
+  assert.match(html, /class="seg job r2"[^>]*data-role="0"/);
+  assert.match(html, /<span class="s">Engineer → Lead<\/span>/);
 });
