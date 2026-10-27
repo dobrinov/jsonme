@@ -157,7 +157,7 @@ function career(me, stats, now) {
     let row = rowEnds.findIndex((end) => end <= from);
     if (row === -1) row = rowEnds.push(0) - 1;
     rowEnds[row] = Math.max(toYear(p.endDate, now), from + 0.5);
-    return `<span class="pbar" style="left:${pct(from)}%;width:calc(${widthOf(p.startDate, p.endDate)}% - 3px);top:${6 + row * 18}px" title="${e(p.name)}, ${span(p.startDate, p.endDate)}"></span>`;
+    return `<span class="bar product" style="left:${pct(from)}%;width:calc(${widthOf(p.startDate, p.endDate)}% - 3px);top:${row * 44}px" title="${e(p.name)}, ${span(p.startDate, p.endDate)}">${e(p.name)}</span>`;
   }).join('');
   const panels = [...groups].reverse().map((g) => `<div class="job" id="job-${slug(g.name)}">
 <div class="top"><h3>${g.url ? `<a href="${e(href(g.url))}" style="color:inherit">${e(g.name)}</a>` : e(g.name)}</h3><span class="top-right"><span class="period">${span(g.start, g.end)}</span><a class="close" href="#career" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a></span></div>
@@ -169,7 +169,7 @@ function career(me, stats, now) {
 <div class="strip-scroll"><div class="strip">
 ${era ? `<span class="era" style="left:${era}%"></span>` : ''}
 <div class="lane">${bars}</div>
-${products.length ? `<div class="lane products" style="height:${12 + rowEnds.length * 18}px">${dots}</div>` : ''}
+${products.length ? `<div class="lane products" style="height:${rowEnds.length * 44 - 4}px">${dots}</div>` : ''}
 <div class="axis">${ticks.map((y) => `<span style="left:${pct(y)}%">${y}</span>`).join('')}${era ? `<span class="era-label" style="left:calc(${era}% + 8px)">AI era →</span>` : ''}</div>
 </div></div>
 <div class="panels">${panels}</div>

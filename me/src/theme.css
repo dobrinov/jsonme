@@ -11,8 +11,6 @@
   --accent-text: #1C2B8F;
   --product: #C2560E;
   --dark: #15171C;
-  --dark-line: #2E323B;
-  --dark-muted: #B8BDC7;
   --dark-body: #E8EAF0;
   --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -61,22 +59,17 @@ main.profile { display: flex; flex-direction: column; gap: 64px; padding-top: 40
 section { display: flex; flex-direction: column; gap: 20px; }
 .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
 .col { display: flex; flex-direction: column; padding: 24px 24px 12px; border-radius: 14px; border: 1px solid var(--line); }
-.col.ai { background: var(--dark); border-color: var(--dark); color: #FFFFFF; }
 .col-head { display: flex; flex-direction: column; gap: 4px; padding: 0 4px 14px; }
 .col-head .title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
 .col-head .sub { font-size: 14px; color: var(--muted); }
-.col.ai .col-head .sub { color: var(--dark-muted); }
 .skill { border-top: 1px solid var(--line-soft); }
-.col.ai .skill { border-top-color: var(--dark-line); }
 .skill summary { min-height: 60px; padding: 12px 4px; display: flex; gap: 12px; align-items: center; }
 .skill .static { min-height: 60px; padding: 12px 4px; display: flex; }
 .skill .text { flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px; }
 .skill .name { font-size: 16px; font-weight: 600; }
 .skill .proof { font-size: 14px; line-height: 1.45; color: var(--muted); }
-.col.ai .skill .proof { color: var(--dark-muted); }
 .skill .sign { font-size: 18px; opacity: 0.7; }
 .skill .detail { margin: 0; padding: 0 4px 16px; font-size: 15px; line-height: 1.6; color: var(--body); display: flex; flex-direction: column; gap: 8px; }
-.col.ai .skill .detail { color: var(--dark-body); }
 .skill .detail p { margin: 0; }
 .practice { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: 14px; }
 .practice dt { font-weight: 600; }
@@ -115,15 +108,16 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .legend { display: flex; gap: 16px; font-size: 13px; color: var(--muted); }
 .legend span { display: inline-flex; gap: 6px; align-items: center; }
 .legend i { width: 10px; height: 10px; border-radius: 2px; background: var(--accent); }
-.legend i.dot { border-radius: 50%; background: var(--product); }
+.legend i.dot { background: var(--product); }
 .strip-scroll { overflow-x: auto; }
 .strip { min-width: 720px; position: relative; padding-top: 4px; }
 .lane { position: relative; height: 40px; }
-.lane.products { margin-top: 4px; }
+.lane.products { margin-top: 8px; }
 .era { position: absolute; top: 0; bottom: 22px; right: 0; background: repeating-linear-gradient(135deg, #F1F3F6 0 6px, #FFFFFF 6px 12px); border-left: 1px dashed #9AA0AB; border-radius: 0 8px 8px 0; }
 .bar { position: absolute; top: 0; height: 40px; padding: 0 12px; border-radius: 7px; font-size: 14px; font-weight: 600; line-height: 40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--accent-soft); color: var(--accent-text); text-decoration: none; }
 .bar:hover { background: #D3DBFA; color: var(--accent-text); }
-.pbar { position: absolute; top: 8px; height: 14px; min-width: 14px; border-radius: 7px; background: var(--product); opacity: 0.85; }
+.bar.product { min-width: 28px; padding: 0 10px; background: #FBE9DA; color: #7A3306; }
+.bar.product:hover { background: #FBE9DA; color: #7A3306; }
 .axis { position: relative; height: 22px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .axis span { position: absolute; top: 4px; }
 .axis .era-label { color: var(--ink); font-weight: 500; }
@@ -204,9 +198,6 @@ article.post { max-width: 720px; padding-top: 48px; padding-bottom: 64px; displa
   main.profile { gap: 28px; padding: 0; }
   .story, .job { display: flex !important; break-inside: avoid; }
   .cards { display: none; }
-  .col.ai { background: #FFFFFF; color: var(--ink); border-color: var(--line); }
-  .col.ai .skill .proof, .col.ai .col-head .sub { color: var(--muted); }
-  .col.ai .skill .detail { color: var(--body); }
   details > :not(summary) { display: block !important; }
   .sign { display: none; }
   .strip-scroll { overflow: visible; }
