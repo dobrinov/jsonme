@@ -12,11 +12,28 @@
     });
   }
 
-  var print = document.querySelector('[data-print]');
-  if (print) {
-    print.hidden = false;
-    print.addEventListener('click', function () { window.print(); });
-  }
+  // Theme switch: Auto removes the override, Light and Dark set html[data-theme] and are remembered.
+  var root = document.documentElement;
+  var choice = root.getAttribute('data-theme') || 'auto';
+  var sync = function () {
+    document.querySelectorAll('[data-theme-choice]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-choice') === choice));
+    });
+  };
+  document.querySelectorAll('.theme').forEach(function (group) { group.hidden = false; });
+  sync();
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-theme-choice]');
+    if (!button) return;
+    choice = button.getAttribute('data-theme-choice');
+    if (choice === 'auto') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', choice);
+    try {
+      if (choice === 'auto') localStorage.removeItem('me-theme');
+      else localStorage.setItem('me-theme', choice);
+    } catch (e) {}
+    sync();
+  });
 
   // Career popovers open next to whatever opened them. Without this script they open centred.
   var invoker = null;

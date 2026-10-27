@@ -23,7 +23,7 @@ node src/build.mjs --migrate old-me.json         # convert an old jsonme file, p
 npm test
 ```
 
-Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `llms.txt` for AI agents, `feed.xml`. "PDF" uses the browser's print dialog with a print stylesheet that expands every section.
+Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `llms.txt` for AI agents, `feed.xml`. The site has light and dark themes: it follows the system setting, and a switch in the top bar lets readers pick one (kept in their browser). Printing always uses the light theme and expands every section.
 
 ## Format
 

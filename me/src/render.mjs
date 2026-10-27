@@ -2,6 +2,14 @@ import { escapeHtml as e, markdown, inline } from './markdown.mjs';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const TAG_LABEL = { depth: 'Depth', leadership: 'Leadership', product: 'Product', ai: 'AI era' };
+// Theme switch, shown by me.js. Auto follows the system; a choice is kept in localStorage.
+const THEME_SWITCH = `<span class="theme" role="group" aria-label="Theme" hidden>${[
+  ['auto', 'Auto', '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'],
+  ['light', 'Light', '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
+  ['dark', 'Dark', '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>']
+].map(([id, label, icon]) => `<button type="button" aria-pressed="${id === 'auto'}" data-theme-choice="${id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg><span>${label}</span></button>`).join('')}</span>`;
+// Applies a saved theme before first paint so the page does not flash.
+const THEME_BOOT = '<script>try{var t=localStorage.getItem("me-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>';
 const FONTS = 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap';
 
 // '2016-05' -> 2016.33; missing -> now
@@ -35,6 +43,8 @@ function page({ title, description, root, body, canonical }) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+${THEME_BOOT}
 <title>${e(title)}</title>
 ${description ? `<meta name="description" content="${e(description)}">\n` : ''}${canonical ? `<link rel="canonical" href="${e(canonical)}">\n` : ''}<link rel="alternate" type="application/json" href="${root}me.json">
 <link rel="alternate" type="application/rss+xml" href="${root}feed.xml">
@@ -286,8 +296,8 @@ export function renderProfile(me, posts, { siteUrl = '', builtAt = new Date() } 
   const meta = [b.label, where].filter(Boolean).join(' · ');
   const prompt = `Read {url}. It is ${b.name}'s CV. Tell me where they would be strongest on my team, which of their stories to ask about in an interview, and what is missing.`;
   const body = `<div class="topbar wrap"><span class="mono">${e(hostOf(siteUrl))}</span><span class="actions">
+${THEME_SWITCH}
 <button class="btn" type="button" data-ask="${e(prompt)}" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Ask your AI about me</span></button>
-<button class="btn" type="button" data-print hidden>PDF</button>
 </span></div>
 <main class="profile wrap">
 <header class="intro">
@@ -310,7 +320,7 @@ export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}
   const b = me.basics;
   const repo = me.meta && me.meta.me && me.meta.me.repo;
   const minutes = Math.max(1, Math.round(post.words / 220));
-  const body = `<nav class="post-nav wrap"><a class="home" href="${root}">${avatar(b, root)}<span>${e(b.name)}</span></a><span class="links"><a href="${root}">CV</a><a href="${root}#writing">Writing</a></span></nav>
+  const body = `<nav class="post-nav wrap"><a class="home" href="${root}">${avatar(b, root)}<span>${e(b.name)}</span></a><span class="links"><a href="${root}">CV</a><a href="${root}#writing">Writing</a>${THEME_SWITCH}</span></nav>
 <article class="post wrap">
 <header><div class="date">${post.date ? `${e(longDate(post.date))} · ` : ''}${minutes} min read</div><h1>${e(post.title)}</h1>${post.tags.length ? `<div class="tags">${post.tags.map((t) => `<span class="chip">${e(t)}</span>`).join('')}</div>` : ''}</header>
 <div class="prose">${markdown(post.body, { shift: post.topHeading })}</div>
