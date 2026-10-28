@@ -11,6 +11,7 @@ cp -R site/. "$out/"
 rm "$out/build.sh"
 cp src/render.mjs src/validate.mjs src/markdown.mjs src/migrate.mjs src/theme.css src/me.js "$out/lib/"
 cp template/me.json "$out/lib/template.json"
-cp examples/john-doe/me.json "$out/lib/example.json"
+# /write/ previews in an iframe, where a relative image path would not resolve.
+sed 's#"image": "avatar.jpg"#"image": "https://dobrinov.github.io/jsonme/example/avatar.jpg"#' examples/john-doe/me.json > "$out/lib/example.json"
 node src/build.mjs --src examples/john-doe --out "$out/example" --site-url https://dobrinov.github.io/jsonme/example >/dev/null
 echo "Built $out"

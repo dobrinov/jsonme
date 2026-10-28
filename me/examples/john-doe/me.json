@@ -3,7 +3,7 @@
   "basics": {
     "name": "John Doe",
     "label": "Staff engineer at Northwind Payments",
-    "image": "avatar.svg",
+    "image": "avatar.jpg",
     "email": "john.doe@example.com",
     "url": "https://example.com/johndoe",
     "location": {
