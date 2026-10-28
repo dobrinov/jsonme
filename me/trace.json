@@ -1,0 +1,138 @@
+{
+  "product": "{me}",
+  "events": {
+    "prompt_copied": "Copied the prompt for their AI. Props: prompt (cv, patterns), form (full, link)",
+    "cv_started": "Loaded a starting point into the writer. Props: from (template, example)",
+    "cv_ready": "The me.json pasted into the writer passed the checks and shows as a preview",
+    "cv_needs_fixes": "The me.json pasted into the writer isn't ready yet. Props: why (invalid_json, errors)",
+    "cv_saved": "Saved the checked me.json from the writer. Props: how (download, copy)",
+    "source_opened": "Opened the source on GitHub. Props: place (header, footer)"
+  },
+  "kpis": {
+    "home_to_writer": {
+      "name": "Visitors try the writer",
+      "description": "Of sessions on the project page, the share that open /write/: the first step to a CV",
+      "conversion": {
+        "from": {
+          "pageview": "/jsonme"
+        },
+        "to": {
+          "pageview": "/jsonme/write"
+        }
+      },
+      "goal": "increase",
+      "target": "30%"
+    },
+    "writer_copies_prompt": {
+      "name": "Writers copy the prompt",
+      "description": "Of sessions in the writer, the share that copy a prompt for their AI",
+      "conversion": {
+        "from": {
+          "pageview": "/jsonme/write"
+        },
+        "to": {
+          "event": "prompt_copied"
+        }
+      },
+      "goal": "increase",
+      "target": "40%"
+    },
+    "writer_gets_ready": {
+      "name": "Pastes pass the checks",
+      "description": "Of sessions in the writer, the share whose pasted me.json passes the checks",
+      "conversion": {
+        "from": {
+          "pageview": "/jsonme/write"
+        },
+        "to": {
+          "event": "cv_ready"
+        }
+      },
+      "goal": "increase",
+      "target": "30%"
+    },
+    "writer_saves": {
+      "name": "CVs saved",
+      "description": "The main goal: of sessions in the writer, the share that download or copy a checked me.json",
+      "conversion": {
+        "from": {
+          "pageview": "/jsonme/write"
+        },
+        "to": {
+          "event": "cv_saved"
+        }
+      },
+      "goal": "increase",
+      "target": "20%"
+    },
+    "ready_to_saved": {
+      "name": "Ready CVs get saved",
+      "description": "Of sessions whose paste passes the checks, the share that then save it: whether the preview convinces",
+      "conversion": {
+        "from": {
+          "event": "cv_ready"
+        },
+        "to": {
+          "event": "cv_saved"
+        }
+      },
+      "goal": "increase",
+      "target": "70%"
+    },
+    "home_to_example": {
+      "name": "Visitors see the example",
+      "description": "Of sessions on the project page, the share that open the example CV",
+      "conversion": {
+        "from": {
+          "pageview": "/jsonme"
+        },
+        "to": {
+          "pageview": "/jsonme/example*"
+        }
+      },
+      "goal": "increase",
+      "target": "25%"
+    },
+    "source_interest": {
+      "name": "Source opened",
+      "description": "Share of sessions that open the code on GitHub: developers evaluating it seriously",
+      "session_rate": {
+        "event": "source_opened"
+      },
+      "goal": "increase",
+      "target": "5%"
+    },
+    "js_errors": {
+      "name": "Sessions with errors",
+      "description": "The writer runs the builder in the browser: share of sessions with any exception, console error, failed request or missing file",
+      "session_rate": {
+        "error": "*"
+      },
+      "goal": "decrease",
+      "target": "1%"
+    }
+  },
+  "funnels": {
+    "writer": {
+      "name": "Project page to a saved CV",
+      "description": "The project page, the writer, the prompt copied, a paste that passes the checks, the file saved",
+      "steps": [
+        {
+          "pageview": "/jsonme"
+        },
+        {
+          "pageview": "/jsonme/write"
+        },
+        {
+          "event": "prompt_copied"
+        },
+        {
+          "event": "cv_ready"
+        },
+        {
+          "event": "cv_saved"
+        }
+      ]
+    }
+  }
+}

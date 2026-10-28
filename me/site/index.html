@@ -19,6 +19,9 @@
   window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
   plausible.init()
 </script>
+<!-- Trace: how the page is used, in aggregate. Cookieless: nothing is stored on your device. -->
+<script>window.trace=window.trace||{q:[]};["track","identify","page","init","consent"].forEach(function(m){trace[m]=trace[m]||function(){trace.q.push([m,arguments])}})</script>
+<script src="https://app.tracetells.com/d.js?k=4ebeba7021224d28a3dce36a093d4cc4" data-key="4ebeba7021224d28a3dce36a093d4cc4" defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -28,7 +31,7 @@
     <a class="hide-sm" href="write/">Write your CV</a>
     <a class="hide-sm" href="#start">Publish</a>
     <a href="example/">Example CV</a>
-    <a href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">GitHub</a>
+    <a data-trace-event="source_opened" data-trace-props='{"place":"header"}' href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">GitHub</a>
   </nav>
 </header>
 
@@ -159,7 +162,7 @@ gh repo create my-cv --public --source . --push</code></pre>
 
 <footer>
   <span>{me} by <a href="https://github.com/dobrinov" rel="noopener" target="_blank">Deyan Dobrinov</a></span>
-  <span><a href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">Source on GitHub</a></span>
+  <span><a data-trace-event="source_opened" data-trace-props='{"place":"footer"}' href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">Source on GitHub</a></span>
 </footer>
 </div>
 </body>

@@ -16,6 +16,9 @@
   window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
   plausible.init()
 </script>
+<!-- Trace: how the page is used, in aggregate. Cookieless: nothing is stored on your device. -->
+<script>window.trace=window.trace||{q:[]};["track","identify","page","init","consent"].forEach(function(m){trace[m]=trace[m]||function(){trace.q.push([m,arguments])}})</script>
+<script src="https://app.tracetells.com/d.js?k=4ebeba7021224d28a3dce36a093d4cc4" data-key="4ebeba7021224d28a3dce36a093d4cc4" defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -24,7 +27,7 @@
   <nav class="nav">
     <a class="hide-sm" href="../#start">Publish</a>
     <a href="../example/">Example CV</a>
-    <a href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">GitHub</a>
+    <a data-trace-event="source_opened" data-trace-props='{"place":"header"}' href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">GitHub</a>
   </nav>
 </header>
 
@@ -40,10 +43,10 @@
     <div class="step-head"><span class="n">1</span><h2>Give your AI the prompt</h2></div>
     <p>Open a new chat in Claude, ChatGPT or Gemini. Paste the prompt and attach your LinkedIn PDF (on LinkedIn: your profile → <b>More</b> → <b>Save to PDF</b>) or an old CV. Answer its questions; say <b>"just write it"</b> whenever you've had enough.</p>
     <div class="row-btns">
-      <button class="btn primary" type="button" data-copy="prompt">Copy the prompt</button>
+      <button class="btn primary" type="button" data-copy="prompt" data-trace-event="prompt_copied" data-trace-props='{"prompt":"cv","form":"full"}'>Copy the prompt</button>
       <a class="btn" href="../prompt.md" target="_blank" rel="noopener">Read it first ↗</a>
     </div>
-    <p class="aside">If your AI can open links, this one line is enough: <code id="short">Read https://dobrinov.github.io/jsonme/prompt.md and help me write my me.json.</code> <button class="link-btn" type="button" data-copy="short">Copy</button></p>
+    <p class="aside">If your AI can open links, this one line is enough: <code id="short">Read https://dobrinov.github.io/jsonme/prompt.md and help me write my me.json.</code> <button class="link-btn" type="button" data-copy="short" data-trace-event="prompt_copied" data-trace-props='{"prompt":"cv","form":"link"}'>Copy</button></p>
   </li>
 
   <li class="step-card">
@@ -51,23 +54,23 @@
     <p>Paste the whole answer, code fences and all. An old JsonMe file works too; it is converted for you.</p>
     <textarea id="json" spellcheck="false" autocomplete="off" aria-label="Your me.json" placeholder='{ "basics": { "name": "Your Name" }, … }'></textarea>
     <div class="row-btns small">
-      <button class="link-btn" type="button" data-load="template">Start from the empty template</button>
-      <button class="link-btn" type="button" data-load="example">Load an example</button>
+      <button class="link-btn" type="button" data-load="template" data-trace-event="cv_started" data-trace-props='{"from":"template"}'>Start from the empty template</button>
+      <button class="link-btn" type="button" data-load="example" data-trace-event="cv_started" data-trace-props='{"from":"example"}'>Load an example</button>
       <button class="link-btn" type="button" data-load="clear">Clear</button>
     </div>
-    <div id="report" class="report" aria-live="polite"></div>
+    <div id="report" class="report" aria-live="polite" data-trace-mask></div>
   </li>
 
   <li class="step-card" id="llms">
     <div class="step-head"><span class="n">3</span><h2>Optional: add how you use LLMs</h2></div>
     <p>An agent that can read your past prompts finds your patterns: how you plan, build and review with AI. Claude Code keeps your prompts on your machine in <code>~/.claude/projects</code>. Open it in any folder, paste the prompt, and tell it to read those files. Your prompts stay on your machine, and you choose what goes on the CV.</p>
     <div class="row-btns">
-      <button class="btn" type="button" data-copy="patterns">Copy the patterns prompt</button>
+      <button class="btn" type="button" data-copy="patterns" data-trace-event="prompt_copied" data-trace-props='{"prompt":"patterns","form":"full"}'>Copy the patterns prompt</button>
       <a class="btn" href="../patterns-prompt.md" target="_blank" rel="noopener">Read it first ↗</a>
     </div>
     <p class="aside">Or one line for Claude Code: <code id="patterns-short">Read https://dobrinov.github.io/jsonme/patterns-prompt.md and apply it to my prompts in ~/.claude/projects.</code> <button class="link-btn" type="button" data-copy="patternsShort">Copy</button></p>
     <textarea id="llms-json" class="small-area" spellcheck="false" autocomplete="off" aria-label="The patterns result" placeholder='Paste its answer here: { "llms": { "patterns": [ … ] } }'></textarea>
-    <p class="aside" id="llms-status" aria-live="polite"></p>
+    <p class="aside" id="llms-status" aria-live="polite" data-trace-mask></p>
   </li>
 
   <li class="step-card">
@@ -79,11 +82,11 @@
         <button type="button" data-width="phone" aria-pressed="false">Phone</button>
       </span>
       <span class="row-btns">
-        <button class="btn" type="button" data-copy="json" disabled>Copy JSON</button>
-        <button class="btn primary" type="button" id="download" disabled>Download me.json</button>
+        <button class="btn" type="button" data-copy="json" disabled data-trace-event="cv_saved" data-trace-props='{"how":"copy"}'>Copy JSON</button>
+        <button class="btn primary" type="button" id="download" disabled data-trace-event="cv_saved" data-trace-props='{"how":"download"}'>Download me.json</button>
       </span>
     </div>
-    <div class="preview" id="preview-wrap"><iframe id="preview" title="Preview of your CV"></iframe><p class="empty" id="empty">Your CV shows here once you paste a file.</p></div>
+    <div class="preview" id="preview-wrap" data-trace-mask><iframe id="preview" title="Preview of your CV"></iframe><p class="empty" id="empty">Your CV shows here once you paste a file.</p></div>
     <p class="aside">Next: put <code>me.json</code> in your repo and push. <a href="../#start">How to publish →</a></p>
   </li>
 </ol>
@@ -91,7 +94,7 @@
 
 <footer>
   <span>{me} by <a href="https://github.com/dobrinov" rel="noopener" target="_blank">Deyan Dobrinov</a></span>
-  <span><a href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">Source on GitHub</a></span>
+  <span><a data-trace-event="source_opened" data-trace-props='{"place":"footer"}' href="https://github.com/dobrinov/jsonme/tree/main/me" rel="noopener" target="_blank">Source on GitHub</a></span>
 </footer>
 </div>
 
@@ -162,21 +165,31 @@ const show = (state, title, items = [], note = '') => {
 
 const enable = (on) => document.querySelectorAll('#download, [data-copy="json"]').forEach((b) => { b.disabled = !on; });
 
+// Trace hears where a paste got to (ready, or needs fixes: not JSON yet or errors), once each time the outcome
+// changes: typing doesn't send a stream of events, and nothing of the CV itself is ever sent.
+let lastOutcome = '';
+const checked = (result) => {
+  if (result === lastOutcome) return;
+  lastOutcome = result;
+  window.trace?.track(result === 'ready' ? 'cv_ready' : 'cv_needs_fixes', result === 'ready' ? {} : { why: result });
+};
+
 async function check() {
   const raw = area.value;
   try { if (raw.trim()) localStorage.setItem(DRAFT, raw); else localStorage.removeItem(DRAFT); } catch (e) {}
   current = null;
   enable(false);
-  if (!raw.trim()) { report.className = 'report'; report.replaceChildren(); frame.removeAttribute('srcdoc'); empty.hidden = false; return; }
+  if (!raw.trim()) { lastOutcome = ''; report.className = 'report'; report.replaceChildren(); frame.removeAttribute('srcdoc'); empty.hidden = false; return; }
 
   const src = extract(raw);
   let me;
   try { me = JSON.parse(src); }
-  catch (err) { return show('bad', 'This is not valid JSON yet', [li('error', `${err.message.replace(/^JSON\.parse: /, '')}${where(src, err) ? ` (${where(src, err)})` : ''}`)], 'Usually a missing comma or quote. Ask your AI: "The JSON is invalid, give me the whole file again."'); }
+  catch (err) { checked('invalid_json'); return show('bad', 'This is not valid JSON yet', [li('error', `${err.message.replace(/^JSON\.parse: /, '')}${where(src, err) ? ` (${where(src, err)})` : ''}`)], 'Usually a missing comma or quote. Ask your AI: "The JSON is invalid, give me the whole file again."'); }
 
   let note = '';
   if (isLegacy(me)) { me = migrate(me); note = 'This was an old JsonMe file. It has been converted to the new format; download it to keep the converted version.'; }
   const { errors, warnings } = validate(me);
+  checked(errors.length ? 'errors' : 'ready');
   const items = [...errors.map((m) => li('error', m)), ...warnings.map((m) => li('warn', m))];
   if (errors.length) show('bad', `${errors.length} thing${errors.length > 1 ? 's' : ''} to fix before it can be published`, items, note);
   else if (warnings.length) show('ok', `Ready to publish. ${warnings.length} suggestion${warnings.length > 1 ? 's' : ''} would make it stronger:`, items, note);

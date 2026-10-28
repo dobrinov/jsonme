@@ -14,6 +14,9 @@ cp template/me.json "$out/lib/template.json"
 # /write/ previews in an iframe, where a relative image path would not resolve.
 sed 's#"image": "avatar.jpg"#"image": "https://dobrinov.github.io/jsonme/example/avatar.jpg"#' examples/john-doe/me.json > "$out/lib/example.json"
 node src/build.mjs --src examples/john-doe --out "$out/example" --site-url https://dobrinov.github.io/jsonme/example >/dev/null
+# Trace on the example CV too, like the rest of the project page (cookieless: nothing is stored on the device).
+trace='<script src="https://app.tracetells.com/d.js?k=4ebeba7021224d28a3dce36a093d4cc4" data-key="4ebeba7021224d28a3dce36a093d4cc4" defer></script>'
+find "$out/example" -name '*.html' -exec perl -pi -e "s#</head>#$trace</head>#" {} +
 # sitemap.xml: every page the build produced, as a directory URL.
 base=https://dobrinov.github.io/jsonme/
 today=$(date -u +%Y-%m-%d)
