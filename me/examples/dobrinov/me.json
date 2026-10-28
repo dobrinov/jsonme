@@ -186,8 +186,8 @@
   ],
   "projects": [
     {
-      "name": "Tracetells",
-      "description": "Web analytics for the agentic era. An analyst agent turns how people use a site into improvement insights tied to its KPIs, each insight copies out as a prompt for a coding agent, and once the change ships Tracetells measures whether it worked. Written in Rust.",
+      "name": "Trace",
+      "description": "Web analytics for the agentic era. An analyst agent turns how people use a site into improvement insights tied to its KPIs, each insight copies out as a prompt for a coding agent, and once the change ships Trace measures whether it worked. Written in Rust.",
       "url": "https://github.com/dobrinov/tracetells",
       "startDate": "2026-10"
     },
