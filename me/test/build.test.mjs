@@ -186,7 +186,8 @@ test('ongoing products always reach the present, finished short ones are dots', 
     { name: 'Done', startDate: '2026-03', endDate: '2026-04' }
   ] };
   const html = renderProfile(me, [], { builtAt });
-  assert.match(html, /class="seg product ai mono[^"]*" type="button" popovertarget="product-fresh"[^>]*max\(/);
+  assert.match(html, /class="seg product ai mono[^"]*" type="button" popovertarget="product-fresh"[^>]*max\([^)]*\), 28px\)/);
+  assert.match(html, /popovertarget="product-fresh" data-tip="[^"]*" aria-label="[^"]*" style="left:min\(/);
   assert.match(html, /class="seg product ai mono[^"]*" type="button" popovertarget="product-revived" data-role="1"/);
   assert.match(html, /class="dot product mono[^"]*" type="button" popovertarget="product-done"/);
 });

@@ -322,7 +322,7 @@ section { display: flex; flex-direction: column; gap: 20px; }
 /* The star sits on the start of an AI bar; keep the label clear of it. */
 .seg.ai .seg-text { padding-left: 16px; }
 .paused { position: absolute; top: 21px; border-top: 2px dashed var(--product-key); }
-.revival { position: absolute; top: 10px; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-left: -12px; padding: 0; border: 0; background: none; color: var(--product); cursor: pointer; }
+.revival { position: absolute; z-index: 4; top: 10px; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-left: -12px; padding: 0; border: 0; background: none; color: var(--product); cursor: pointer; }
 .revival svg { width: 20px; height: 20px; fill: currentColor; stroke: var(--bg); stroke-width: 2; paint-order: stroke; transition: transform 0.12s; }
 .revival:hover svg { transform: scale(1.2); }
 .revival.on svg { stroke: var(--accent); }
