@@ -1,4 +1,4 @@
-import { escapeHtml as e, markdown, inline } from './markdown.mjs';
+import { escapeHtml as e, markdown, inline, safeUrl } from './markdown.mjs';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const TAG_LABEL = { depth: 'Depth', leadership: 'Leadership', product: 'Product', ai: 'AI era' };
@@ -27,13 +27,14 @@ export const longDate = (iso) => {
   return d ? `${d} ${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} ${y}` : String(iso);
 };
 const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
-const href = (url) => (/^[a-z][\w+.-]*:/i.test(url) ? url : `https://${url}`);
+// A bare domain gets https://; any other scheme than http(s) or mailto is dropped.
+const href = (url) => safeUrl(/^[a-z][\w+.-]*:|^[/#.]/i.test(String(url).trim()) ? url : `https://${String(url).trim()}`);
 const hostOf = (url) => String(url).replace(/^https?:\/\//, '').replace(/\/$/, '');
 const evidence = (x) => (typeof x === 'string' ? { url: x, label: hostOf(x) } : { url: x.url, label: x.label || hostOf(x.url) });
 
 function avatar(basics, root) {
   if (!basics.image) return `<span class="avatar" aria-hidden="true">${e(initials(basics.name))}</span>`;
-  const src = /^[a-z]+:|^\//i.test(basics.image) ? basics.image : root + basics.image;
+  const src = /^[a-z][\w+.-]*:|^\//i.test(basics.image) ? safeUrl(basics.image) : root + basics.image;
   return `<img class="avatar" src="${e(src)}" alt="" width="56" height="56">`;
 }
 
@@ -173,6 +174,9 @@ function career(me, stats, now) {
   const fixed = (n) => n.toFixed(2);
   const at = (d) => pos(toYear(d, now));
   const stories = (me.highlights || []).slice(0, 3).map((s, i) => ({ ...s, id: `s${i + 1}` }));
+  // Links in the timeline open in a new tab; story links stay on the page.
+  const NEW_TAB = ' target="_blank" rel="noopener"';
+  const md = (t) => inline(t, NEW_TAB);
   const range = (from, to) => `${monthYear(from)} – ${monthYear(to)} · ${duration(from, to, now)}`;
   const tipEdge = (y) => (pos(y) < 4 ? ' tip-start' : pos(y) > 96 ? ' tip-end' : '');
 
@@ -189,10 +193,13 @@ function career(me, stats, now) {
   };
   const row = (id, name, sub, segments) => `<div class="tl-row"><button type="button" class="tl-who" popovertarget="${id}"><span class="n">${e(name)}</span><span class="s">${e(sub)}</span></button><div class="track">${era == null ? '' : `<span class="era" style="left:${fixed(era)}%;right:${fixed(100 - pos(now))}%"></span>`}${segments}</div></div>`;
   const item = (title, from, to, body, story, n, cls = '') => `<div class="pop-item${cls}" data-item="${n}"><div class="pop-item-head"><span class="t">${title || ''}</span><span class="period">${range(from, to)}</span></div>${body}${story ? `<a class="story-link" href="#${story.id}">Signature work: ${e(story.title)} →</a>` : ''}</div>`;
-  const popover = (id, cls, name, url, from, to, items) => `<div class="pop ${cls}" id="${id}" popover>
-<div class="pop-head"><div><h3>${url ? `<a href="${e(href(url))}">${e(name)}</a>` : e(name)}</h3><span class="period">${range(from, to)}</span></div><button type="button" class="pop-close" popovertarget="${id}" popovertargetaction="hide" aria-label="Close">${CLOSE}</button></div>
-${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a>` : ''}
+  const popover = (id, cls, name, link, from, to, items) => {
+    const url = link && href(link) !== '#' ? link : '';
+    return `<div class="pop ${cls}" id="${id}" popover>
+<div class="pop-head"><div><h3>${url ? `<a href="${e(href(url))}"${NEW_TAB}>${e(name)}</a>` : e(name)}</h3><span class="period">${range(from, to)}</span></div><button type="button" class="pop-close" popovertarget="${id}" popovertargetaction="hide" aria-label="Close">${CLOSE}</button></div>
+${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url))} ↗</a>` : ''}
 </div>`;
+  };
   const era = stats.aiEra < END ? pos(stats.aiEra) : null;
   // Consecutive equal values collapse: Team lead, Team lead -> Team lead.
   const squash = (list) => list.filter((x, i) => x !== list[i - 1]);
@@ -224,7 +231,7 @@ ${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a
     if (g.roles.length === 1) {
       const r = g.roles[0];
       const story = stories.find((s) => s.where === g.name);
-      items = item(e(r.position), r.startDate || g.start, r.endDate || g.end, `${r.summary ? `<p>${inline(r.summary)}</p>` : ''}${r.highlights && r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${inline(h)}</li>`).join('')}</ul>` : ''}`, story, 0);
+      items = item(e(r.position), r.startDate || g.start, r.endDate || g.end, `${r.summary ? `<p>${md(r.summary)}</p>` : ''}${r.highlights && r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${md(h)}</li>`).join('')}</ul>` : ''}`, story, 0);
     } else {
       // A growth path, oldest step first: each role with what was built in it. A story belongs to the role whose
       // scope matches its "when", else to the latest role with that title, preferring one without a scope.
@@ -235,8 +242,8 @@ ${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a
         const when = steps ? (latest ? `${monthYear(r.startDate)} – ${monthYear(g.end)}` : monthYear(r.startDate)) : r.endDate ? `${monthYear(r.startDate)} – ${monthYear(r.endDate)}` : '';
         const title = r.scope ? `${e(r.scope)}<span class="was">${e(r.position || '')}</span>` : e(r.position || '');
         const linked = stories.filter((s) => s.where === g.name && own(s) === r);
-        const lines = [...(r.highlights || []).map((h) => `<li>${inline(h)}</li>`), ...linked.map((s) => `<li>${e(s.title)} · <a href="#${s.id}">Story →</a></li>`)];
-        return `<li class="step${latest ? ' now' : ''}" data-item="${order.indexOf(r)}"><div class="step-head"><span class="t">${title}</span>${when ? `<span class="period">${when}</span>` : ''}</div>${r.summary ? `<p>${inline(r.summary)}</p>` : ''}${lines.length ? `<ul>${lines.join('')}</ul>` : ''}</li>`;
+        const lines = [...(r.highlights || []).map((h) => `<li>${md(h)}</li>`), ...linked.map((s) => `<li>${e(s.title)} · <a href="#${s.id}">Story →</a></li>`)];
+        return `<li class="step${latest ? ' now' : ''}" data-item="${order.indexOf(r)}"><div class="step-head"><span class="t">${title}</span>${when ? `<span class="period">${when}</span>` : ''}</div>${r.summary ? `<p>${md(r.summary)}</p>` : ''}${lines.length ? `<ul>${lines.join('')}</ul>` : ''}</li>`;
       }).join('')}</ol>`;
     }
     pops.push(popover(id, 'job-pop', g.name, g.url, g.start, g.end, items));
@@ -248,7 +255,7 @@ ${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a
     const story = stories.find((s) => s.title.toLowerCase().includes(p.name.toLowerCase()));
     if (!p.revivedDate) {
       rows.push(row(id, p.name, duration(p.startDate, p.endDate, now), segment(id, p.startDate, p.endDate, { cls: 'product mono', text: duration(p.startDate, p.endDate, now), tip: `${p.name} · ${range(p.startDate, p.endDate)}` })));
-      pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, item('Own product', p.startDate, p.endDate, p.description ? `<p>${inline(p.description)}</p>` : '', story, 0)));
+      pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, item('Own product', p.startDate, p.endDate, p.description ? `<p>${md(p.description)}</p>` : '', story, 0)));
       continue;
     }
     // Built by hand, paused, then revived with AI: a bar, a dashed gap, and a star where the revival starts.
@@ -263,9 +270,9 @@ ${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a
     ].join('');
     rows.push(row(id, p.name, `By hand ${year(p.startDate)} · revived with AI ${year(p.revivedDate)}`, segments));
     pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, [
-      p.description ? `<p class="pop-lead">${inline(p.description)}</p>` : '',
+      p.description ? `<p class="pop-lead">${md(p.description)}</p>` : '',
       item('Built by hand', p.startDate, handEnd, '', story, 0),
-      item(`<span class="star">${STAR}</span>Revived with AI`, p.revivedDate, p.endDate, p.revival ? `<p>${inline(p.revival)}</p>` : '', null, 1, ' ai')
+      item(`<span class="star">${STAR}</span>Revived with AI`, p.revivedDate, p.endDate, p.revival ? `<p>${md(p.revival)}</p>` : '', null, 1, ' ai')
     ].join('')));
   }
 
@@ -338,9 +345,19 @@ ${blocks.map(([id, label, meta, rows]) => `<details id="${id}"><summary><span cl
 </section>`;
 }
 
+// Email, website and profiles (JSON Resume basics), as one row of links under the name.
+function contact(b) {
+  const links = [
+    b.email && [`mailto:${b.email}`, b.email],
+    b.url && [href(b.url), hostOf(b.url)],
+    ...(b.profiles || []).filter((p) => p.url).map((p) => [href(p.url), p.network || hostOf(p.url)])
+  ].filter(Boolean).filter(([url]) => url !== '#');
+  return links.length ? `<div class="contact">${links.map(([url, label]) => `<a href="${e(url)}"${url.startsWith('mailto:') ? '' : ' rel="me"'}>${e(label)}</a>`).join('')}</div>` : '';
+}
+
 function footer(me, root, builtAt) {
   const repo = me.meta && me.meta.me && me.meta.me.repo;
-  return `<footer class="site wrap"><span>Made with {me}${repo ? ` from <a href="${e(repo)}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
+  return `<footer class="site wrap"><span>Made with {me}${repo ? ` from <a href="${e(href(repo))}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
 }
 
 export function renderProfile(me, posts, { siteUrl = '', builtAt = new Date() } = {}) {
@@ -356,7 +373,7 @@ ${THEME_SWITCH}
 </span></div>
 <main class="profile wrap">
 <header class="intro">
-<div class="who">${avatar(b, '')}<div><div class="name">${e(b.name)}</div>${meta ? `<div class="meta">${e(meta)}</div>` : ''}</div></div>
+<div class="who">${avatar(b, '')}<div><div class="name">${e(b.name)}</div>${meta ? `<div class="meta">${e(meta)}</div>` : ''}${contact(b)}</div></div>
 ${me.headline ? `<h1 class="headline">${e(me.headline)}</h1>` : `<h1 class="headline">${e(b.name)}</h1>`}
 ${b.summary && !me.headline ? `<p class="summary">${inline(b.summary)}</p>` : ''}
 ${facts(me, stats)}
@@ -380,7 +397,7 @@ export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}
 <header><div class="date">${post.date ? `${e(longDate(post.date))} · ` : ''}${minutes} min read</div><h1>${e(post.title)}</h1>${post.tags.length ? `<div class="tags">${post.tags.map((t) => `<span class="chip">${e(t)}</span>`).join('')}</div>` : ''}</header>
 <div class="prose">${markdown(post.body, { shift: post.topHeading })}</div>
 </article>
-<div class="post-foot wrap"><div><a class="back" href="${root}#writing"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>${repo ? `<a class="edit" href="${e(`${repo.replace(/\/$/, '')}/edit/HEAD/posts/${post.file}`)}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Suggest an edit</a>` : ''}</div></div>
+<div class="post-foot wrap"><div><a class="back" href="${root}#writing"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>${repo ? `<a class="edit" href="${e(href(`${repo.replace(/\/$/, '')}/edit/HEAD/posts/${post.file}`))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Suggest an edit</a>` : ''}</div></div>
 ${footer(me, root, builtAt)}`;
   return page({ title: `${post.title} · ${b.name}`, description: post.summary, root, body, canonical: siteUrl ? `${siteUrl}posts/${post.slug}/` : undefined });
 }

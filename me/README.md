@@ -10,7 +10,7 @@ The CV is built to show what can't be generated: engineering depth from before A
 | --- | --- |
 | `src/build.mjs` | The builder. Node 20+, no dependencies. |
 | `schema/v1.json` | JSON Schema for `me.json` (editor autocomplete). |
-| `action/action.yml` | Composite Action: `uses: dobrinov/jsonme/me/action@main`. |
+| `action/action.yml` | Composite Action: `uses: dobrinov/jsonme/me/action@v1`. The `v1` tag moves with fixes and compatible changes; a breaking change gets `v2`. |
 | `template/` | Contents of the template repo people start from. |
 | `examples/dobrinov/` | A real CV converted from the old jsonme format. |
 
@@ -35,7 +35,16 @@ Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `ll
 - `highlights`: at most 3 stories `{ title, hook, where, when, tags, problem, did, outcome, stack, evidence }`.
 - `meta.me`: `listed`, `lookingFor`, `domains`, `aiEraStart` (default `2023-01`).
 
-The career line has one row per employer (`work` entries with the same `name`), product (`projects`) and school (`education`). Hover shows dates, click opens the details. Several roles at one employer are drawn as steps when each has its own `startDate`; with equal start dates they share one bar. A story in `highlights` is linked from a role when its `where` is the employer and its `when` is the position, and from a product when its title contains the product name.
+`basics.email`, `basics.url` and `basics.profiles` show as links under the name and in `cv.md`.
+
+The career line has one row per employer (`work` entries with the same `name`), product (`projects`) and school (`education`). It is a fixed width per year, opens at the present and scrolls back; names stay pinned. Hover shows dates, click opens the details, and links in the details open in a new tab.
+
+- Several roles at one employer open as a growth path, oldest first. On the bar they are drawn as steps when each has its own `startDate`; with equal start dates they share one bar. Roles with the same `position` share a bar either way.
+- `work[].scope` names a change under the same title, e.g. `"position": "Team lead", "scope": "Reports to the CTO"`. It is its own step in the growth path.
+- A story in `highlights` is listed under the role whose `scope` or `position` equals its `when` (a scope wins), and on a product whose name is in the story's title.
+- A product built by hand and picked up again with AI takes `pausedDate`, `revivedDate` and `revival` (what was built since). It is drawn as a bar, a dashed pause and a star where the revival starts.
+
+Links in `me.json` and posts may be `http(s)`, `mailto` or relative; other schemes are dropped. From the repo, only images, `assets/`, `static/` and `CNAME` are copied to the site, so notes or drafts next to `me.json` stay private.
 
 Only `basics.name` is required. Old jsonme files (`employments`, `technologies`, …) are converted automatically during the build.
 

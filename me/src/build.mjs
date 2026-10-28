@@ -56,12 +56,20 @@ export async function loadPosts(src) {
   return posts.sort((a, b) => (b.date || '').localeCompare(a.date || '') || a.title.localeCompare(b.title));
 }
 
+// Only what a site needs is published: images anywhere, everything under assets/ or static/, and a CNAME.
+// Other files in the repo (notes, drafts, PDFs) stay private.
+const IMAGES = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.svg', '.ico']);
+const published = (path) => {
+  const top = path.split(sep)[0];
+  return path === 'CNAME' || top === 'assets' || top === 'static' || IMAGES.has(extname(path).toLowerCase());
+};
+
 async function copyStatic(src, out, dir = src) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     const from = join(dir, entry.name);
     if (entry.name.startsWith('.') || SKIP.has(entry.name) || resolve(from) === resolve(out)) continue;
     if (entry.isDirectory()) await copyStatic(src, out, from);
-    else if (extname(entry.name) !== '.md') {
+    else if (extname(entry.name) !== '.md' && published(relative(src, from))) {
       const to = join(out, relative(src, from));
       await mkdir(dirname(to), { recursive: true });
       await copyFile(from, to);

@@ -5,12 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '17 4 * * 1' # weekly, so theme updates reach your site without a push
+    - cron: '17 4 * * 1' # weekly, so fixes released under v1 reach your site without a push
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -19,13 +17,17 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write # configure-pages turns Pages on and reads the site URL
     steps:
       - uses: actions/checkout@v4
       - id: pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - uses: dobrinov/jsonme/me/action@main
+      # v1 gets fixes and compatible changes; pin a commit SHA instead if you want to review every update.
+      - uses: dobrinov/jsonme/me/action@v1
         with:
           site-url: ${{ steps.pages.outputs.base_url }}
       - uses: actions/upload-pages-artifact@v3
@@ -35,6 +37,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

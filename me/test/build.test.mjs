@@ -83,6 +83,30 @@ test('builds the template, a minimal file and a legacy file', async () => {
   assert.equal(r.posts, 0);
 });
 
+test('publishes images, assets/, static/ and CNAME, and nothing else from the repo', async () => {
+  const src = await mkdtemp(join(tmpdir(), 'me-files-'));
+  await writeFile(join(src, 'me.json'), JSON.stringify({ basics: { name: 'Ada' } }));
+  await mkdir(join(src, 'static'));
+  await mkdir(join(src, 'private'));
+  for (const f of ['CNAME', 'me.png', 'static/cv.pdf', 'notes.txt', 'private/plan.pdf']) await writeFile(join(src, f), 'x');
+  await build({ src, out: join(src, '_site'), builtAt, log: quiet });
+  for (const f of ['CNAME', 'me.png', 'static/cv.pdf']) await readFile(join(src, '_site', f));
+  for (const f of ['notes.txt', 'private/plan.pdf']) await assert.rejects(readFile(join(src, '_site', f)));
+});
+
+test('contact links, and unsafe URLs are dropped', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const { cvMarkdown } = await import('../src/outputs.mjs');
+  const me = { basics: { name: 'Ada', email: 'ada@example.com', url: 'ada.dev', profiles: [
+    { network: 'GitHub', url: 'https://github.com/ada' },
+    { network: 'Evil', url: 'javascript:alert(1)' }
+  ] }, projects: [{ name: 'X', url: 'javascript:alert(1)', startDate: '2020-01' }] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /<div class="contact"><a href="mailto:ada@example.com">ada@example.com<\/a><a href="https:\/\/ada.dev" rel="me">ada.dev<\/a><a href="https:\/\/github.com\/ada" rel="me">GitHub<\/a><\/div>/);
+  assert.doesNotMatch(html, /javascript:/);
+  assert.match(cvMarkdown(me, []), /Contact: ada@example.com · ada.dev · GitHub: https:\/\/github.com\/ada/);
+});
+
 test('rejects an invalid me.json', async () => {
   const src = await mkdtemp(join(tmpdir(), 'me-bad-'));
   await writeFile(join(src, 'me.json'), JSON.stringify({ basics: {} }));
@@ -123,7 +147,7 @@ test('a change of scope under the same title is one bar and a step in the growth
 test('a product built by hand and revived with AI', async () => {
   const { renderProfile } = await import('../src/render.mjs');
   const me = { basics: { name: 'Ada' }, projects: [
-    { name: 'Kit', startDate: '2021-01', pausedDate: '2022-01', revivedDate: '2026-01', revival: 'Rebuilt it.' }
+    { name: 'Kit', url: 'kit.dev', startDate: '2021-01', pausedDate: '2022-01', revivedDate: '2026-01', revival: 'Rebuilt it.' }
   ] };
   const html = renderProfile(me, [], { builtAt });
   assert.match(html, /data-tip="Built by hand · Jan 2021 – Jan 2022 · 1y"/);
@@ -131,5 +155,7 @@ test('a product built by hand and revived with AI', async () => {
   assert.match(html, /class="seg product ai mono"[^>]*data-tip="Revived with AI · Jan 2026 – now · 9m"/);
   assert.match(html, /<button class="revival[^"]*" type="button" popovertarget="product-kit"/);
   assert.match(html, /<span class="s">By hand 2021 · revived with AI 2026<\/span>/);
+  assert.doesNotMatch(html.slice(html.indexOf('class="pops"'), html.indexOf('</section>', html.indexOf('class="pops"'))), /<a (class="[^"]*" )?href="(?!#)[^"]*">/);
+  assert.match(html, /<a href="https:\/\/kit.dev" target="_blank" rel="noopener">Kit<\/a>/);
   assert.match(html, /Revived with AI<\/span><span class="period">Jan 2026 – now · 9m<\/span><\/div><p>Rebuilt it.<\/p>/);
 });

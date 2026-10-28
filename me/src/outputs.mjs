@@ -11,6 +11,8 @@ export function cvMarkdown(me, posts, { siteUrl = '' } = {}) {
   const out = [`# ${b.name}`, ''];
   const where = [b.label, b.location && b.location.city, b.location && (b.location.country || b.location.countryCode)].filter(Boolean).join(' · ');
   if (where) out.push(where, '');
+  const reach = [b.email, b.url, ...(b.profiles || []).filter((p) => p.url).map((p) => `${p.network ? `${p.network}: ` : ''}${p.url}`)].filter(Boolean);
+  if (reach.length) out.push(`Contact: ${reach.join(' · ')}`, '');
   if (me.headline) out.push(`> ${me.headline}`, '');
   if (b.summary) out.push(b.summary, '');
   if (me.meta && me.meta.me && me.meta.me.lookingFor) out.push(`**Looking for:** ${me.meta.me.lookingFor}`, '');

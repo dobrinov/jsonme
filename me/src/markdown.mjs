@@ -10,12 +10,15 @@ export function escapeHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
-function safeUrl(url) {
-  const u = url.trim();
-  return /^(javascript|vbscript|data):/i.test(u) ? '#' : u;
+// Links may only be http(s), mailto or relative; anything else (javascript:, data:, ...) becomes "#".
+export function safeUrl(url) {
+  const u = String(url).trim();
+  if (!/^[a-z][\w+.-]*:/i.test(u)) return u;
+  return /^(https?|mailto):/i.test(u) ? u : '#';
 }
 
-export function inline(text) {
+// `attrs` is added to every link, e.g. ' target="_blank" rel="noopener"'.
+export function inline(text, attrs = '') {
   const slots = [];
   const keep = (html) => `\u0000${slots.push(html) - 1}\u0000`;
 
@@ -23,8 +26,8 @@ export function inline(text) {
   s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, alt, src, title) =>
     keep(`<img src="${escapeHtml(safeUrl(src))}" alt="${escapeHtml(alt)}"${title ? ` title="${escapeHtml(title)}"` : ''} loading="lazy">`));
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) =>
-    keep(`<a href="${escapeHtml(safeUrl(href))}">${inline(label)}</a>`));
-  s = s.replace(/<(https?:\/\/[^>\s]+)>/g, (_, href) => keep(`<a href="${escapeHtml(href)}">${escapeHtml(href)}</a>`));
+    keep(`<a href="${escapeHtml(safeUrl(href))}"${attrs}>${inline(label)}</a>`));
+  s = s.replace(/<(https?:\/\/[^>\s]+)>/g, (_, href) => keep(`<a href="${escapeHtml(href)}"${attrs}>${escapeHtml(href)}</a>`));
 
   s = escapeHtml(s)
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')

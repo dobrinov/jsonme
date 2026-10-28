@@ -3,7 +3,7 @@ pages:
   image: node:20-alpine
   script:
     - apk add --no-cache git
-    - git clone --depth 1 https://github.com/dobrinov/jsonme.git /tmp/me
+    - git clone --depth 1 --branch v1 https://github.com/dobrinov/jsonme.git /tmp/me
     - node /tmp/me/me/src/build.mjs --check
     - node /tmp/me/me/src/build.mjs --out public --site-url "$CI_PAGES_URL" --repo "$CI_PROJECT_URL"
   artifacts:
