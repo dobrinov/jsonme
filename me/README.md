@@ -13,7 +13,7 @@ The CV is built to show what can't be generated: engineering depth from before A
 | `action/action.yml` | Composite Action: `uses: dobrinov/jsonme/me/action@v1`. The `v1` tag moves with fixes and compatible changes; a breaking change gets `v2`. |
 | `template/` | Contents of the template repo people start from. |
 | `examples/dobrinov/` | A real CV converted from the old jsonme format. |
-| `site/` | The project page at https://dobrinov.github.io/jsonme/, published by `.github/workflows/pages.yml`. |
+| `site/` | The project page at https://dobrinov.github.io/jsonme/: `write/` turns a LinkedIn PDF into `me.json` with the reader's own AI (`prompt.md`) and checks and previews it in the browser with the builder's own modules. `sh site/build.sh` assembles it; `.github/workflows/pages.yml` publishes it. |
 
 ## Use
 

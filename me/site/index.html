@@ -12,145 +12,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<style>
-:root {
-  color-scheme: light;
-  --bg: #FFFFFF;
-  --paper: #F6F7F9;
-  --card: #FFFFFF;
-  --ink: #15171C;
-  --body: #4A505C;
-  --muted: #5B616E;
-  --line: #E4E6EB;
-  --line-soft: #EEF0F3;
-  --chip: #F1F3F6;
-  --accent: #2F4BE0;
-  --accent-hover: #1F33A8;
-  --accent-soft: #E3E8FC;
-  --accent-text: #1C2B8F;
-  --product: #C2560E;
-  --product-soft: #FBE9DA;
-  --product-text: #7A3306;
-  --code-bg: #15171C;
-  --code-ink: #E8EAF0;
-  --code-muted: #8F96A3;
-  --code-key: #A9B8FF;
-  --code-str: #F6CBA6;
-  --shadow: 0 24px 60px rgba(21, 23, 28, 0.12), 0 4px 12px rgba(21, 23, 28, 0.06);
-  --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: #0F1115;
-    --paper: #151820;
-    --card: #151820;
-    --ink: #ECEEF2;
-    --body: #BAC0CC;
-    --muted: #8F96A3;
-    --line: #272B34;
-    --line-soft: #1F232B;
-    --chip: #1F232B;
-    --accent: #8EA0FF;
-    --accent-hover: #B4C0FF;
-    --accent-soft: #1E2550;
-    --accent-text: #C9D2FF;
-    --product: #F08A3E;
-    --product-soft: #3A2414;
-    --product-text: #F6CBA6;
-    --code-bg: #0A0B0E;
-    --shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-a { color: var(--accent); text-underline-offset: 3px; }
-a:hover { color: var(--accent-hover); }
-code { font-family: var(--mono); font-size: 0.9em; padding: 1px 5px; border-radius: 4px; background: var(--chip); }
-img { display: block; max-width: 100%; height: auto; }
-.wrap { width: min(1080px, 100% - 32px); margin: 0 auto; }
-
-.topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; }
-.mark { font-family: var(--mono); font-weight: 500; font-size: 18px; color: var(--ink); text-decoration: none; }
-.mark b { color: var(--accent); font-weight: 500; }
-.nav { display: flex; gap: 20px; font-size: 14px; font-weight: 500; }
-.nav a { color: var(--body); text-decoration: none; }
-.nav a:hover { color: var(--ink); }
-
-.hero { padding: 56px 0 40px; }
-.eyebrow { margin: 0 0 18px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-h1 { margin: 0; max-width: 820px; font-size: clamp(40px, 7vw, 76px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 700; }
-.lead { max-width: 640px; margin: 24px 0 0; font-size: 19px; color: var(--body); }
-.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-.btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--card); }
-.btn:hover { color: var(--ink); border-color: var(--muted); }
-.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.btn.primary:hover { color: var(--bg); opacity: 0.88; }
-
-.shot { margin: 8px 0 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: var(--shadow); }
-.shot .bar { display: flex; align-items: center; gap: 7px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--paper); }
-.shot .bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
-.shot .bar span { margin-left: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
-.caption { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
-
-section { padding: 88px 0 0; }
-h2 { margin: 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025em; }
-.intro { max-width: 640px; margin: 16px 0 0; font-size: 17px; color: var(--body); }
-.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
-.card { padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
-.card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.01em; }
-.card p { margin: 0; font-size: 15px; color: var(--body); }
-.tag { display: inline-block; margin-bottom: 14px; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--accent-soft); color: var(--accent-text); }
-.tag.p { background: var(--product-soft); color: var(--product-text); }
-
-.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; margin-top: 36px; }
-.points { margin: 0; padding: 0; list-style: none; display: grid; gap: 18px; }
-.points li { padding-left: 18px; border-left: 2px solid var(--line); }
-.points b { display: block; font-size: 15px; }
-.points span { font-size: 15px; color: var(--body); }
-.star { color: var(--product); }
-
-.files { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-top: 36px; }
-.file { padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
-.file code { padding: 0; background: none; font-size: 14px; font-weight: 500; color: var(--ink); }
-.file p { margin: 6px 0 0; font-size: 14px; color: var(--body); }
-
-.steps { margin: 36px 0 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 28px; }
-.steps > li { counter-increment: step; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 16px; }
-.steps > li::before { content: counter(step); grid-row: 1 / span 3; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-weight: 700; font-size: 14px; }
-.steps > li > * { grid-column: 2; min-width: 0; }
-.steps h3 { margin: 4px 0 0; font-size: 17px; }
-.steps p { margin: 4px 0 0; color: var(--body); font-size: 15px; }
-pre { margin: 12px 0 0; padding: 18px 20px; overflow-x: auto; border-radius: 12px; background: var(--code-bg); color: var(--code-ink); font: 13.5px/1.65 var(--mono); }
-pre code { padding: 0; background: none; font-size: inherit; }
-pre .c { color: var(--code-muted); }
-pre .k { color: var(--code-key); }
-pre .s { color: var(--code-str); }
-
-.story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 36px; border-top: 1px solid var(--line); }
-.story div { padding: 22px 24px 0 0; }
-.story .y { font-family: var(--mono); font-size: 13px; color: var(--muted); }
-.story p { margin: 6px 0 0; font-size: 15px; color: var(--body); }
-
-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 96px; padding: 28px 0 40px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
-footer a { color: var(--body); }
-
-@media (max-width: 860px) {
-  .grid, .story { grid-template-columns: minmax(0, 1fr); }
-  .split { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .hero { padding-top: 32px; }
-  section { padding-top: 64px; }
-  .nav .hide-sm { display: none; }
-}
-</style>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
 <div class="wrap">
 <header class="topbar">
   <a class="mark" href="./"><b>{</b>me<b>}</b></a>
   <nav class="nav">
-    <a class="hide-sm" href="#start">Get started</a>
+    <a class="hide-sm" href="write/">Write your CV</a>
+    <a class="hide-sm" href="#start">Publish</a>
     <a href="https://dobrinov.github.io/me/">Example CV</a>
     <a href="https://github.com/dobrinov/jsonme/tree/main/me">GitHub</a>
   </nav>
@@ -162,7 +32,7 @@ footer a { color: var(--body); }
   <h1>Your CV, in your own repo.</h1>
   <p class="lead">{me} turns a <code>me.json</code> file and a folder of Markdown posts into a CV and blog, published by a GitHub Action. No server, no account, nothing to pay. Built to show what an AI can't write for you.</p>
   <div class="cta">
-    <a class="btn primary" href="#start">Get started</a>
+    <a class="btn primary" href="write/">Write your CV with AI</a>
     <a class="btn" href="https://dobrinov.github.io/me/">See a live CV ↗</a>
   </div>
 </div>
@@ -228,7 +98,7 @@ cp -R /tmp/jsonme/me/template my-cv &amp;&amp; cd my-cv</code></pre>
     </li>
     <li>
       <h3>Write your <code>me.json</code></h3>
-      <p>Your editor autocompletes it from the schema. Check it and preview the site before you publish:</p>
+      <p>The quickest way: <a href="write/">give your AI our prompt and your LinkedIn PDF</a>, then paste the result to check it and preview your CV in the browser. Save it as <code>me.json</code> in the folder. To edit by hand, your editor autocompletes it from the schema, and you can check and preview it locally:</p>
       <pre><code>node /tmp/jsonme/me/src/build.mjs --check            <span class="c"># validate me.json</span>
 node /tmp/jsonme/me/src/build.mjs --out _site        <span class="c"># then open _site/index.html</span></code></pre>
     </li>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Write your me.json · {me}</title>
+<meta name="description" content="Turn your LinkedIn PDF or old CV into a {me} CV with the AI you already use, then check it and preview it here.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../site.css">
+</head>
+<body>
+<div class="wrap">
+<header class="topbar">
+  <a class="mark" href="../"><b>{</b>me<b>}</b></a>
+  <nav class="nav">
+    <a class="hide-sm" href="../#start">Publish</a>
+    <a href="https://dobrinov.github.io/me/">Example CV</a>
+    <a href="https://github.com/dobrinov/jsonme/tree/main/me">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<div class="hero hero-sm">
+  <p class="eyebrow">Write your me.json</p>
+  <h1>From your LinkedIn PDF to a {me} CV in 10 minutes.</h1>
+  <p class="lead">The AI you already use writes the file. It reads your old CV, then asks you for the proof and numbers it can't know. Paste the result here to check it and see your CV before you publish. Nothing you paste leaves your browser.</p>
+</div>
+
+<ol class="flow">
+  <li class="step-card">
+    <div class="step-head"><span class="n">1</span><h2>Give your AI the prompt</h2></div>
+    <p>Open a new chat in Claude, ChatGPT or Gemini. Paste the prompt and attach your LinkedIn PDF (on LinkedIn: your profile → <b>More</b> → <b>Save to PDF</b>) or an old CV. Answer its questions; say <b>"just write it"</b> whenever you've had enough.</p>
+    <div class="row-btns">
+      <button class="btn primary" type="button" data-copy="prompt">Copy the prompt</button>
+      <a class="btn" href="../prompt.md" target="_blank" rel="noopener">Read it first ↗</a>
+    </div>
+    <p class="aside">If your AI can open links, this one line is enough: <code id="short">Read https://dobrinov.github.io/jsonme/prompt.md and help me write my me.json.</code> <button class="link-btn" type="button" data-copy="short">Copy</button></p>
+  </li>
+
+  <li class="step-card">
+    <div class="step-head"><span class="n">2</span><h2>Paste what it gives you</h2></div>
+    <p>Paste the whole answer, code fences and all. An old JsonMe file works too; it is converted for you.</p>
+    <textarea id="json" spellcheck="false" autocomplete="off" aria-label="Your me.json" placeholder='{ "basics": { "name": "Your Name" }, … }'></textarea>
+    <div class="row-btns small">
+      <button class="link-btn" type="button" data-load="template">Start from the empty template</button>
+      <button class="link-btn" type="button" data-load="example">Load an example</button>
+      <button class="link-btn" type="button" data-load="clear">Clear</button>
+    </div>
+    <div id="report" class="report" aria-live="polite"></div>
+  </li>
+
+  <li class="step-card">
+    <div class="step-head"><span class="n">3</span><h2>Check the preview, then save the file</h2></div>
+    <p>This is your CV as it will look when published. Not happy with a part? Tell your AI what to change and paste the new version above.</p>
+    <div class="preview-bar">
+      <span class="seg-ctl" role="group" aria-label="Preview width">
+        <button type="button" data-width="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-width="phone" aria-pressed="false">Phone</button>
+      </span>
+      <span class="row-btns">
+        <button class="btn" type="button" data-copy="json" disabled>Copy JSON</button>
+        <button class="btn primary" type="button" id="download" disabled>Download me.json</button>
+      </span>
+    </div>
+    <div class="preview" id="preview-wrap"><iframe id="preview" title="Preview of your CV"></iframe><p class="empty" id="empty">Your CV shows here once you paste a file.</p></div>
+    <p class="aside">Next: put <code>me.json</code> in your repo and push. <a href="../#start">How to publish →</a></p>
+  </li>
+</ol>
+</main>
+
+<footer>
+  <span>{me} by <a href="https://dobrinov.github.io/me/">Deyan Dobrinov</a></span>
+  <span><a href="https://github.com/dobrinov/jsonme/tree/main/me">Source on GitHub</a></span>
+</footer>
+</div>
+
+<script type="module">
+import { renderProfile } from '../lib/render.mjs';
+import { validate } from '../lib/validate.mjs';
+import { migrate, isLegacy } from '../lib/migrate.mjs';
+
+const $ = (id) => document.getElementById(id);
+const area = $('json'), report = $('report'), frame = $('preview'), empty = $('empty');
+const DRAFT = 'me-write-draft';
+let assets = null, current = null;
+
+const text = (url) => fetch(url).then((r) => { if (!r.ok) throw new Error(url); return r.text(); });
+const getAssets = () => assets || (assets = Promise.all([text('../lib/theme.css'), text('../lib/me.js')]));
+
+// AI answers come wrapped in prose and ``` fences: keep the outermost JSON object.
+const extract = (raw) => {
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const body = fenced ? fenced[1] : raw;
+  const a = body.indexOf('{'), b = body.lastIndexOf('}');
+  return a === -1 || b < a ? body.trim() : body.slice(a, b + 1);
+};
+
+// "Unexpected token } in JSON at position 812" → a line and column a person can find.
+const where = (src, err) => {
+  const m = String(err.message).match(/position (\d+)/) || String(err.message).match(/column (\d+)/);
+  if (/line \d+/.test(err.message)) return ''; // the browser already said where
+  if (!m) return '';
+  const before = src.slice(0, Number(m[1]));
+  const line = before.split('\n').length;
+  return `line ${line}, column ${before.length - before.lastIndexOf('\n')}`;
+};
+
+const HINTS = [
+  [/basics\.name is required/, 'Add your name: "basics": { "name": "…" }.'],
+  [/pick your best 3/, 'Keep only your three strongest stories.'],
+  [/must be YYYY/, 'Dates look like "2021-03". Leave endDate out for something ongoing.'],
+  [/needs a one-line proof/, 'Add a "proof": one line a reader can check, e.g. a number or a link.'],
+  [/of 3 stories/, 'Stories are what readers remember. Up to three, each true and with an outcome.'],
+  [/no evidence link/, 'A link to a PR, post, talk or live product makes the story credible.'],
+  [/expertise\.ai is empty/, 'Add how you work with AI: what you hand to it, what you keep, how you check it.'],
+  [/expertise\.engineering is empty/, 'Add 2–4 areas you are strong in, each with one line of proof.']
+];
+const hint = (msg) => (HINTS.find(([re]) => re.test(msg)) || [, ''])[1];
+
+const li = (cls, msg) => {
+  const el = document.createElement('li');
+  el.className = cls;
+  const b = document.createElement('b');
+  b.textContent = msg;
+  el.append(b);
+  const h = hint(msg);
+  if (h) { const s = document.createElement('span'); s.textContent = h; el.append(s); }
+  return el;
+};
+
+const show = (state, title, items = [], note = '') => {
+  report.className = `report ${state}`;
+  report.replaceChildren();
+  const head = document.createElement('p');
+  head.className = 'report-head';
+  head.textContent = title;
+  report.append(head);
+  if (note) { const p = document.createElement('p'); p.className = 'report-note'; p.textContent = note; report.append(p); }
+  if (items.length) { const ul = document.createElement('ul'); ul.append(...items); report.append(ul); }
+};
+
+const enable = (on) => document.querySelectorAll('#download, [data-copy="json"]').forEach((b) => { b.disabled = !on; });
+
+async function check() {
+  const raw = area.value;
+  try { if (raw.trim()) localStorage.setItem(DRAFT, raw); else localStorage.removeItem(DRAFT); } catch (e) {}
+  current = null;
+  enable(false);
+  if (!raw.trim()) { report.className = 'report'; report.replaceChildren(); frame.removeAttribute('srcdoc'); empty.hidden = false; return; }
+
+  const src = extract(raw);
+  let me;
+  try { me = JSON.parse(src); }
+  catch (err) { return show('bad', 'This is not valid JSON yet', [li('error', `${err.message.replace(/^JSON\.parse: /, '')}${where(src, err) ? ` (${where(src, err)})` : ''}`)], 'Usually a missing comma or quote. Ask your AI: "The JSON is invalid, give me the whole file again."'); }
+
+  let note = '';
+  if (isLegacy(me)) { me = migrate(me); note = 'This was an old JsonMe file. It has been converted to the new format; download it to keep the converted version.'; }
+  const { errors, warnings } = validate(me);
+  const items = [...errors.map((m) => li('error', m)), ...warnings.map((m) => li('warn', m))];
+  if (errors.length) show('bad', `${errors.length} thing${errors.length > 1 ? 's' : ''} to fix before it can be published`, items, note);
+  else if (warnings.length) show('ok', `Ready to publish. ${warnings.length} suggestion${warnings.length > 1 ? 's' : ''} would make it stronger:`, items, note);
+  else show('ok', 'Ready to publish. Nothing to improve that a checker can see.', [], note);
+
+  if (errors.length) return;
+  current = me;
+  enable(true);
+  const [css, js] = await getAssets();
+  const html = renderProfile(me, [], { builtAt: new Date() })
+    .replace(/<link rel="stylesheet" href="assets\/me\.css">/, () => `<style>${css}</style>`)
+    .replace(/<script src="assets\/me\.js" defer><\/script>/, () => `<script>${js.replace(/<\/script/g, '<\\/script')}<\/script>`)
+    .replace('<head>', '<head><base target="_blank">');
+  frame.srcdoc = html;
+  empty.hidden = true;
+}
+
+let timer;
+area.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(check, 250); });
+
+const loaders = {
+  template: () => text('../lib/template.json'),
+  example: () => text('https://dobrinov.github.io/me/me.json'),
+  clear: async () => ''
+};
+document.querySelectorAll('[data-load]').forEach((b) => b.addEventListener('click', async () => {
+  if (area.value.trim() && !confirm('Replace what is in the box?')) return;
+  try { area.value = await loaders[b.dataset.load](); } catch (e) { area.value = ''; show('bad', 'Could not load that file. Check your connection and try again.'); return; }
+  check();
+}));
+
+const sources = {
+  prompt: () => text('../prompt.md'),
+  short: async () => $('short').textContent,
+  json: async () => JSON.stringify(current, null, 2) + '\n'
+};
+document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
+  const label = b.textContent;
+  try {
+    await navigator.clipboard.writeText(await sources[b.dataset.copy]());
+    b.textContent = 'Copied';
+  } catch (e) {
+    b.textContent = 'Copy failed';
+  }
+  setTimeout(() => { b.textContent = label; }, 1600);
+}));
+
+$('download').addEventListener('click', () => {
+  if (!current) return;
+  const url = URL.createObjectURL(new Blob([JSON.stringify(current, null, 2) + '\n'], { type: 'application/json' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: 'me.json' });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+document.querySelectorAll('[data-width]').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-width]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  $('preview-wrap').classList.toggle('phone', b.dataset.width === 'phone');
+}));
+
+try { area.value = localStorage.getItem(DRAFT) || ''; } catch (e) {}
+check();
+</script>
+</body>
+</html>
