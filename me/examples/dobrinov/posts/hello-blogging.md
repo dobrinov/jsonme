@@ -1,48 +1,120 @@
 ---
-title:  "Hello, blogging!"
-date: 2022-12-03
+title: "How to blog with {me}"
+date: 2026-10-29
+summary: "Write a Markdown file, push it, and it's a post: front matter, formatting, images, drafts and where your posts show up."
+tags: [me, tutorial, markdown]
 ---
 
-After postponning this feature for quite a while I am happy to announce that I was finally able to incoroporate blogging capability into [www.jsonme.com](https://www.jsonme.com).
+You are reading a post written in one Markdown file: [posts/hello-blogging.md](https://github.com/dobrinov/me/blob/main/posts/hello-blogging.md) in my [me repository](https://github.com/dobrinov/me). There is no CMS, database or admin panel. You write a file, push it, and a GitHub Action turns it into this page. This tutorial shows everything the blog engine in [{me}](https://dobrinov.github.io/jsonme/) can do, and it uses each feature as it goes.
 
-It works similar to [Jekyll](https://www.jekyllrb.com) but saves you some maintenance since all you need to care about is [markdown](https://en.wikipedia.org/wiki/Markdown) (Github flavoured).
+## Before you start
 
-# How does it work?
-If you have not guessed yet, you are reading a blog post served by this new functionallity. Its source is a [hello-blogging.md](https://github.com/dobrinov/me/blob/main/posts/hello-blogging.md) file located in a [posts](https://github.com/dobrinov/me/tree/main/posts) directory in a [me](https://www.github.com/dobrinov/me) repository in [my Github profile](https://www.github.com/dobrinov/me). Thanks to this the contents of the markdown file can be viewed as a web page located at [https://www.jsonme.com/github/dobrinov/posts/hello-blogging](https://www.jsonme.com/github/dobrinov/posts/hello-blogging).
+You need a {me} site: a repository with your `me.json` and the publish workflow. If you don't have one yet, the [project page](https://dobrinov.github.io/jsonme/#start) gets you there in three steps, and the [write page](https://dobrinov.github.io/jsonme/write/) helps you write `me.json` with the AI you already use.
 
-# How can you create one yourself?
+## Your first post in three steps
 
-## Creating a jsonme "profile"
-In order to start blogging on jsonme.com, you will need to create a "profile" - specify what is your name and how you look like. The blog will look nicer if this information is available.
+1. Create a `posts` folder next to `me.json`.
+2. Add a Markdown file to it. The file name becomes the address: `posts/hello-world.md` is published at `/posts/hello-world/`.
+3. Commit and push. The site rebuilds in about a minute.
 
-1. Create a **public** Github repository called **me**.
-2. Create a folder on your local machine and call it **me**.
-3. Run `git init` inside of it.
-4. Create a **me.json** file in it with the following content:
-```json
-{
-  "name": "John Doe",
-  "image": "https://example.com/profile-picture.jpg" //  Hint: You can use the URL of your Github avatar for profile picture.
-}
-```
-
-5. `git commit -am "Create a jsonme profile"`
-6. `git remote add origin git@github.com:{yourgithubhandle}/me.git`
-7. `git push -u origin main`
-
-## Publishing your first blog post
-1. Create a **posts** directory next to **me.json** file that you just created.
-2. In the posts directory create a file called **hello-blogging.md** with the following content:
 ```markdown
 ---
-title:  "Hello, blogging!"
-date: 2022-12-03
+title: "Hello, world"
+date: 2026-10-29
 ---
-I have just started a [jsonme](https://www.jsonme.com) blog.
+
+My first post.
 ```
 
-3. `git commit -am "Create my first jsonme blog post"`
-4. `git push`
+That is a complete post. Everything else is optional.
 
- **Congratulations!**
- You have just published your blog post. Navigate to [https://www.jsonme.com/github/**{yourgithubhandle}**/posts/hello-blogging](https://www.jsonme.com/github/yourgithubhandle/posts/hello-blogging) to see it.
+## Front matter
+
+The block between the two `---` lines tells {me} about the post. These are all the fields it reads:
+
+| Field | What it does |
+| --- | --- |
+| `title` | The headline. Without it, the file name is used. |
+| `date` | `YYYY-MM-DD`. Posts are listed newest first, and the date shows above the title. |
+| `summary` | One or two sentences. Used in the RSS feed, search results, link previews and `llms.txt`. |
+| `tags` | A list, like `[rails, payments]`. Shown as chips under the title. |
+| `draft` | `true` keeps the post off the site until you remove it. |
+
+This post's front matter is:
+
+```markdown
+---
+title: "How to blog with {me}"
+date: 2026-10-29
+summary: "Write a Markdown file, push it, and it's a post: front matter, formatting, images, drafts and where your posts show up."
+tags: [me, tutorial, markdown]
+---
+```
+
+## Writing
+
+Posts use the parts of GitHub-flavoured Markdown that a technical post needs:
+
+- **Bold**, *italic*, ~~strikethrough~~ and `inline code`
+- [Links](https://dobrinov.github.io/jsonme/), and bare addresses in angle brackets: <https://github.com/dobrinov/me>
+- Numbered and bulleted lists
+- Headings: start at `##`, because the title is the page's only top heading
+- Quotes, tables, horizontal rules and fenced code blocks
+
+> A quote looks like this. Use it for a pull quote, or for what someone else said.
+
+Code blocks take a language name after the opening fence, so readers and tools know what they are looking at:
+
+```ruby
+def reading_time(words)
+  [1, (words / 220.0).round].max
+end
+```
+
+That function is roughly how the "min read" at the top of this page is calculated.
+
+---
+
+Raw HTML is shown as text, not run. A post can't break the page or load scripts.
+
+## Images
+
+Put the image anywhere in your repository and link to it relative to the post's address. A post lives at `/posts/<name>/`, so an image in `posts/images/` is one folder up:
+
+```markdown
+![The career timeline on my CV](../images/timeline.png)
+```
+
+Images are the only files besides `me.json` and posts that {me} publishes, together with anything under `assets/` or `static/`. Notes, drafts and PDFs in your repository stay private.
+
+## Drafts
+
+Add `draft: true` to the front matter and push as often as you like. The post isn't published until you remove the line. To preview a draft, change it to `draft: false` and build the site on your machine without pushing:
+
+```sh
+node /tmp/jsonme/me/src/build.mjs --out _site   # then open _site/posts/<name>/index.html
+```
+
+## Where your posts show up
+
+One file reaches readers in several places:
+
+| Where | What readers get |
+| --- | --- |
+| The post page | Title, date, reading time, tags and the post itself, in light and dark themes |
+| Your CV | A **Writing** row under "More, if you're curious", with your latest post |
+| `feed.xml` | An RSS feed of your 20 newest posts |
+| Link previews | A card with the title, summary and your photo when someone shares the link |
+| `llms.txt` and `cv.md` | Your posts listed for AI agents that read your site |
+
+If you set `meta.me.repo` in `me.json` to your repository's address, every post also gets a **Suggest an edit** link that opens the file on GitHub.
+
+## Checklist for a good post
+
+1. A title that says what the reader gets.
+2. A `summary`, because link previews and feed readers show it first.
+3. Headings every few paragraphs, so readers can skim.
+4. Code that runs, with the language after the fence.
+5. A date, so readers know how fresh it is.
+
+Write your first post, push it, and it is live. This one took one file and one `git push`.
