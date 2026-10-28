@@ -121,10 +121,6 @@ pre .c { color: var(--code-muted); }
 pre .k { color: var(--code-key); }
 pre .s { color: var(--code-str); }
 
-.story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 36px; border-top: 1px solid var(--line); }
-.story div { padding: 22px 24px 0 0; }
-.story .y { font-family: var(--mono); font-size: 13px; color: var(--muted); }
-.story p { margin: 6px 0 0; font-size: 15px; color: var(--body); }
 
 footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 96px; padding: 28px 0 40px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
 footer a { color: var(--body); }
@@ -176,7 +172,7 @@ textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-
 .preview .empty[hidden] { display: none; }
 
 @media (max-width: 860px) {
-  .grid, .story { grid-template-columns: minmax(0, 1fr); }
+  .grid { grid-template-columns: minmax(0, 1fr); }
   .split { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .hero { padding-top: 32px; }
   section { padding-top: 64px; }
