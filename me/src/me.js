@@ -58,23 +58,47 @@
     sync();
     scroller.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
-    // A bar can be wider than the screen: show its tooltip at the pointer (or the middle of what is visible), clear of the names.
+    // A bar can be wider than the screen: show its tooltip at the pointer (or the middle of what is visible), clear of the names,
+    // and outline only the visible part of it, dotted where the scroll cuts it off.
+    var visible = function () {
+      var gap = parseFloat(getComputedStyle(frame).getPropertyValue('--gap')) || 0;
+      return { from: frame.querySelector('.tl-who').getBoundingClientRect().right + gap, to: scroller.getBoundingClientRect().right };
+    };
+    var hovered = null, lastX = null;
     var tip = function (el, x) {
       var box = el.getBoundingClientRect();
-      var from = frame.querySelector('.tl-who').getBoundingClientRect().right + 8;
-      var to = scroller.getBoundingClientRect().right;
+      var view = visible();
       var w = parseFloat(getComputedStyle(el, '::after').width) + 20 || 0;
-      if (x == null) x = (Math.max(box.left, from) + Math.min(box.right, to)) / 2;
-      var left = Math.max(from, Math.min(x - w / 2, to - w));
+      if (x == null) x = (Math.max(box.left, view.from) + Math.min(box.right, view.to)) / 2;
+      var left = Math.max(view.from, Math.min(x - w / 2, view.to - w));
       el.style.setProperty('--tip-left', (left - box.left) + 'px');
       el.classList.add('tip-at');
+      if (!el.classList.contains('seg')) return;
+      var cutL = Math.max(0, view.from - box.left), cutR = Math.max(0, box.right - view.to);
+      el.style.setProperty('--cut-l', cutL + 'px');
+      el.style.setProperty('--cut-r', cutR + 'px');
+      el.classList.toggle('cut-l', cutL > 1);
+      el.classList.toggle('cut-r', cutR > 1);
+    };
+    var leave = function () {
+      if (hovered) hovered.classList.remove('cut-l', 'cut-r');
+      hovered = null;
     };
     scroller.addEventListener('pointermove', function (event) {
       var el = event.target.closest('.track [data-tip]');
-      if (el) tip(el, event.clientX);
+      if (el !== hovered) leave();
+      if (!el) return;
+      hovered = el;
+      lastX = event.clientX;
+      tip(el, lastX);
     });
+    scroller.addEventListener('pointerleave', leave);
+    scroller.addEventListener('scroll', function () { if (hovered) tip(hovered, lastX); }, { passive: true });
     scroller.addEventListener('focusin', function (event) {
       if (event.target.matches('.track [data-tip]')) tip(event.target);
+    });
+    scroller.addEventListener('focusout', function (event) {
+      if (event.target !== hovered) event.target.classList.remove('cut-l', 'cut-r');
     });
     controls.forEach(function (b) {
       b.addEventListener('click', function () {

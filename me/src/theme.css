@@ -277,7 +277,8 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .track { position: relative; height: 44px; }
 .era { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, var(--hatch-a) 0 6px, var(--hatch-b) 6px 12px); border-left: 1px dashed var(--hatch-line); }
 .seg { position: absolute; top: 8px; height: 28px; padding: 0; border: 0; border-radius: 6px; font: inherit; cursor: pointer; background: var(--accent-soft); color: var(--accent-text); }
-.seg-text { display: block; padding: 0 8px; font-size: 12px; font-weight: 600; line-height: 28px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The label sticks to the left edge of the visible track, so a bar that starts off-screen still shows its period. */
+.seg-text { position: sticky; left: calc(var(--who) + var(--gap)); z-index: 4; display: block; width: fit-content; max-width: 100%; padding: 0 8px; font-size: 12px; font-weight: 600; line-height: 28px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .seg.mono .seg-text { font-family: var(--mono); font-weight: 500; }
 .seg.r2 { background: var(--role2); }
 .seg.r3 { background: var(--role3); color: var(--role3-text); }
@@ -285,6 +286,12 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .seg.edu { background: var(--line-soft); color: var(--body); }
 .seg:hover { box-shadow: inset 0 0 0 2px var(--hover-ring); }
 .seg.on { box-shadow: inset 0 0 0 2px var(--accent); }
+/* me.js: a hovered bar cut off by the scroll is outlined over its visible part, dotted on the cut side. */
+.seg.cut-l, .seg.cut-r { box-shadow: none; }
+.seg.cut-l::before, .seg.cut-r::before { content: ''; position: absolute; top: 0; bottom: 0; left: var(--cut-l, 0); right: var(--cut-r, 0); border: 2px solid var(--hover-ring); border-radius: 6px; pointer-events: none; }
+.seg.on.cut-l::before, .seg.on.cut-r::before { border-color: var(--accent); }
+.seg.cut-l::before { border-left-style: dotted; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.seg.cut-r::before { border-right-style: dotted; border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .dot { position: absolute; top: 8px; width: 28px; height: 28px; margin-left: -14px; padding: 0; border: 0; background: none; cursor: pointer; }
 .dot::before { content: ''; position: absolute; top: 8px; left: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--bg); transition: transform 0.12s; }
 .dot.product::before { background: var(--product); }
