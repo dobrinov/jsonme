@@ -67,7 +67,7 @@ export function cvMarkdown(me, posts, { siteUrl = '' } = {}) {
 
   if (me.projects && me.projects.length) {
     out.push('## Own products', '');
-    for (const p of me.projects) out.push(`- **${p.name}** (${span(p.startDate, p.endDate)}${p.revivedDate ? `, built by hand, revived with AI in ${p.revivedDate.slice(0, 4)}` : ''})${p.url ? ` ${p.url}` : ''}${p.description ? `. ${p.description}` : ''}${p.revival ? ` ${p.revival}` : ''}`);
+    for (const p of me.projects) out.push(`- **${p.name}** (${span(p.startDate, p.endDate)}${p.revivedDate ? `, built by hand, revived with AI in ${p.revivedDate.slice(0, 4)}` : p.vibecoded ? ', vibe-coded' : ''})${p.url ? ` ${p.url}` : ''}${p.description ? `. ${p.description}` : ''}${p.revival ? ` ${p.revival}` : ''}`);
     out.push('');
   }
 

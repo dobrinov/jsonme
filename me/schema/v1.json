@@ -116,6 +116,7 @@
           "endDate": { "$ref": "#/$defs/date" },
           "pausedDate": { "$ref": "#/$defs/date", "description": "When work built by hand stopped." },
           "revivedDate": { "$ref": "#/$defs/date", "description": "When the product was picked up again with AI." },
+          "vibecoded": { "type": "boolean", "description": "Built with AI from the start. Drawn with a star and a hatched bar." },
           "revival": { "type": "string", "description": "What was built after the revival." },
           "highlights": { "type": "array", "items": { "type": "string" } },
           "keywords": { "type": "array", "items": { "type": "string" } }

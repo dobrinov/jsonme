@@ -159,3 +159,18 @@ test('a product built by hand and revived with AI', async () => {
   assert.match(html, /<a href="https:\/\/kit.dev" target="_blank" rel="noopener">Kit<\/a>/);
   assert.match(html, /Revived with AI<\/span><span class="period">Jan 2026 – now · 9m<\/span><\/div><p>Rebuilt it.<\/p>/);
 });
+
+test('a vibe-coded product', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const { cvMarkdown } = await import('../src/outputs.mjs');
+  const me = { basics: { name: 'Ada' }, projects: [
+    { name: 'New', startDate: '2026-09', vibecoded: true },
+    { name: 'Old', startDate: '2025-01', vibecoded: true }
+  ] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /<button class="revival[^"]*" type="button" popovertarget="product-new" data-tip="Vibe-coded · Sep 2026 – now · 1m"/);
+  assert.match(html, /class="seg product ai mono"[^>]*popovertarget="product-old"/);
+  assert.match(html, /<span class="s">Vibe-coded · 1y 9m<\/span>/);
+  assert.match(html, /<\/svg><\/span>Vibe-coded<\/span><span><i class="era-key">/, 'the legend explains the star');
+  assert.match(cvMarkdown(me, []), /\*\*New\*\* \([^)]*, vibe-coded\)/);
+});

@@ -189,31 +189,36 @@
       "name": "Trace",
       "description": "Web analytics for the agentic era. An analyst agent turns how people use a site into improvement insights tied to its KPIs, each insight copies out as a prompt for a coding agent, and once the change ships Trace measures whether it worked. Written in Rust.",
       "url": "https://github.com/dobrinov/tracetells",
-      "startDate": "2026-10"
+      "startDate": "2026-10",
+      "vibecoded": true
     },
     {
       "name": "Investor",
       "description": "A local-first investment planner: double-entry books, scenario projections and tax reporting, with an MCP server so an AI assistant can read the books and record changes you approve. Everything stays in one encrypted .invest file. Rust compiled to WebAssembly, with a desktop app.",
       "url": "https://dobrinov.github.io/investor/",
-      "startDate": "2026-10"
+      "startDate": "2026-10",
+      "vibecoded": true
     },
     {
       "name": "Circle",
       "description": "An open-source, Arc-style browser built in Rust on Chromium (CEF), with spaces, a command bar, split view and an MCP server for AI agents.",
       "url": "https://dobrinov.github.io/circle/",
-      "startDate": "2026-10"
+      "startDate": "2026-10",
+      "vibecoded": true
     },
     {
       "name": "Shape",
       "description": "One board for a whole project: mindmaps, kanban boards, timelines, screen sketches and decisions, kept as a plain-text file in the repo. A board copies out as a Markdown spec for a coding agent to build from. Rust compiled to WebAssembly.",
       "url": "https://dobrinov.github.io/shape/",
-      "startDate": "2026-10"
+      "startDate": "2026-10",
+      "vibecoded": true
     },
     {
       "name": "Schema",
       "description": "Interactive ER diagrams and visual git diffs for Postgres, MySQL, SQLite and Rails schemas, plus a design mode that turns sketched changes into a spec an agent implements. One Rust engine compiled to WebAssembly runs the CLI, the browser viewer and embeddable diagrams.",
       "url": "https://dobrinov.github.io/schema/",
-      "startDate": "2026-09"
+      "startDate": "2026-09",
+      "vibecoded": true
     },
     {
       "name": "Wunderkind",
@@ -227,7 +232,7 @@
     {
       "name": "JsonMe",
       "description": "JsonMe is a web application allowing software engineers to maintain a resume in json format and keep it in their Github/Gitlab profile. The CV that you are looking at the moment is generated with it.",
-      "url": "https://www.jsonme.com/",
+      "url": "https://dobrinov.github.io/me/",
       "startDate": "2021-09",
       "pausedDate": "2022-12",
       "revivedDate": "2026-10",

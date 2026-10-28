@@ -43,6 +43,7 @@ The career line has one row per employer (`work` entries with the same `name`), 
 - `work[].scope` names a change under the same title, e.g. `"position": "Team lead", "scope": "Reports to the CTO"`. It is its own step in the growth path.
 - A story in `highlights` is listed under the role whose `scope` or `position` equals its `when` (a scope wins), and on a product whose name is in the story's title.
 - A product built by hand and picked up again with AI takes `pausedDate`, `revivedDate` and `revival` (what was built since). It is drawn as a bar, a dashed pause and a star where the revival starts.
+- A product built with AI from the start takes `"vibecoded": true`. It is drawn with a star where it starts and a hatched bar; the legend explains the star.
 
 Links in `me.json` and posts may be `http(s)`, `mailto` or relative; other schemes are dropped. From the repo, only images, `assets/`, `static/` and `CNAME` are copied to the site, so notes or drafts next to `me.json` stay private.
 

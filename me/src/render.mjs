@@ -253,6 +253,23 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
   for (const p of products) {
     const id = `product-${slug(p.name)}`;
     const story = stories.find((s) => s.title.toLowerCase().includes(p.name.toLowerCase()));
+    if (p.vibecoded && !p.revivedDate) {
+      // Vibe-coded from the start: a star where it starts, and a hatched bar once it is long enough to draw one.
+      const from = toYear(p.startDate, now);
+      const short = toYear(p.endDate, now) - from < 0.2;
+      const tip = `Vibe-coded · ${range(p.startDate, p.endDate)}`;
+      const star = short ? (from + toYear(p.endDate, now)) / 2 : from;
+      rows.push(row(id, p.name, `Vibe-coded · ${duration(p.startDate, p.endDate, now)}`, [
+        short ? '' : segment(id, p.startDate, p.endDate, { cls: 'product ai mono', text: duration(p.startDate, p.endDate, now), tip }),
+        `<button class="revival${tipEdge(star)}" type="button" popovertarget="${id}" data-tip="${e(tip)}" aria-label="${e(tip)}" style="left:${fixed(pos(star))}%">${STAR}</button>`,
+        short ? `<span class="dot-label" style="left:calc(${fixed(pos(star))}% + 14px)" aria-hidden="true">${e(duration(p.startDate, p.endDate, now))}</span>` : ''
+      ].join('')));
+      pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, [
+        p.description ? `<p class="pop-lead">${md(p.description)}</p>` : '',
+        item(`<span class="star">${STAR}</span>Vibe-coded`, p.startDate, p.endDate, '', story, 0, ' ai')
+      ].join('')));
+      continue;
+    }
     if (!p.revivedDate) {
       rows.push(row(id, p.name, duration(p.startDate, p.endDate, now), segment(id, p.startDate, p.endDate, { cls: 'product mono', text: duration(p.startDate, p.endDate, now), tip: `${p.name} · ${range(p.startDate, p.endDate)}` })));
       pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, item('Own product', p.startDate, p.endDate, p.description ? `<p>${md(p.description)}</p>` : '', story, 0)));
@@ -292,9 +309,11 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
     products.length && `${products.length} own ${products.length === 1 ? 'product' : 'products'}`
   ].filter(Boolean).join(' · ');
   const revivals = products.some((p) => p.revivedDate);
+  const vibecoded = products.some((p) => p.vibecoded && !p.revivedDate);
+  const starKey = revivals && vibecoded ? 'Vibe-coded or revived with AI' : vibecoded ? 'Vibe-coded' : 'Revived with AI';
 
   return `<section aria-labelledby="career">
-<div class="section-head"><h2 class="eyebrow" id="career">Career</h2><span class="legend">${jobs.length ? '<span><i></i>Employers</span>' : ''}${products.length ? '<span><i class="product"></i>Own products</span>' : ''}${revivals ? `<span><i class="paused-key"></i>Paused</span><span><span class="star">${STAR}</span>Revived with AI</span>` : ''}${schools.length ? '<span><i class="edu"></i>Education</span>' : ''}${era == null ? '' : '<span><i class="era-key"></i>AI era</span>'}</span></div>
+<div class="section-head"><h2 class="eyebrow" id="career">Career</h2><span class="legend">${jobs.length ? '<span><i></i>Employers</span>' : ''}${products.length ? '<span><i class="product"></i>Own products</span>' : ''}${revivals ? '<span><i class="paused-key"></i>Paused</span>' : ''}${revivals || vibecoded ? `<span><span class="star">${STAR}</span>${starKey}</span>` : ''}${schools.length ? '<span><i class="edu"></i>Education</span>' : ''}${era == null ? '' : '<span><i class="era-key"></i>AI era</span>'}</span></div>
 <div class="tl-top">${summary ? `<p class="tl-summary">${e(summary)}</p>` : ''}<span class="tl-jump" hidden><button type="button" data-tl="prev">${ARROW('M10 3L5 8l5 5')}Earlier</button><button type="button" data-tl="next">Now${ARROW('M6 3l5 5-5 5')}</button></span></div>
 <p class="tl-hint">Hover a bar for dates. Click a bar or a name for the full story. Scroll the timeline for earlier years.</p>
 <div class="tl-frame">
