@@ -100,3 +100,36 @@ test('draws roles at one employer as steps when their dates differ', async () =>
   assert.match(html, /class="seg job r2"[^>]*data-role="0"/);
   assert.match(html, /<span class="s">Engineer → Lead<\/span>/);
 });
+
+test('a change of scope under the same title is one bar and a step in the growth path', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, work: [
+    { name: 'Acme', position: 'Lead', scope: 'Reports to the CTO', startDate: '2022-01', highlights: ['Design library'] },
+    { name: 'Acme', position: 'Lead', startDate: '2019-01' },
+    { name: 'Acme', position: 'Engineer', startDate: '2016-01' }
+  ], highlights: [
+    { title: 'The rewrite', where: 'Acme', when: 'Reports to the CTO', problem: 'p', did: 'd', outcome: 'o' },
+    { title: 'The parser', where: 'Acme', when: 'Lead', problem: 'p', did: 'd', outcome: 'o' }
+  ] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.equal(html.match(/class="seg job/g).length, 2);
+  assert.match(html, /class="seg job r2"[^>]*data-tip="Lead · Jan 2019 – now/);
+  assert.match(html, /<span class="s">Engineer → Lead<\/span>/);
+  assert.match(html, /<ol class="growth"><li class="step" data-item="2">.*Engineer.*<li class="step now" data-item="0"><div class="step-head"><span class="t">Reports to the CTO<span class="was">Lead<\/span>/s);
+  assert.match(html, /<li class="step" data-item="1">.*<li>The parser · <a href="#s2">Story →<\/a><\/li><\/ul><\/li><li class="step now"/s);
+  assert.match(html, /<li>The rewrite · <a href="#s1">Story →<\/a><\/li><\/ul><\/li><\/ol>/);
+});
+
+test('a product built by hand and revived with AI', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, projects: [
+    { name: 'Kit', startDate: '2021-01', pausedDate: '2022-01', revivedDate: '2026-01', revival: 'Rebuilt it.' }
+  ] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /data-tip="Built by hand · Jan 2021 – Jan 2022 · 1y"/);
+  assert.match(html, /<span class="paused" style="left:[\d.]+%;width:[\d.]+%"/);
+  assert.match(html, /class="seg product ai mono"[^>]*data-tip="Revived with AI · Jan 2026 – now · 9m"/);
+  assert.match(html, /<button class="revival[^"]*" type="button" popovertarget="product-kit"/);
+  assert.match(html, /<span class="s">By hand 2021 · revived with AI 2026<\/span>/);
+  assert.match(html, /Revived with AI<\/span><span class="period">Jan 2026 – now · 9m<\/span><\/div><p>Rebuilt it.<\/p>/);
+});

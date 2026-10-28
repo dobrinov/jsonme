@@ -11,7 +11,7 @@ export function validate(me) {
   if (!me.basics || typeof me.basics.name !== 'string' || !me.basics.name.trim()) errors.push('basics.name is required');
 
   const dates = (list, path) => (list || []).forEach((x, i) => {
-    for (const key of ['startDate', 'endDate']) {
+    for (const key of ['startDate', 'endDate', 'pausedDate', 'revivedDate']) {
       if (x[key] != null && !DATE.test(x[key])) errors.push(`${path}[${i}].${key} must be YYYY, YYYY-MM or YYYY-MM-DD, got "${x[key]}"`);
     }
   });

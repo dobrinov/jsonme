@@ -35,6 +35,38 @@
     sync();
   });
 
+  // Career timeline: wider than the screen, opened at the present. Fades and buttons show there is more to the left.
+  document.querySelectorAll('.tl-frame').forEach(function (frame) {
+    var scroller = frame.querySelector('.timeline-scroll');
+    var section = frame.closest('section');
+    var jump = section && section.querySelector('.tl-jump');
+    var controls = section ? section.querySelectorAll('[data-tl]') : [];
+    var sync = function () {
+      var max = scroller.scrollWidth - scroller.clientWidth;
+      var prev = scroller.scrollLeft > 4;
+      var next = scroller.scrollLeft < max - 4;
+      frame.classList.toggle('can-prev', prev);
+      frame.classList.toggle('can-next', next);
+      if (jump) jump.hidden = max <= 4;
+      controls.forEach(function (b) {
+        var on = b.getAttribute('data-tl') === 'prev' ? prev : next;
+        if (b.classList.contains('tl-edge')) b.hidden = !on;
+        else b.disabled = !on;
+      });
+    };
+    scroller.scrollLeft = scroller.scrollWidth;
+    sync();
+    scroller.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    controls.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var track = scroller.clientWidth - frame.querySelector('.tl-who').offsetWidth;
+        if (b.getAttribute('data-tl') === 'prev') scroller.scrollBy({ left: -Math.max(200, track * 0.8), behavior: 'smooth' });
+        else scroller.scrollTo({ left: scroller.scrollWidth, behavior: 'smooth' });
+      });
+    });
+  });
+
   // Career popovers open next to whatever opened them. Without this script they open centred.
   var invoker = null;
   var place = function (pop) {

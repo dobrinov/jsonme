@@ -57,7 +57,7 @@ export function cvMarkdown(me, posts, { siteUrl = '' } = {}) {
     for (const g of groups) {
       out.push(`### ${g.name} (${span(g.start, g.end)})`, '');
       for (const r of g.roles) {
-        out.push(`**${r.position || 'Role'}**${r.summary ? `. ${r.summary}` : ''}`, '');
+        out.push(`**${r.position || 'Role'}**${r.scope ? ` (${r.scope})` : ''}${r.summary ? `. ${r.summary}` : ''}`, '');
         if (r.highlights && r.highlights.length) out.push(...r.highlights.map((h) => `- ${h}`), '');
       }
     }
@@ -65,7 +65,7 @@ export function cvMarkdown(me, posts, { siteUrl = '' } = {}) {
 
   if (me.projects && me.projects.length) {
     out.push('## Own products', '');
-    for (const p of me.projects) out.push(`- **${p.name}** (${span(p.startDate, p.endDate)})${p.url ? ` ${p.url}` : ''}${p.description ? `. ${p.description}` : ''}`);
+    for (const p of me.projects) out.push(`- **${p.name}** (${span(p.startDate, p.endDate)}${p.revivedDate ? `, built by hand, revived with AI in ${p.revivedDate.slice(0, 4)}` : ''})${p.url ? ` ${p.url}` : ''}${p.description ? `. ${p.description}` : ''}${p.revival ? ` ${p.revival}` : ''}`);
     out.push('');
   }
 

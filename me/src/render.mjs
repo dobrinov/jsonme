@@ -158,6 +158,9 @@ const duration = (from, to, now) => {
 };
 const CLOSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
+const STAR = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>';
+const ARROW = (d) => `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+
 function career(me, stats, now) {
   const jobs = employers(me.work).sort((a, b) => toYear(a.start, now) - toYear(b.start, now));
   const products = (me.projects || []).filter((p) => p.startDate).sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
@@ -168,80 +171,132 @@ function career(me, stats, now) {
   const END = Math.floor(now) + 1;
   const pos = (y) => ((Math.min(Math.max(y, START), END) - START) / (END - START)) * 100;
   const fixed = (n) => n.toFixed(2);
+  const at = (d) => pos(toYear(d, now));
   const stories = (me.highlights || []).slice(0, 3).map((s, i) => ({ ...s, id: `s${i + 1}` }));
   const range = (from, to) => `${monthYear(from)} – ${monthYear(to)} · ${duration(from, to, now)}`;
+  const tipEdge = (y) => (pos(y) < 4 ? ' tip-start' : pos(y) > 96 ? ' tip-end' : '');
 
-  // One bar per span; spans too short to show text become a dot with the duration beside it.
-  const segment = (target, from, to, { cls, text, tip, minWidth = 6, role }) => {
-    const L = pos(toYear(from, now));
-    const W = pos(toYear(to, now)) - L;
+  // One bar per span. The track is a fixed number of pixels per year, so spans under ~2.5 months become a dot.
+  const segment = (target, from, to, { cls, text, tip, minYears = 0.45, role }) => {
+    const a = toYear(from, now);
+    const b = toYear(to, now);
+    const L = pos(a);
+    const W = pos(b) - L;
     const mid = L + W / 2;
-    const edge = mid < 10 ? ' tip-start' : mid > 90 ? ' tip-end' : '';
     const attrs = `type="button" popovertarget="${target}"${role == null ? '' : ` data-role="${role}"`} data-tip="${e(tip)}" aria-label="${e(tip)}"`;
-    if (W < 2.4) return `<button class="dot ${cls}${edge}" ${attrs} style="left:${fixed(mid)}%"></button><span class="dot-label" style="left:calc(${fixed(mid)}% + 14px)" aria-hidden="true">${e(duration(from, to, now))}</span>`;
-    return `<button class="seg ${cls}${edge}" ${attrs} style="left:${fixed(L)}%;width:calc(${fixed(W)}% - 2px)"><span class="seg-text">${W >= minWidth ? e(text) : ''}</span></button>`;
+    if (b - a < 0.2) return `<button class="dot ${cls}${tipEdge((a + b) / 2)}" ${attrs} style="left:${fixed(mid)}%"></button><span class="dot-label" style="left:calc(${fixed(mid)}% + 14px)" aria-hidden="true">${e(duration(from, to, now))}</span>`;
+    return `<button class="seg ${cls}${tipEdge((a + b) / 2)}" ${attrs} style="left:${fixed(L)}%;width:calc(${fixed(W)}% - 2px)"><span class="seg-text">${b - a >= minYears ? e(text) : ''}</span></button>`;
   };
   const row = (id, name, sub, segments) => `<div class="tl-row"><button type="button" class="tl-who" popovertarget="${id}"><span class="n">${e(name)}</span><span class="s">${e(sub)}</span></button><div class="track">${era == null ? '' : `<span class="era" style="left:${fixed(era)}%;right:${fixed(100 - pos(now))}%"></span>`}${segments}</div></div>`;
-  const item = (title, from, to, body, story, n) => `<div class="pop-item" data-item="${n}"><div class="pop-item-head"><span class="t">${e(title || '')}</span><span class="period">${range(from, to)}</span></div>${body}${story ? `<a class="story-link" href="#${story.id}">Signature work: ${e(story.title)} →</a>` : ''}</div>`;
+  const item = (title, from, to, body, story, n, cls = '') => `<div class="pop-item${cls}" data-item="${n}"><div class="pop-item-head"><span class="t">${title || ''}</span><span class="period">${range(from, to)}</span></div>${body}${story ? `<a class="story-link" href="#${story.id}">Signature work: ${e(story.title)} →</a>` : ''}</div>`;
   const popover = (id, cls, name, url, from, to, items) => `<div class="pop ${cls}" id="${id}" popover>
 <div class="pop-head"><div><h3>${url ? `<a href="${e(href(url))}">${e(name)}</a>` : e(name)}</h3><span class="period">${range(from, to)}</span></div><button type="button" class="pop-close" popovertarget="${id}" popovertargetaction="hide" aria-label="Close">${CLOSE}</button></div>
 ${items}${url ? `<a class="site" href="${e(href(url))}">${e(hostOf(url))} ↗</a>` : ''}
 </div>`;
   const era = stats.aiEra < END ? pos(stats.aiEra) : null;
+  // Consecutive equal values collapse: Team lead, Team lead -> Team lead.
+  const squash = (list) => list.filter((x, i) => x !== list[i - 1]);
 
   const rows = [];
   const pops = [];
   if (jobs.length) rows.push('<p class="tl-group">Work</p>');
   for (const g of jobs) {
     const id = `job-${slug(g.name)}`;
-    // Roles are drawn as steps only when their start dates tell them apart.
+    // Roles are drawn as steps only when their start dates tell them apart; me.json lists them newest first.
     const asc = [...g.roles].sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
     const steps = asc.length > 1 && new Set(asc.map((r) => r.startDate)).size === asc.length;
-    const order = steps ? [...asc].reverse() : g.roles;
+    const path = steps ? asc : [...g.roles].reverse();
+    const order = [...path].reverse();
     const ends = new Map(asc.map((r, i) => [r, steps ? (asc[i + 1] ? asc[i + 1].startDate : g.end) : r.endDate || g.end]));
-    const sub = g.roles.length > 1 ? (steps ? asc : [...g.roles].reverse()).map((r) => r.position).filter(Boolean).join(' → ') : `${g.roles[0].position || ''} · ${duration(g.start, g.end, now)}`;
+    const sub = g.roles.length > 1 ? squash(path.map((r) => r.position).filter(Boolean)).join(' → ') : `${g.roles[0].position || ''} · ${duration(g.start, g.end, now)}`;
+    // The bar shows title changes only; a change of scope under the same title shows in the popover.
+    const bars = [];
+    if (steps) for (const r of asc) {
+      const last = bars[bars.length - 1];
+      if (last && last.position === r.position) { last.to = ends.get(r); last.role = r; } else bars.push({ position: r.position, from: r.startDate, to: ends.get(r), role: r });
+    }
     const segments = steps
-      ? asc.map((r, i) => segment(id, r.startDate, ends.get(r), { cls: `job r${Math.min(i, 2) + 1}`, text: r.position, tip: `${r.position} · ${range(r.startDate, ends.get(r))}`, minWidth: 9, role: order.indexOf(r) })).join('')
+      ? bars.map((b, i) => segment(id, b.from, b.to, { cls: `job r${Math.min(i, 2) + 1}`, text: b.position, tip: `${b.position} · ${range(b.from, b.to)}`, minYears: 0.9, role: order.indexOf(b.role) })).join('')
       : segment(id, g.start, g.end, { cls: 'job mono', text: duration(g.start, g.end, now), tip: `${g.name} · ${range(g.start, g.end)}` });
     rows.push(row(id, g.name, sub, segments));
-    pops.push(popover(id, 'job-pop', g.name, g.url, g.start, g.end, order.map((r, n) => {
-      const story = stories.find((s) => s.where === g.name && (g.roles.length === 1 || s.when === r.position));
-      const body = `${r.summary ? `<p>${inline(r.summary)}</p>` : ''}${r.highlights && r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${inline(h)}</li>`).join('')}</ul>` : ''}`;
-      return item(r.position, steps ? r.startDate : r.startDate || g.start, steps ? ends.get(r) : r.endDate || g.end, body, story, n);
-    }).join('')));
+
+    let items;
+    if (g.roles.length === 1) {
+      const r = g.roles[0];
+      const story = stories.find((s) => s.where === g.name);
+      items = item(e(r.position), r.startDate || g.start, r.endDate || g.end, `${r.summary ? `<p>${inline(r.summary)}</p>` : ''}${r.highlights && r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${inline(h)}</li>`).join('')}</ul>` : ''}`, story, 0);
+    } else {
+      // A growth path, oldest step first: each role with what was built in it. A story belongs to the role whose
+      // scope matches its "when", else to the latest role with that title, preferring one without a scope.
+      const latestFirst = [...path].reverse();
+      const own = (s) => latestFirst.find((r) => r.scope === s.when) || latestFirst.find((r) => !r.scope && r.position === s.when) || latestFirst.find((r) => r.position === s.when);
+      items = `<ol class="growth">${path.map((r, i) => {
+        const latest = i === path.length - 1;
+        const when = steps ? (latest ? `${monthYear(r.startDate)} – ${monthYear(g.end)}` : monthYear(r.startDate)) : r.endDate ? `${monthYear(r.startDate)} – ${monthYear(r.endDate)}` : '';
+        const title = r.scope ? `${e(r.scope)}<span class="was">${e(r.position || '')}</span>` : e(r.position || '');
+        const linked = stories.filter((s) => s.where === g.name && own(s) === r);
+        const lines = [...(r.highlights || []).map((h) => `<li>${inline(h)}</li>`), ...linked.map((s) => `<li>${e(s.title)} · <a href="#${s.id}">Story →</a></li>`)];
+        return `<li class="step${latest ? ' now' : ''}" data-item="${order.indexOf(r)}"><div class="step-head"><span class="t">${title}</span>${when ? `<span class="period">${when}</span>` : ''}</div>${r.summary ? `<p>${inline(r.summary)}</p>` : ''}${lines.length ? `<ul>${lines.join('')}</ul>` : ''}</li>`;
+      }).join('')}</ol>`;
+    }
+    pops.push(popover(id, 'job-pop', g.name, g.url, g.start, g.end, items));
   }
+
   if (products.length) rows.push('<p class="tl-group">Own products</p>');
   for (const p of products) {
     const id = `product-${slug(p.name)}`;
     const story = stories.find((s) => s.title.toLowerCase().includes(p.name.toLowerCase()));
-    rows.push(row(id, p.name, duration(p.startDate, p.endDate, now), segment(id, p.startDate, p.endDate, { cls: 'product mono', text: duration(p.startDate, p.endDate, now), tip: `${p.name} · ${range(p.startDate, p.endDate)}` })));
-    pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, item('Own product', p.startDate, p.endDate, p.description ? `<p>${inline(p.description)}</p>` : '', story, 0)));
+    if (!p.revivedDate) {
+      rows.push(row(id, p.name, duration(p.startDate, p.endDate, now), segment(id, p.startDate, p.endDate, { cls: 'product mono', text: duration(p.startDate, p.endDate, now), tip: `${p.name} · ${range(p.startDate, p.endDate)}` })));
+      pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, item('Own product', p.startDate, p.endDate, p.description ? `<p>${inline(p.description)}</p>` : '', story, 0)));
+      continue;
+    }
+    // Built by hand, paused, then revived with AI: a bar, a dashed gap, and a star where the revival starts.
+    const handEnd = p.pausedDate || p.revivedDate;
+    const revived = toYear(p.revivedDate, now);
+    const tip = `Revived with AI · ${range(p.revivedDate, p.endDate)}`;
+    const segments = [
+      segment(id, p.startDate, handEnd, { cls: 'product mono', text: duration(p.startDate, handEnd, now), tip: `Built by hand · ${range(p.startDate, handEnd)}`, role: 0 }),
+      p.pausedDate ? `<span class="paused" style="left:${fixed(at(p.pausedDate))}%;width:${fixed(at(p.revivedDate) - at(p.pausedDate))}%" aria-hidden="true"></span>` : '',
+      toYear(p.endDate, now) - revived >= 0.2 ? segment(id, p.revivedDate, p.endDate, { cls: 'product ai mono', text: duration(p.revivedDate, p.endDate, now), tip, role: 1 }) : '',
+      `<button class="revival${tipEdge(revived)}" type="button" popovertarget="${id}" data-role="1" data-tip="${e(tip)}" aria-label="${e(tip)}" style="left:${fixed(pos(revived))}%">${STAR}</button>`
+    ].join('');
+    rows.push(row(id, p.name, `By hand ${year(p.startDate)} · revived with AI ${year(p.revivedDate)}`, segments));
+    pops.push(popover(id, 'product-pop', p.name, p.url, p.startDate, p.endDate, [
+      p.description ? `<p class="pop-lead">${inline(p.description)}</p>` : '',
+      item('Built by hand', p.startDate, handEnd, '', story, 0),
+      item(`<span class="star">${STAR}</span>Revived with AI`, p.revivedDate, p.endDate, p.revival ? `<p>${inline(p.revival)}</p>` : '', null, 1, ' ai')
+    ].join('')));
   }
+
   if (schools.length) rows.push('<p class="tl-group">Education</p>');
   for (const x of schools) {
     const id = `edu-${slug(x.institution)}`;
     const study = [x.studyType, x.area].filter(Boolean).join(', ');
     rows.push(row(id, x.institution, study, segment(id, x.startDate, x.endDate, { cls: 'edu mono', text: duration(x.startDate, x.endDate, now), tip: `${x.institution} · ${range(x.startDate, x.endDate)}` })));
-    pops.push(popover(id, 'edu-pop', x.institution, x.url, x.startDate, x.endDate, item(study, x.startDate, x.endDate, '', null, 0)));
+    pops.push(popover(id, 'edu-pop', x.institution, x.url, x.startDate, x.endDate, item(e(study), x.startDate, x.endDate, '', null, 0)));
   }
 
-  const step = END - START > 24 ? Math.ceil((END - START) / 10) : 2;
   const ticks = [];
-  for (let y = START; y < END; y += step) if (era == null || Math.abs(y - stats.aiEra) >= 1.5) ticks.push(y);
+  for (let y = START; y < END; y += 1) if (era == null || Math.abs(y - stats.aiEra) >= 0.75) ticks.push(y);
   const summary = [
     stats.years && `${stats.years} years shipping software`,
     jobs.length && `${jobs.length} ${jobs.length === 1 ? 'employer' : 'employers'}`,
     products.length && `${products.length} own ${products.length === 1 ? 'product' : 'products'}`
   ].filter(Boolean).join(' · ');
+  const revivals = products.some((p) => p.revivedDate);
 
   return `<section aria-labelledby="career">
-<div class="section-head"><h2 class="eyebrow" id="career">Career</h2><span class="legend">${jobs.length ? '<span><i></i>Employers</span>' : ''}${products.length ? '<span><i class="product"></i>Own products</span>' : ''}${schools.length ? '<span><i class="edu"></i>Education</span>' : ''}${era == null ? '' : '<span><i class="era-key"></i>AI era</span>'}</span></div>
-${summary ? `<p class="tl-summary">${e(summary)}</p>` : ''}
-<p class="tl-hint">Hover a bar for dates. Click a bar or a name for the full story.</p>
-<div class="timeline-scroll"><div class="timeline">
+<div class="section-head"><h2 class="eyebrow" id="career">Career</h2><span class="legend">${jobs.length ? '<span><i></i>Employers</span>' : ''}${products.length ? '<span><i class="product"></i>Own products</span>' : ''}${revivals ? `<span><i class="paused-key"></i>Paused</span><span><span class="star">${STAR}</span>Revived with AI</span>` : ''}${schools.length ? '<span><i class="edu"></i>Education</span>' : ''}${era == null ? '' : '<span><i class="era-key"></i>AI era</span>'}</span></div>
+<div class="tl-top">${summary ? `<p class="tl-summary">${e(summary)}</p>` : ''}<span class="tl-jump" hidden><button type="button" data-tl="prev">${ARROW('M10 3L5 8l5 5')}Earlier</button><button type="button" data-tl="next">Now${ARROW('M6 3l5 5-5 5')}</button></span></div>
+<p class="tl-hint">Hover a bar for dates. Click a bar or a name for the full story. Scroll the timeline for earlier years.</p>
+<div class="tl-frame">
+<div class="timeline-scroll"><div class="timeline" style="--years:${END - START}">
 ${rows.join('\n')}
-<div class="tl-row tl-axis"><span></span><div class="axis">${ticks.map((y, i) => `<span style="left:${fixed(pos(y))}%${i ? ';transform:translateX(-50%)' : ''}">${y}</span>`).join('')}${era == null ? '' : `<span class="era-label" style="left:calc(${fixed(era)}% + 6px)">AI era →</span>`}</div></div>
+<div class="tl-row tl-axis"><span></span><div class="axis">${ticks.map((y) => `<span style="left:${fixed(pos(y))}%">${y}</span>`).join('')}${era == null ? '' : `<span class="era-label" style="left:calc(${fixed(era)}% + 6px)">AI era →</span>`}</div></div>
 </div></div>
+<button type="button" class="tl-edge prev" data-tl="prev" aria-label="Show earlier years" hidden>${ARROW('M10 3L5 8l5 5')}</button><button type="button" class="tl-edge next" data-tl="next" aria-label="Back to now" hidden>${ARROW('M6 3l5 5-5 5')}</button>
+</div>
 <div class="pops">${pops.join('\n')}</div>
 </section>`;
 }

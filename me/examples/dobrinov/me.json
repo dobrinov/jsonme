@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/dobrinov/jsonme/main/me/schema/v1.json",
   "basics": {
     "name": "Deyan Dobrinov",
-    "label": "Development lead at Dext",
+    "label": "Team lead at Dext",
     "image": "https://avatars.githubusercontent.com/u/996877?v=4",
     "summary": "I am a software developer with more than 14 years of professional experience. In the past several years I am mostly working on Ruby/Rails web projects. I believe that every complex problem has a simple solution, which could be found if you understand where the complexity comes from. I enjoy doing that. I like good UX, and I fight for it.",
     "location": {
@@ -66,7 +66,7 @@
       "title": "A front-end rewrite with no incremental release",
       "hook": "Led 8 people moving Dext’s main app to React, TypeScript and GraphQL, then shipped it in one go.",
       "where": "Dext",
-      "when": "Development lead",
+      "when": "Reports to the CTO",
       "tags": [
         "leadership",
         "depth"
@@ -119,12 +119,12 @@
   "work": [
     {
       "name": "Dext",
-      "position": "Development lead",
+      "position": "Team lead",
+      "scope": "Reports to the CTO",
       "url": "https://www.dext.com/",
       "startDate": "2016-05",
-      "summary": "I am currently a direct report of the CTO. I lead a small team involved in projects that aim to improve system design (strategic refactoring, major updates, etc.).",
+      "summary": "I report directly to the CTO and lead a small team on projects that improve system design: strategic refactoring and major upgrades.",
       "highlights": [
-        "Migration to a new technology stack",
         "Implementation of an internal CSS design library"
       ]
     },
@@ -133,9 +133,8 @@
       "position": "Team lead",
       "url": "https://www.dext.com/",
       "startDate": "2016-05",
-      "summary": "I led a team of 2 software engineers and 1 QA. It was responsible for the application on which I worked during my previous role.",
+      "summary": "My team was 2 software engineers and 1 QA, responsible for the application I had worked on as an engineer.",
       "highlights": [
-        "Implementation of a tool for extracting tabular data from OCR responses",
         "Improved the data extraction capabilities of the application",
         "Replaced custom search implementation with Elasticsearch"
       ]
@@ -187,10 +186,22 @@
   ],
   "projects": [
     {
+      "name": "Wunderkind",
+      "description": "Daily math practice for kids in grades 1 to 12, with an explanation after every mistake.",
+      "url": "https://wunderkind.bg/",
+      "startDate": "2025-04",
+      "pausedDate": "2025-11",
+      "revivedDate": "2026-08",
+      "revival": "Grew it into a full platform: an authored question bank up to grade 12, preparation for the national exams and competitions like Kangaroo, teacher and parent roles, duels, and a weekly report to parents."
+    },
+    {
       "name": "JsonMe",
       "description": "JsonMe is a web application allowing software engineers to maintain a resume in json format and keep it in their Github/Gitlab profile. The CV that you are looking at the moment is generated with it.",
       "url": "https://www.jsonme.com/",
-      "startDate": "2021-09"
+      "startDate": "2021-09",
+      "pausedDate": "2022-12",
+      "revivedDate": "2026-10",
+      "revival": "Rebuilt as {me}: a static CV and blog that developers keep in their own repo and publish with a GitHub Action."
     },
     {
       "name": "Textstandup",
