@@ -21,7 +21,7 @@
   "facts": [
     {
       "value": "19 yrs",
-      "label": "shipping software, since 2007. 15 of them before AI coding tools."
+      "label": "shipping software, since 2007. 18 of them before AI coding tools."
     },
     {
       "value": "Team of 8",
@@ -186,6 +186,36 @@
   ],
   "projects": [
     {
+      "name": "Tracetells",
+      "description": "Web analytics for the agentic era. An analyst agent turns how people use a site into improvement insights tied to its KPIs, each insight copies out as a prompt for a coding agent, and once the change ships Tracetells measures whether it worked. Written in Rust.",
+      "url": "https://github.com/dobrinov/tracetells",
+      "startDate": "2026-10"
+    },
+    {
+      "name": "Investor",
+      "description": "A local-first investment planner: double-entry books, scenario projections and tax reporting, with an MCP server so an AI assistant can read the books and record changes you approve. Everything stays in one encrypted .invest file. Rust compiled to WebAssembly, with a desktop app.",
+      "url": "https://dobrinov.github.io/investor/",
+      "startDate": "2026-10"
+    },
+    {
+      "name": "Circle",
+      "description": "An open-source, Arc-style browser built in Rust on Chromium (CEF), with spaces, a command bar, split view and an MCP server for AI agents.",
+      "url": "https://dobrinov.github.io/circle/",
+      "startDate": "2026-10"
+    },
+    {
+      "name": "Shape",
+      "description": "One board for a whole project: mindmaps, kanban boards, timelines, screen sketches and decisions, kept as a plain-text file in the repo. A board copies out as a Markdown spec for a coding agent to build from. Rust compiled to WebAssembly.",
+      "url": "https://dobrinov.github.io/shape/",
+      "startDate": "2026-10"
+    },
+    {
+      "name": "Schema",
+      "description": "Interactive ER diagrams and visual git diffs for Postgres, MySQL, SQLite and Rails schemas, plus a design mode that turns sketched changes into a spec an agent implements. One Rust engine compiled to WebAssembly runs the CLI, the browser viewer and embeddable diagrams.",
+      "url": "https://dobrinov.github.io/schema/",
+      "startDate": "2026-09"
+    },
+    {
       "name": "Wunderkind",
       "description": "Daily math practice for kids in grades 1 to 12, with an explanation after every mistake.",
       "url": "https://wunderkind.bg/",
@@ -277,6 +307,7 @@
   "meta": {
     "me": {
       "listed": true,
+      "aiEraStart": "2025-11",
       "domains": [
         "Accounting",
         "Document extraction",

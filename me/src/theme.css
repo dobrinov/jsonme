@@ -300,7 +300,7 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .dot.on::before { box-shadow: 0 0 0 3px var(--accent); }
 .seg.ai { background: repeating-linear-gradient(135deg, var(--product-key) 0 3px, var(--product-soft) 3px 6px); }
 .paused { position: absolute; top: 21px; border-top: 2px dashed var(--product-key); }
-.revival { position: absolute; top: 10px; width: 24px; height: 24px; margin-left: -12px; padding: 0; border: 0; background: none; color: var(--product); cursor: pointer; }
+.revival { position: absolute; top: 10px; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-left: -12px; padding: 0; border: 0; background: none; color: var(--product); cursor: pointer; }
 .revival svg { width: 20px; height: 20px; fill: currentColor; stroke: var(--bg); stroke-width: 2; paint-order: stroke; transition: transform 0.12s; }
 .revival:hover svg { transform: scale(1.2); }
 .revival.on svg { stroke: var(--accent); }
