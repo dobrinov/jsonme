@@ -176,6 +176,19 @@ test('Plausible analytics from meta.me.plausible, https only', async () => {
   assert.doesNotMatch(renderProfile(me, [], { builtAt }), /plausible/);
 });
 
+test('ongoing products always reach the present, finished short ones are dots', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, projects: [
+    { name: 'Fresh', startDate: '2026-10', vibecoded: true },
+    { name: 'Revived', startDate: '2024-01', pausedDate: '2024-06', revivedDate: '2026-09' },
+    { name: 'Done', startDate: '2026-03', endDate: '2026-04' }
+  ] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /class="seg product ai mono[^"]*" type="button" popovertarget="product-fresh"[^>]*max\(/);
+  assert.match(html, /class="seg product ai mono[^"]*" type="button" popovertarget="product-revived" data-role="1"/);
+  assert.match(html, /class="dot product mono[^"]*" type="button" popovertarget="product-done"/);
+});
+
 test('rejects an invalid me.json', async () => {
   const src = await mkdtemp(join(tmpdir(), 'me-bad-'));
   await writeFile(join(src, 'me.json'), JSON.stringify({ basics: {} }));

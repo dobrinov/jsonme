@@ -238,7 +238,8 @@ function career(me, stats, now) {
   const range = (from, to) => `${monthYear(from)} – ${monthYear(to)} · ${duration(from, to, now)}`;
   const tipEdge = (y) => (pos(y) < 4 ? ' tip-start' : pos(y) > 96 ? ' tip-end' : '');
 
-  // One bar per span. The track is a fixed number of pixels per year, so spans under ~2.5 months become a dot.
+  // One bar per span. The track is a fixed number of pixels per year, so finished spans under ~2.5 months become
+  // a dot. Ongoing spans always get a bar that reaches the present, however short, so they read as alive.
   const segment = (target, from, to, { cls, text, tip, minYears = 0.45, role }) => {
     const a = toYear(from, now);
     const b = toYear(to, now);
@@ -246,8 +247,8 @@ function career(me, stats, now) {
     const W = pos(b) - L;
     const mid = L + W / 2;
     const attrs = `type="button" popovertarget="${target}"${role == null ? '' : ` data-role="${role}"`} data-tip="${e(tip)}" aria-label="${e(tip)}"`;
-    if (b - a < 0.2) return `<button class="dot ${cls}${tipEdge((a + b) / 2)}" ${attrs} style="left:${fixed(mid)}%"></button><span class="dot-label" style="left:calc(${fixed(mid)}% + 14px)" aria-hidden="true">${e(duration(from, to, now))}</span>`;
-    return `<button class="seg ${cls}${tipEdge((a + b) / 2)}" ${attrs} style="left:${fixed(L)}%;width:calc(${fixed(W)}% - 2px)"><span class="seg-text">${b - a >= minYears ? e(text) : ''}</span></button>`;
+    if (to && b - a < 0.2) return `<button class="dot ${cls}${tipEdge((a + b) / 2)}" ${attrs} style="left:${fixed(mid)}%"></button><span class="dot-label" style="left:calc(${fixed(mid)}% + 14px)" aria-hidden="true">${e(duration(from, to, now))}</span>`;
+    return `<button class="seg ${cls}${tipEdge((a + b) / 2)}" ${attrs} style="${to ? `left:${fixed(L)}%;width:calc(${fixed(W)}% - 2px)` : `right:${fixed(100 - pos(b))}%;width:max(calc(${fixed(W)}% - 2px), 12px)`}"><span class="seg-text">${b - a >= minYears ? e(text) : ''}</span></button>`;
   };
   const row = (id, name, sub, segments) => `<div class="tl-row"><button type="button" class="tl-who" popovertarget="${id}"><span class="n">${e(name)}</span><span class="s">${e(sub)}</span></button><div class="track">${era == null ? '' : `<span class="era" style="left:${fixed(era)}%;right:${fixed(100 - pos(now))}%"></span>`}${segments}</div></div>`;
   const item = (title, from, to, body, story, n, cls = '') => `<div class="pop-item${cls}" data-item="${n}"><div class="pop-item-head"><span class="t">${title || ''}</span><span class="period">${range(from, to)}</span></div>${body}${story ? `<a class="story-link" href="#${story.id}">Signature work: ${e(story.title)} →</a>` : ''}</div>`;
@@ -314,7 +315,7 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
     if (p.vibecoded && !p.revivedDate) {
       // Vibe-coded from the start: a star where it starts, and a hatched bar once it is long enough to draw one.
       const from = toYear(p.startDate, now);
-      const short = toYear(p.endDate, now) - from < 0.2;
+      const short = Boolean(p.endDate) && toYear(p.endDate, now) - from < 0.2;
       const tip = `Vibe-coded · ${range(p.startDate, p.endDate)}`;
       const star = short ? (from + toYear(p.endDate, now)) / 2 : from;
       rows.push(row(id, p.name, `Vibe-coded · ${duration(p.startDate, p.endDate, now)}`, [
@@ -340,7 +341,7 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
     const segments = [
       segment(id, p.startDate, handEnd, { cls: 'product mono', text: duration(p.startDate, handEnd, now), tip: `Built by hand · ${range(p.startDate, handEnd)}`, role: 0 }),
       p.pausedDate ? `<span class="paused" style="left:${fixed(at(p.pausedDate))}%;width:${fixed(at(p.revivedDate) - at(p.pausedDate))}%" aria-hidden="true"></span>` : '',
-      toYear(p.endDate, now) - revived >= 0.2 ? segment(id, p.revivedDate, p.endDate, { cls: 'product ai mono', text: duration(p.revivedDate, p.endDate, now), tip, role: 1 }) : '',
+      !p.endDate || toYear(p.endDate, now) - revived >= 0.2 ? segment(id, p.revivedDate, p.endDate, { cls: 'product ai mono', text: duration(p.revivedDate, p.endDate, now), tip, role: 1 }) : '',
       `<button class="revival${tipEdge(revived)}" type="button" popovertarget="${id}" data-role="1" data-tip="${e(tip)}" aria-label="${e(tip)}" style="left:${fixed(pos(revived))}%">${STAR}</button>`
     ].join('');
     rows.push(row(id, p.name, `By hand ${year(p.startDate)} · revived with AI ${year(p.revivedDate)}`, segments));
