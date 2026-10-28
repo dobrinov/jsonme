@@ -58,8 +58,20 @@
     <div id="report" class="report" aria-live="polite"></div>
   </li>
 
+  <li class="step-card" id="llms">
+    <div class="step-head"><span class="n">3</span><h2>Optional: add how you use LLMs</h2></div>
+    <p>An agent that can read your past prompts finds your patterns: how you plan, build and review with AI. Claude Code keeps your prompts on your machine in <code>~/.claude/projects</code>. Open it in any folder, paste the prompt, and tell it to read those files. Your prompts stay on your machine, and you choose what goes on the CV.</p>
+    <div class="row-btns">
+      <button class="btn" type="button" data-copy="patterns">Copy the patterns prompt</button>
+      <a class="btn" href="../patterns-prompt.md" target="_blank" rel="noopener">Read it first ↗</a>
+    </div>
+    <p class="aside">Or one line for Claude Code: <code id="patterns-short">Read https://dobrinov.github.io/jsonme/patterns-prompt.md and apply it to my prompts in ~/.claude/projects.</code> <button class="link-btn" type="button" data-copy="patternsShort">Copy</button></p>
+    <textarea id="llms-json" class="small-area" spellcheck="false" autocomplete="off" aria-label="The patterns result" placeholder='Paste its answer here: { "llms": { "patterns": [ … ] } }'></textarea>
+    <p class="aside" id="llms-status" aria-live="polite"></p>
+  </li>
+
   <li class="step-card">
-    <div class="step-head"><span class="n">3</span><h2>Check the preview, then save the file</h2></div>
+    <div class="step-head"><span class="n">4</span><h2>Check the preview, then save the file</h2></div>
     <p>This is your CV as it will look when published. Not happy with a part? Tell your AI what to change and paste the new version above.</p>
     <div class="preview-bar">
       <span class="seg-ctl" role="group" aria-label="Preview width">
@@ -199,6 +211,8 @@ document.querySelectorAll('[data-load]').forEach((b) => b.addEventListener('clic
 const sources = {
   prompt: () => text('../prompt.md'),
   short: async () => $('short').textContent,
+  patterns: () => text('../patterns-prompt.md'),
+  patternsShort: async () => $('patterns-short').textContent,
   json: async () => JSON.stringify(current, null, 2) + '\n'
 };
 document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
@@ -224,6 +238,22 @@ document.querySelectorAll('[data-width]').forEach((b) => b.addEventListener('cli
   document.querySelectorAll('[data-width]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
   $('preview-wrap').classList.toggle('phone', b.dataset.width === 'phone');
 }));
+
+// The patterns answer is merged into the CV in the box above, replacing any earlier llms block.
+const llmsArea = $('llms-json'), llmsStatus = $('llms-status');
+llmsArea.addEventListener('input', () => {
+  const raw = llmsArea.value.trim();
+  if (!raw) { llmsStatus.textContent = ''; return; }
+  let found;
+  try { const x = JSON.parse(extract(raw)); found = x.llms || (x.patterns ? x : null); } catch (e) { llmsStatus.textContent = 'This is not valid JSON yet. Paste the whole answer, code fences and all.'; return; }
+  if (!found || !Array.isArray(found.patterns)) { llmsStatus.textContent = 'No patterns found. The answer should contain { "llms": { "patterns": [ … ] } }.'; return; }
+  let cv;
+  try { cv = JSON.parse(extract(area.value)); } catch (e) { llmsStatus.textContent = 'Paste your me.json in step 2 first, then this again.'; return; }
+  cv.llms = found;
+  area.value = JSON.stringify(cv, null, 2) + '\n';
+  llmsStatus.textContent = `Added ${found.patterns.length} pattern${found.patterns.length === 1 ? '' : 's'} to your me.json. Check them in the preview.`;
+  check();
+});
 
 try { area.value = localStorage.getItem(DRAFT) || ''; } catch (e) {}
 check();

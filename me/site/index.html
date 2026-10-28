@@ -79,6 +79,24 @@
   </div>
 </section>
 
+<section aria-labelledby="llms">
+  <h2 id="llms">How you use LLMs, found in your own prompts</h2>
+  <div class="split">
+    <ul class="points">
+      <li><b>Found, not claimed</b><span>An LLM reads the prompts you actually wrote, counts your habits and names them: pseudocode as the prompt, asking why before accepting, making the agent test its own work.</span></li>
+      <li><b>Overview first</b><span>One row of patterns per goal: planning, building, reviewing and more. A click shows what you do and what it gets you.</span></li>
+      <li><b>Runs where your prompts are</b><span>Hand <a href="patterns-prompt.md">the patterns prompt</a> to your own agent. Your prompts never leave your machine; you choose what goes on the CV.</span></li>
+      <li><b>Optional, like everything about AI</b><span>No AI story? Leave it out. A CV without AI content shows no AI section, no AI era and no “before AI”.</span></li>
+    </ul>
+    <figure class="shot" style="margin:0">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="llms-dark.png">
+        <img src="llms-light.png" width="2400" height="1520" alt="How I use LLMs on the John Doe CV: rows of pattern names grouped by goal, with one pattern open showing what it is and what it achieves" loading="lazy">
+      </picture>
+    </figure>
+  </div>
+</section>
+
 <section aria-labelledby="readers">
   <h2 id="readers">Readable by people and by AI</h2>
   <p class="intro">Recruiters paste CVs into an AI anyway. {me} publishes a version made for that next to the page for people, and a button that hands a reader's AI the right prompt.</p>
@@ -130,6 +148,7 @@ gh repo create my-cv --public --source . --push</code></pre>
     <span class="k">"engineering"</span>: [{ <span class="k">"name"</span>: <span class="s">"Performance"</span>, <span class="k">"proof"</span>: <span class="s">"p99 from 2s to 200ms on the checkout path"</span> }],
     <span class="k">"ai"</span>: [{ <span class="k">"name"</span>: <span class="s">"Agentic coding"</span>, <span class="k">"proof"</span>: <span class="s">"Shipped a migration tool with Claude Code, reviewed every diff"</span> }]
   },
+  <span class="k">"llms"</span>: { <span class="k">"patterns"</span>: [{ <span class="k">"name"</span>: <span class="s">"Pseudocode as the prompt"</span>, <span class="k">"goal"</span>: <span class="s">"planning"</span>, <span class="k">"achieves"</span>: <span class="s">"…"</span> }] },
   <span class="k">"highlights"</span>: [{ <span class="k">"title"</span>: <span class="s">"…"</span>, <span class="k">"problem"</span>: <span class="s">"…"</span>, <span class="k">"did"</span>: <span class="s">"…"</span>, <span class="k">"outcome"</span>: <span class="s">"…"</span> }],
   <span class="k">"work"</span>: [{ <span class="k">"name"</span>: <span class="s">"Analytical"</span>, <span class="k">"position"</span>: <span class="s">"Staff engineer"</span>, <span class="k">"startDate"</span>: <span class="s">"2021-03"</span> }],
   <span class="k">"projects"</span>: [{ <span class="k">"name"</span>: <span class="s">"Engine"</span>, <span class="k">"startDate"</span>: <span class="s">"2026-02"</span>, <span class="k">"vibecoded"</span>: true }]

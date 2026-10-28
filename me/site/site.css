@@ -180,3 +180,4 @@ textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-
   .step-card { padding: 20px; }
   .preview iframe { height: 640px; }
 }
+.small-area { min-height: 120px; }

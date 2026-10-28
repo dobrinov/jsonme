@@ -71,7 +71,11 @@
         "aiPractice": {
           "delegated": "Mechanical rewrites, test scaffolding, first drafts of migration scripts",
           "owned": "The migration plan, money-moving code paths, and anything touching card data",
-          "verifiedBy": ["Coverage diff per batch", "Code review", "Shadow traffic in staging"]
+          "verifiedBy": [
+            "Coverage diff per batch",
+            "Code review",
+            "Shadow traffic in staging"
+          ]
         }
       },
       {
@@ -80,7 +84,10 @@
         "aiPractice": {
           "delegated": "UI, glue code, docs",
           "owned": "Data model, security boundaries, pricing logic",
-          "verifiedBy": ["Property-based tests", "Manual exploratory testing"]
+          "verifiedBy": [
+            "Property-based tests",
+            "Manual exploratory testing"
+          ]
         }
       },
       {
@@ -89,10 +96,79 @@
         "aiPractice": {
           "delegated": "Spotting missing tests, risky queries and unclear naming",
           "owned": "The approve/reject decision",
-          "verifiedBy": ["A monthly sample of its comments, scored by the team"]
+          "verifiedBy": [
+            "A monthly sample of its comments, scored by the team"
+          ]
         }
       }
     ]
+  },
+  "llms": {
+    "source": "1,180 of my prompts to Claude Code, Aug–Oct 2026",
+    "patterns": [
+      {
+        "name": "Plan before code",
+        "goal": "planning",
+        "how": "On code the agent has not seen, I ask for a plan and its open questions first, and say \"no code yet\".",
+        "achieves": "Mistakes caught in a paragraph instead of a pull request.",
+        "example": "Read the payouts module. List what you'd change and what you're unsure about. Don't write code yet.",
+        "share": 14
+      },
+      {
+        "name": "Batch and prove",
+        "goal": "building",
+        "how": "I split big changes into batches, and each batch ends with a check the agent must pass before the next one.",
+        "achieves": "A 1,400-test migration I could review line by line.",
+        "example": "Migrate the next 50 tests. Run the coverage diff and stop if any test name disappears.",
+        "share": 9,
+        "limit": "Slow when the check itself takes minutes."
+      },
+      {
+        "name": "Fence the money paths",
+        "goal": "building",
+        "how": "I tell the agent which code it may not touch: card data and anything that moves money.",
+        "achieves": "Speed on the safe parts without risk on the critical ones."
+      },
+      {
+        "name": "Reproduce first",
+        "goal": "debugging",
+        "how": "No fix until there is a failing test that shows the bug.",
+        "achieves": "Fewer bugs that come back.",
+        "share": 7
+      },
+      {
+        "name": "Read the stack trace with me",
+        "goal": "debugging",
+        "how": "I paste the trace and ask for the three most likely causes, ranked, before any change.",
+        "achieves": "I stay in charge of the diagnosis."
+      },
+      {
+        "name": "Argue with me",
+        "goal": "reviewing",
+        "how": "Before I commit to a design, I ask the model to attack it as the on-call engineer at 3am.",
+        "achieves": "Failure modes found on paper.",
+        "example": "You're the on-call engineer at 3am. What in this design wakes you up?"
+      },
+      {
+        "name": "Review like a senior",
+        "goal": "reviewing",
+        "how": "I ask for a review of my own pull request against our architecture principles before a person sees it.",
+        "achieves": "Reviewers spend their time on design, not style."
+      },
+      {
+        "name": "Explain the legacy code",
+        "goal": "research",
+        "how": "For old code nobody remembers, I ask what it does, who calls it and what breaks if it goes.",
+        "achieves": "The monolith became a map before we cut it."
+      },
+      {
+        "name": "Write the runbook",
+        "goal": "writing",
+        "how": "After an incident, I hand the timeline to the model and ask for a runbook draft.",
+        "achieves": "Runbooks that exist, written while the details are fresh."
+      }
+    ],
+    "gap": "I rarely tell the agent what \"done\" looks like for UI work, and those sessions take about twice as many turns."
   },
   "highlights": [
     {
@@ -100,14 +176,28 @@
       "hook": "Moved the busiest path in the company to a new service while it handled 2M payments a day.",
       "where": "Northwind Payments",
       "when": "Senior engineer",
-      "tags": ["depth", "leadership"],
+      "tags": [
+        "depth",
+        "leadership"
+      ],
       "problem": "Card authorization lived in a 9-year-old Rails monolith. p99 was 900ms, every deploy was a risk, and the payment network was threatening penalties for slow responses.",
       "did": "I proposed a strangler plan: a Go service fed by shadow traffic, compared response by response against the monolith for six weeks, then moved over 1% of merchants at a time with an instant switch back. I led four engineers through it and wrote the comparison tooling myself.",
       "outcome": "p99 fell from 900ms to 120ms. No authorization failed during the cutover, and the old code path was deleted four months after we started.",
-      "stack": ["Go", "Kafka", "PostgreSQL", "Ruby on Rails"],
+      "stack": [
+        "Go",
+        "Kafka",
+        "PostgreSQL",
+        "Ruby on Rails"
+      ],
       "evidence": [
-        { "url": "https://example.com/blog/strangling-authorization", "label": "Engineering blog post" },
-        { "url": "https://example.com/talks/zero-downtime-payments", "label": "Conference talk" }
+        {
+          "url": "https://example.com/blog/strangling-authorization",
+          "label": "Engineering blog post"
+        },
+        {
+          "url": "https://example.com/talks/zero-downtime-payments",
+          "label": "Conference talk"
+        }
       ]
     },
     {
@@ -115,26 +205,46 @@
       "hook": "A migration the team had postponed for two years, done with Claude Code and a coverage diff.",
       "where": "Northwind Payments",
       "when": "Leads the platform group",
-      "tags": ["ai", "leadership"],
+      "tags": [
+        "ai",
+        "leadership"
+      ],
       "problem": "The platform's tests ran on a framework that was no longer maintained. Rewriting them by hand was estimated at four months, so it never made a roadmap.",
       "did": "I split the suite into batches of about 50 tests, had Claude Code rewrite each batch, and wrote a script that compared coverage and test names before and after. Two engineers reviewed every diff; anything that touched card data was rewritten by hand.",
       "outcome": "Done in 3 weeks instead of an estimated 4 months. Coverage went from 81% to 83%, and CI got 40% faster.",
-      "stack": ["Claude Code", "Go", "GitHub Actions"],
+      "stack": [
+        "Claude Code",
+        "Go",
+        "GitHub Actions"
+      ],
       "evidence": [
-        { "url": "https://example.com/blog/agent-test-migration", "label": "Write-up with the coverage script" }
+        {
+          "url": "https://example.com/blog/agent-test-migration",
+          "label": "Write-up with the coverage script"
+        }
       ]
     },
     {
       "title": "Ledgerline: a double-entry library, built twice",
       "hook": "Written by hand in 2017, paused for six years, and revived with AI in 2025.",
       "where": "Ledgerline",
-      "tags": ["product", "ai"],
+      "tags": [
+        "product",
+        "ai"
+      ],
       "problem": "Every payments codebase I had seen kept money in mutable balance columns, and none of them could explain a balance to an auditor.",
       "did": "I wrote an open-source double-entry library in Ruby with immutable entries and idempotent posting. In 2025 I picked it up again with AI: a Go port, a reconciliation CLI and full documentation.",
       "outcome": "Used in production at two companies, 1,900 stars, and the Go port reached feature parity in five weeks of evenings.",
-      "stack": ["Ruby", "Go", "PostgreSQL"],
+      "stack": [
+        "Ruby",
+        "Go",
+        "PostgreSQL"
+      ],
       "evidence": [
-        { "url": "https://example.com/ledgerline", "label": "Ledgerline" }
+        {
+          "url": "https://example.com/ledgerline",
+          "label": "Ledgerline"
+        }
       ]
     }
   ],
@@ -259,26 +369,50 @@
   "skills": [
     {
       "name": "Languages",
-      "keywords": ["Go", "Ruby", "TypeScript", "SQL"]
+      "keywords": [
+        "Go",
+        "Ruby",
+        "TypeScript",
+        "SQL"
+      ]
     },
     {
       "name": "Infrastructure",
-      "keywords": ["PostgreSQL", "Kafka", "Kubernetes", "AWS", "Terraform"]
+      "keywords": [
+        "PostgreSQL",
+        "Kafka",
+        "Kubernetes",
+        "AWS",
+        "Terraform"
+      ]
     },
     {
       "name": "AI tools",
-      "keywords": ["Claude Code", "Cursor", "GitHub Copilot"]
+      "keywords": [
+        "Claude Code",
+        "Cursor",
+        "GitHub Copilot"
+      ]
     },
     {
       "name": "Can mentor",
-      "keywords": ["Go", "PostgreSQL", "System design", "Incident response"]
+      "keywords": [
+        "Go",
+        "PostgreSQL",
+        "System design",
+        "Incident response"
+      ]
     }
   ],
   "meta": {
     "me": {
       "listed": false,
       "lookingFor": "Principal or staff roles in payments infrastructure, remote or Amsterdam.",
-      "domains": ["Payments", "Retail", "Logistics"]
+      "domains": [
+        "Payments",
+        "Retail",
+        "Logistics"
+      ]
     }
   }
 }

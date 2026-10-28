@@ -41,4 +41,5 @@ Start the file with `"$schema": "https://raw.githubusercontent.com/dobrinov/json
 - `projects` (things I built myself): `{ "name", "description", "url", "startDate", "endDate", "highlights", "keywords" }`. If it was built with AI from the start, add `"vibecoded": true`. If I built it by hand, stopped, and picked it up again with AI, add `"pausedDate"`, `"revivedDate"` and `"revival"` (what was built since).
 - `education`: `{ "institution", "area", "studyType", "startDate", "endDate", "url" }`.
 - `skills`: groups like `{ "name": "Languages", "keywords": ["Go", "Python"] }` or `{ "name": "Can mentor", "keywords": ["PostgreSQL"] }`. Group them however fits my material.
+- `llms` (how I use LLMs): leave it out. It is filled separately by https://dobrinov.github.io/jsonme/patterns-prompt.md from my real prompts. If I already have an `llms` block, keep it as it is.
 - `meta.me`: `{ "lookingFor": "what kind of role I want next, if I am looking", "domains": ["Payments", "Logistics"] }`.
