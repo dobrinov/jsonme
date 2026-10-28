@@ -174,6 +174,8 @@ main.profile { display: flex; flex-direction: column; gap: 64px; padding-top: 40
 .avatar { width: 64px; height: 64px; flex: none; border-radius: 50%; background: var(--avatar); display: inline-flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--body); object-fit: cover; box-shadow: 0 0 0 1px var(--hover-ring); }
 .who .name { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
 .who .meta { margin-top: 2px; font-size: 15px; color: var(--muted); }
+.who .meta a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--field); text-underline-offset: 3px; }
+.who .meta a:hover { text-decoration-color: currentColor; }
 .who .contact { display: flex; flex-wrap: wrap; gap: 8px; }
 .who .contact a { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border: 1px solid var(--line); border-radius: 999px; color: var(--body); text-decoration: none; transition: color 0.12s, background 0.12s, border-color 0.12s; }
 .who .contact a:hover { color: var(--ink); background: var(--chip); border-color: var(--field); }

@@ -400,7 +400,10 @@ export function renderProfile(me, posts, { siteUrl = '', builtAt = new Date() } 
   const now = nowYear(builtAt);
   const stats = careerStats(me, now);
   const where = [b.location && b.location.city, b.location && (b.location.country || b.location.countryCode)].filter(Boolean).join(', ');
-  const meta = [b.label, where].filter(Boolean).join(' · ');
+  // "Team lead at Dext": the name of a current employer that has a url becomes a link.
+  const employer = (me.work || []).find((w) => !w.endDate && w.url && b.label && b.label.includes(w.name));
+  const label = b.label ? (employer ? b.label.split(employer.name).map(e).join(`<a href="${e(href(employer.url))}">${e(employer.name)}</a>`) : e(b.label)) : '';
+  const meta = [label, e(where)].filter(Boolean).join(' · ');
   const prompt = `Read {url}. It is ${b.name}'s CV. Tell me where they would be strongest on my team, which of their stories to ask about in an interview, and what is missing.`;
   const body = `<div class="topbar wrap"><span class="mono">${e(hostOf(siteUrl))}</span><span class="actions">
 ${THEME_SWITCH}
@@ -408,7 +411,7 @@ ${THEME_SWITCH}
 </span></div>
 <main class="profile wrap">
 <header class="intro">
-<div class="who"><div class="id">${avatar(b, '')}<div><div class="name">${e(b.name)}</div>${meta ? `<div class="meta">${e(meta)}</div>` : ''}</div></div>${contact(b)}</div>
+<div class="who"><div class="id">${avatar(b, '')}<div><div class="name">${e(b.name)}</div>${meta ? `<div class="meta">${meta}</div>` : ''}</div></div>${contact(b)}</div>
 ${me.headline ? `<h1 class="headline">${e(me.headline)}</h1>` : `<h1 class="headline">${e(b.name)}</h1>`}
 ${b.summary && !me.headline ? `<p class="summary">${inline(b.summary)}</p>` : ''}
 ${facts(me, stats)}

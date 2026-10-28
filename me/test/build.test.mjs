@@ -109,6 +109,17 @@ test('contact links, and unsafe URLs are dropped', async () => {
   assert.match(cvMarkdown(me, []), /Contact: ada@example.com · ada.dev · GitHub: https:\/\/github.com\/ada/);
 });
 
+test('the current employer in the label links to its site', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada', label: 'Team lead at Dext' }, work: [
+    { name: 'Dext', url: 'https://www.dext.com/', position: 'Team lead', startDate: '2016-05' },
+    { name: 'Acme', url: 'https://acme.test', position: 'Engineer', startDate: '2010-01', endDate: '2016-04' }
+  ] };
+  assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at <a href="https:\/\/www.dext.com\/">Dext<\/a><\/div>/);
+  me.work[0].endDate = '2020-01';
+  assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at Dext<\/div>/);
+});
+
 test('rejects an invalid me.json', async () => {
   const src = await mkdtemp(join(tmpdir(), 'me-bad-'));
   await writeFile(join(src, 'me.json'), JSON.stringify({ basics: {} }));
