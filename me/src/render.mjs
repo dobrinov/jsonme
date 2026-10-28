@@ -38,7 +38,23 @@ function avatar(basics, root) {
   return `<img class="avatar" src="${e(src)}" alt="" width="64" height="64">`;
 }
 
-function page({ title, description, root, body, canonical }) {
+// Open Graph and Twitter tags, so a shared link shows a card. og:image needs an absolute URL.
+function social({ title, description, canonical, type, image, siteName, published }) {
+  const tags = [
+    ['og:type', type], ['og:title', title], ['og:description', description], ['og:url', canonical],
+    ['og:image', image], ['og:site_name', siteName], ['article:published_time', published]
+  ].filter(([, v]) => v).map(([k, v]) => `<meta property="${k}" content="${e(v)}">`);
+  tags.push(`<meta name="twitter:card" content="summary">`);
+  return tags.join('\n') + '\n';
+}
+
+function absoluteImage(b, siteUrl) {
+  if (!b.image) return '';
+  if (/^https?:\/\//i.test(b.image)) return safeUrl(b.image);
+  return siteUrl ? siteUrl + b.image.replace(/^\//, '') : '';
+}
+
+function page({ title, description, root, body, canonical, og }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -47,7 +63,7 @@ function page({ title, description, root, body, canonical }) {
 <meta name="color-scheme" content="light dark">
 ${THEME_BOOT}
 <title>${e(title)}</title>
-${description ? `<meta name="description" content="${e(description)}">\n` : ''}${canonical ? `<link rel="canonical" href="${e(canonical)}">\n` : ''}<link rel="alternate" type="application/json" href="${root}me.json">
+${description ? `<meta name="description" content="${e(description)}">\n` : ''}${canonical ? `<link rel="canonical" href="${e(canonical)}">\n` : ''}${og ? social({ title, description, canonical, ...og }) : ''}<link rel="alternate" type="application/json" href="${root}me.json">
 <link rel="alternate" type="application/rss+xml" href="${root}feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -455,7 +471,8 @@ ${career(me, stats, now)}
 ${more(me, posts)}
 </main>
 ${footer(me, '', builtAt)}`;
-  return page({ title: `${b.name}${b.label ? ` · ${b.label}` : ''}`, description: me.headline || b.summary, root: '', body, canonical: siteUrl || undefined });
+  return page({ title: `${b.name}${b.label ? ` · ${b.label}` : ''}`, description: me.headline || b.summary, root: '', body, canonical: siteUrl || undefined,
+    og: { type: 'profile', image: absoluteImage(b, siteUrl), siteName: b.name } });
 }
 
 export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}) {
@@ -470,5 +487,6 @@ export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}
 </article>
 <div class="post-foot wrap"><div><a class="back" href="${root}#writing"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>${repo ? `<a class="edit" href="${e(href(`${repo.replace(/\/$/, '')}/edit/HEAD/posts/${post.file}`))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Suggest an edit</a>` : ''}</div></div>
 ${footer(me, root, builtAt)}`;
-  return page({ title: `${post.title} · ${b.name}`, description: post.summary, root, body, canonical: siteUrl ? `${siteUrl}posts/${post.slug}/` : undefined });
+  return page({ title: `${post.title} · ${b.name}`, description: post.summary, root, body, canonical: siteUrl ? `${siteUrl}posts/${post.slug}/` : undefined,
+    og: { type: 'article', image: absoluteImage(b, siteUrl), siteName: b.name, published: post.date || '' } });
 }

@@ -25,7 +25,7 @@ node src/build.mjs --migrate old-me.json         # convert an old jsonme file, p
 npm test
 ```
 
-Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `llms.txt` for AI agents, `feed.xml`. The site has light and dark themes: it follows the system setting, and a switch in the top bar lets readers pick one (kept in their browser). Printing always uses the light theme and expands every section.
+Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `llms.txt` for AI agents, `feed.xml`. The site has light and dark themes: it follows the system setting, and a switch in the top bar lets readers pick one (kept in their browser). Printing always uses the light theme and expands every section. Pages carry Open Graph tags, so a shared link shows a card with your name, headline and `basics.image`; pass `--site-url` so the links and image are absolute.
 
 ## Format
 

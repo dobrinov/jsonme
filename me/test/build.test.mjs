@@ -150,6 +150,23 @@ test('a CV without any AI story says nothing about AI', async () => {
   assert.match(renderProfile(me, [], { builtAt }), /AI era/);
 });
 
+test('Open Graph tags make shared links show a card', async () => {
+  const { renderProfile, renderPost } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada', label: 'Engineer', image: 'avatar.jpg' }, headline: 'I make things fast.' };
+  const html = renderProfile(me, [], { siteUrl: 'https://ada.dev/', builtAt });
+  assert.match(html, /<meta property="og:type" content="profile">/);
+  assert.match(html, /<meta property="og:title" content="Ada · Engineer">/);
+  assert.match(html, /<meta property="og:description" content="I make things fast.">/);
+  assert.match(html, /<meta property="og:url" content="https:\/\/ada.dev\/">/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/ada.dev\/avatar.jpg">/);
+  assert.match(html, /<meta name="twitter:card" content="summary">/);
+  const post = renderPost(me, { title: 'Hello', summary: 'First post', slug: 'hello', date: '2026-01-02', words: 10, tags: [], body: 'Hi', file: 'hello.md' }, { siteUrl: 'https://ada.dev/', builtAt });
+  assert.match(post, /<meta property="og:type" content="article">/);
+  assert.match(post, /<meta property="og:url" content="https:\/\/ada.dev\/posts\/hello\/">/);
+  assert.match(post, /<meta property="article:published_time" content="2026-01-02">/);
+  assert.doesNotMatch(renderProfile(me, [], { builtAt }), /og:image|og:url/, 'no site url, no relative og:image or og:url');
+});
+
 test('rejects an invalid me.json', async () => {
   const src = await mkdtemp(join(tmpdir(), 'me-bad-'));
   await writeFile(join(src, 'me.json'), JSON.stringify({ basics: {} }));
