@@ -41,6 +41,18 @@ export function cvMarkdown(me, posts, { siteUrl = '' } = {}) {
     side('AI-native', me.expertise.ai);
   }
 
+  if (me.llms && me.llms.patterns && me.llms.patterns.length) {
+    out.push('## How I use LLMs', '');
+    if (me.llms.source) out.push(`_Patterns found in ${me.llms.source}._`, '');
+    for (const p of me.llms.patterns) {
+      out.push(`- **${p.name}**${p.goal ? ` (${p.goal})` : ''}${p.how ? `: ${p.how}` : ''}${p.achieves ? ` Achieves: ${p.achieves}` : ''}${p.share != null ? ` In ${p.share}% of prompts.` : ''}`);
+      if (p.example) out.push(`  - Example: "${p.example}"`);
+      if (p.limit) out.push(`  - Falls short: ${p.limit}`);
+    }
+    if (me.llms.gap) out.push('', `Gap: ${me.llms.gap}`);
+    out.push('');
+  }
+
   if (me.highlights && me.highlights.length) {
     out.push('## Signature work', '');
     for (const s of me.highlights) {

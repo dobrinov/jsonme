@@ -86,6 +86,31 @@
         "ai": { "$ref": "#/$defs/expertiseList" }
       }
     },
+    "llms": {
+      "type": "object",
+      "description": "How I use LLMs: patterns found in my own prompts (see https://dobrinov.github.io/jsonme/patterns-prompt.md).",
+      "properties": {
+        "source": { "type": "string", "description": "What the patterns were found in, e.g. \"2,145 prompts to Claude Code, Sep–Oct 2026\"." },
+        "prompt": { "type": "string", "description": "URL of the prompt that found them. Defaults to the {me} patterns prompt." },
+        "patterns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "goal": { "enum": ["planning", "building", "debugging", "reviewing", "designing", "research", "writing", "operating"] },
+              "how": { "type": "string", "description": "What I do and when I use it." },
+              "achieves": { "type": "string", "description": "What it gets me." },
+              "example": { "type": "string", "description": "One real prompt, shortened." },
+              "share": { "type": "number", "description": "Percentage of prompts that show this pattern." },
+              "limit": { "type": "string", "description": "When it falls short." }
+            }
+          }
+        },
+        "gap": { "type": "string" }
+      }
+    },
     "work": {
       "type": "array",
       "items": {

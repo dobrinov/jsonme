@@ -65,12 +65,19 @@ ${body}
 export function careerStats(me, now) {
   const starts = (me.work || []).map((w) => toYear(w.startDate, now));
   const first = starts.length ? Math.min(...starts) : null;
-  const aiEra = toYear((me.meta && me.meta.me && me.meta.me.aiEraStart) || '2023-01', now);
+  // Nothing about AI shows unless the CV has an AI story: AI expertise, an AI-tagged story, a product built
+  // or revived with AI, LLM patterns, or an explicit aiEraStart.
+  const set = me.meta && me.meta.me && me.meta.me.aiEraStart;
+  const hasAi = Boolean(set || (me.expertise && me.expertise.ai && me.expertise.ai.length)
+    || (me.highlights || []).some((h) => (h.tags || []).includes('ai'))
+    || (me.projects || []).some((p) => p.vibecoded || p.revivedDate)
+    || (me.llms && me.llms.patterns && me.llms.patterns.length));
+  const aiEra = hasAi ? toYear(set || '2023-01', now) : Infinity;
   return {
     first,
     aiEra,
     years: first == null ? 0 : Math.floor(now - first),
-    preAiYears: first == null ? 0 : Math.max(0, Math.floor(aiEra - first))
+    preAiYears: first == null || !hasAi ? 0 : Math.max(0, Math.floor(aiEra - first))
   };
 }
 
@@ -111,6 +118,32 @@ function expertise(me, stats) {
   return `<section aria-labelledby="expertise">
 <div class="section-head"><h2 class="eyebrow" id="expertise">Expertise</h2>${eng.length && ai.length ? '<span class="note">Engineering depth from before AI, next to how I work with it now.</span>' : ''}</div>
 <div class="columns">${col('eng', 'Engineering', engSub, eng)}${col('ai', 'AI-native', aiSub, ai)}</div>
+</section>`;
+}
+
+// How I use LLMs: patterns found in the person's own prompts, grouped by the goal they serve.
+const GOALS = { planning: 'Planning', designing: 'Designing', building: 'Building', reviewing: 'Reviewing', debugging: 'Debugging', research: 'Learning', writing: 'Writing', operating: 'Operating' };
+function llms(me) {
+  const l = me.llms;
+  const list = (l && l.patterns) || [];
+  if (!list.length) return '';
+  const how = l.prompt || 'https://dobrinov.github.io/jsonme/patterns-prompt.md';
+  // Overview first: one row of pattern names per goal. Each name opens a popover with the detail.
+  const order = [...Object.keys(GOALS), ''];
+  const groups = order.map((g) => [g, list.filter((p) => (GOALS[p.goal] ? p.goal : '') === g)]).filter(([, ps]) => ps.length);
+  const ids = new Map(list.map((p, i) => [p, `llm-${i + 1}`]));
+  const label = (g) => (g ? GOALS[g] : groups.length === 1 ? 'Patterns' : 'Other');
+  const rows = groups.map(([g, ps]) => `<div class="llm-row"><span class="llm-goal">${label(g)}</span><span class="llm-chips">${ps.map((p) => `<button type="button" class="llm-chip" popovertarget="${ids.get(p)}">${e(p.name)}</button>`).join('')}</span></div>`).join('');
+  const pops = list.map((p) => `<div class="pop llm-pop" id="${ids.get(p)}" popover>
+<div class="pop-head"><div><h3>${e(p.name)}</h3><span class="period">${e(GOALS[p.goal] || 'How I use LLMs')}${p.share != null ? ` · ${e(String(p.share))}% of my prompts` : ''}</span></div><button type="button" class="pop-close" popovertarget="${ids.get(p)}" popovertargetaction="hide" aria-label="Close">${CLOSE}</button></div>
+${p.how ? `<p class="pop-lead">${inline(p.how)}</p>` : ''}${p.achieves ? `<div class="pop-item"><span class="t">What it achieves</span><p>${inline(p.achieves)}</p></div>` : ''}${p.example ? `<blockquote>“${e(p.example)}”</blockquote>` : ''}${p.limit ? `<p class="pop-lead"><b>Where it falls short:</b> ${e(p.limit)}</p>` : ''}
+</div>`).join('');
+  return `
+<section class="llms" aria-labelledby="llms">
+<div class="section-head"><h2 class="eyebrow" id="llms">How I use LLMs</h2><span class="note">${l.source ? `Patterns an LLM found in ${e(l.source)}. ` : ''}<a href="${e(href(how))}">The prompt it used</a></span></div>
+<div class="llm-rows">${rows}</div>
+${l.gap ? `<p class="gap"><b>A gap it found:</b> ${inline(l.gap)}</p>` : ''}
+<div class="pops">${pops}</div>
 </section>`;
 }
 
@@ -416,7 +449,7 @@ ${me.headline ? `<h1 class="headline">${e(me.headline)}</h1>` : `<h1 class="head
 ${b.summary && !me.headline ? `<p class="summary">${inline(b.summary)}</p>` : ''}
 ${facts(me, stats)}
 </header>
-${expertise(me, stats)}
+${expertise(me, stats)}${llms(me)}
 ${signature(me)}
 ${career(me, stats, now)}
 ${more(me, posts)}

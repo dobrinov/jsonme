@@ -37,6 +37,9 @@ export function validate(me) {
     });
   }
 
+  const patterns = (me.llms && me.llms.patterns) || [];
+  patterns.forEach((p, i) => { if (!p.name) errors.push(`llms.patterns[${i}].name is required`); });
+
   if ((me.facts || []).length > 4) errors.push('facts can have at most 4 entries');
   if (me.headline && me.headline.length > 120) warnings.push('headline is longer than 120 characters');
 

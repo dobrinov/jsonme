@@ -50,7 +50,8 @@ test('builds the example site', async () => {
   assert.match(index, /class="dot product[^"]*" type="button" popovertarget="product-dev-wanted"/, "a one-month product is a dot");
   assert.match(index, /data-tip="DEV wanted · May 2018 – Jun 2018 · 1m"/);
   assert.match(index, /href="posts\/hello-blogging\/"/);
-  assert.doesNotMatch(index, /class="col ai"/, 'empty AI column is not rendered');
+  assert.match(index, /class="col ai"/, 'the AI column is rendered');
+  assert.match(index, /id="llms"/, 'How I use LLMs is rendered');
 
   const post = await readFile(join(out, 'posts/hello-blogging/index.html'), 'utf8');
   assert.match(post, /<h1>Hello, blogging!<\/h1>/);
@@ -118,6 +119,35 @@ test('the current employer in the label links to its site', async () => {
   assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at <a href="https:\/\/www.dext.com\/">Dext<\/a><\/div>/);
   me.work[0].endDate = '2020-01';
   assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at Dext<\/div>/);
+});
+
+test('How I use LLMs: patterns render with their example, share and the prompt link', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const { cvMarkdown } = await import('../src/outputs.mjs');
+  const me = { basics: { name: 'Ada' }, llms: { source: '100 prompts', gap: 'Rarely says what done looks like.', patterns: [
+    { name: 'Plan before code', goal: 'planning', how: 'I ask for a plan first.', achieves: 'Fewer rewrites.', example: 'Plan it, no code yet', share: 31, limit: 'Slow on small fixes.' },
+    { name: 'Ask why', goal: 'reviewing', how: 'I question changes.' }
+  ] } };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /<h2 class="eyebrow" id="llms">How I use LLMs<\/h2>/);
+  assert.match(html, /<div class="llm-row"><span class="llm-goal">Planning<\/span><span class="llm-chips"><button type="button" class="llm-chip" popovertarget="llm-1">Plan before code<\/button>/);
+  assert.match(html, /<div class="pop llm-pop" id="llm-1" popover>/);
+  assert.match(html, /<div class="pop-item"><span class="t">What it achieves<\/span><p>Fewer rewrites\.<\/p><\/div>/);
+  assert.match(html, /<blockquote>“Plan it, no code yet”<\/blockquote>/);
+  assert.match(html, /Planning · 31% of my prompts/);
+  assert.ok(html.indexOf('>Planning<') < html.indexOf('>Reviewing<'));
+  assert.match(html, /href="https:\/\/dobrinov.github.io\/jsonme\/patterns-prompt.md"/);
+  assert.match(cvMarkdown(me, []), /## How I use LLMs[\s\S]*\*\*Plan before code\*\* \(planning\): I ask for a plan first\. Achieves: Fewer rewrites\. In 31% of prompts\./);
+  assert.doesNotMatch(renderProfile({ basics: { name: 'Ada' } }, [], { builtAt }), /id="llms"/);
+});
+
+test('a CV without any AI story says nothing about AI', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, work: [{ name: 'Acme', position: 'Engineer', startDate: '2010-01' }], projects: [{ name: 'Tool', startDate: '2015-01', endDate: '2016-01' }] };
+  const html = renderProfile(me, [], { builtAt });
+  assert.doesNotMatch(html, /AI era|before AI|era-key/);
+  me.projects[0].vibecoded = true;
+  assert.match(renderProfile(me, [], { builtAt }), /AI era/);
 });
 
 test('rejects an invalid me.json', async () => {

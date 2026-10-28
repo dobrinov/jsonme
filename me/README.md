@@ -36,6 +36,9 @@ Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `ll
 - `expertise.engineering` and `expertise.ai`: `{ name, proof, detail, aiPractice: { delegated, owned, verifiedBy } }`. `proof` is required.
 - `highlights`: at most 3 stories `{ title, hook, where, when, tags, problem, did, outcome, stack, evidence }`.
 - `meta.me`: `listed`, `lookingFor`, `domains`, `aiEraStart` (default `2023-01`).
+- `llms`: how you use LLMs, `{ source, gap, patterns: [{ name, goal, how, achieves, example, share, limit }] }`. Patterns show as one row of names per `goal` (planning, designing, building, reviewing, debugging, research, writing, operating); a click opens the detail. [`site/patterns-prompt.md`](site/patterns-prompt.md) asks an LLM to find them in your own prompts.
+
+Everything about AI is optional. The AI-era line, "N of them before AI" and the AI-native column show only when the CV has AI content: `expertise.ai`, an `ai` story tag, a vibe-coded or revived product, `llms`, or `aiEraStart`.
 
 `basics.email`, `basics.url` and `basics.profiles` show as links under the name and in `cv.md`.
 

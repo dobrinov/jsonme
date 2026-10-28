@@ -21,19 +21,19 @@
   "facts": [
     {
       "value": "19 yrs",
-      "label": "shipping software, since 2007. 18 of them before AI coding tools."
+      "label": "shipping software since 2007, at SAP, Funding Circle and Dext, where I now report to the CTO."
     },
     {
-      "value": "Team of 8",
-      "label": "largest team led, through a full front-end rewrite."
+      "value": "UX & UI",
+      "label": "I love great UI and UX, and I fight for it: in specs, in code review, down to the last pixel."
     },
     {
-      "value": "3000+",
-      "label": "people on a product I built and ran alone for 4 years."
+      "value": "Payments",
+      "label": "Dext's payments system, built from the first commit: supplier and payroll runs, strong customer authentication."
     },
     {
-      "value": "Accounting · document extraction · lending",
-      "label": "domains worked in deeply."
+      "value": "8 products",
+      "label": "shipped in 2026 with coding agents; 5 of them in Rust, in one month."
     }
   ],
   "expertise": {
@@ -44,13 +44,18 @@
         "detail": "At Dext, replaced an over-complex PostgreSQL search with Elasticsearch, so the app became a thin layer around a search engine. Extracted manual data extraction from the monolith into its own service through incremental releases."
       },
       {
+        "name": "Fighting for great UX",
+        "proof": "Dext's main app rebuilt in React · [Symtrail](https://apps.apple.com/app/symtrail/id6782177088), an iOS app in 20 languages · Wunderkind, Shape and Circle",
+        "detail": "Good UX rarely survives a deadline on its own, so I argue for it: when we plan, when we review, and on the final screen. I design and build the interfaces of my own products, Wunderkind, Symtrail, Shape and Circle, and send back anything that's off by a pixel. One in twenty of my prompts is a screenshot with one line about what is wrong."
+      },
+      {
         "name": "Shipping risky change safely",
         "proof": "Front-end rewrite with no incremental release, team of 8",
         "detail": "Moved Dext’s main app to React + TypeScript on a new GraphQL API and rolled it out with a low amount of risk."
       },
       {
-        "name": "Financial documents and data",
-        "proof": "OCR tables, bank statements, invoices · P2P lending",
+        "name": "Payments and financial data",
+        "proof": "Built Dext's payments service · OCR tables, bank statements, invoices · P2P lending",
         "detail": "Table extraction from OCR data, transaction and line-item flows and PDF splitting at Dext. Technical-debt work at Funding Circle, a peer-to-peer lending platform."
       },
       {
@@ -59,7 +64,43 @@
         "detail": "Team lead for 2 engineers and 1 QA, then development lead reporting to the CTO. Can mentor in Ruby, Rails, TypeScript, React, GraphQL, PostgreSQL and 8 more."
       }
     ],
-    "ai": []
+    "ai": [
+      {
+        "name": "Products AI agents can operate safely",
+        "proof": "Approval gates, read-only modes and untrusted-input handling in Investor, Trace and Circle",
+        "detail": "Agents read freely but every write waits for the person. Secrets stay on the machine: Circle drives Chromium over a private pipe instead of the open debugging port, and Trace strips visitor text before an agent reads it.",
+        "aiPractice": {
+          "verifiedBy": [
+            "Approval before every write",
+            "Read-only modes",
+            "Rust test suites"
+          ]
+        }
+      },
+      {
+        "name": "Hard software with coding agents",
+        "proof": "Schema and Shape: 54k lines of Rust in a month, signed releases on 3 operating systems",
+        "detail": "Hand-written SQL and Rails parsers, a layered graph layout with routed edges, and a three-way merge so diagrams live in git. Both ship skills that let other agents use them.",
+        "aiPractice": {
+          "verifiedBy": [
+            "196 core tests",
+            "Release smoke tests on 5 targets",
+            "Browser end-to-end tests"
+          ]
+        }
+      },
+      {
+        "name": "Reviving hand-built code with AI",
+        "proof": "Wunderkind: Elo engine written by hand in 2025, grown with agents and live in 2026",
+        "detail": "The core I wrote by hand set the rules; agents built the question bank, duels, leagues and parent reports around it.",
+        "aiPractice": {
+          "verifiedBy": [
+            "728 RSpec examples",
+            "Playwright end-to-end specs"
+          ]
+        }
+      }
+    ]
   },
   "highlights": [
     {
@@ -83,36 +124,44 @@
       "evidence": []
     },
     {
-      "title": "Reading tables out of OCR with simple maths",
-      "hook": "Before LLMs could read invoices, I found rows and columns by overlaying OCR data on the image.",
+      "title": "Dext's payments system, from the first commit",
+      "hook": "The most complex thing I have built: Dext customers pay suppliers and payroll from the bills Dext already reads.",
       "where": "Dext",
-      "when": "Team lead",
+      "when": "Reports to the CTO",
       "tags": [
-        "depth"
+        "depth",
+        "leadership"
       ],
-      "problem": "Line items and bank transactions had to be extracted more efficiently. That data usually sits in tables.",
-      "did": "Overlaid OCR data on the document image so people could select it, then used simple mathematics to recognise the rows and columns.",
-      "outcome": "Rows and columns were recognised automatically, so line items and bank transactions could be extracted from tables.",
+      "problem": "Dext read the bills its customers had to pay, but the paying happened somewhere else. Moving real money meant bank accounts, batch transfers and strong customer authentication on every payment.",
+      "did": "I started the payments service in December 2024 and wrote about half of its 773 commits: accounts with a banking partner, batch payment runs to suppliers, strong customer authentication for every payment and withdrawal, fees, and webhooks that keep both sides in sync. In the main app I added payroll payment runs, payroll CSV import and reconciliation through Xero bank feeds.",
+      "outcome": "In production in Dext: supplier and payroll payment runs, fees, withdrawals, and reconciliation through Xero bank feeds.",
       "stack": [
-        "JavaScript",
-        "Raphaël",
-        "Backbone.js"
-      ],
-      "evidence": []
+        "Ruby on Rails",
+        "Sidekiq",
+        "PostgreSQL"
+      ]
     },
     {
-      "title": "Carpass: built for my car, used by 3000+ people",
-      "hook": "Built a vehicle maintenance log alone and kept it running from 2016 to 2020.",
-      "where": "Own product",
-      "when": "2016 – 2020",
+      "title": "Wunderkind: an adaptive maths coach, by hand and then with agents",
+      "hook": "Wrote the Elo engine by hand in 2025, then grew it into a live platform with agents in 2026.",
+      "where": "Wunderkind",
       "tags": [
-        "product"
+        "product",
+        "ai"
       ],
-      "problem": "I needed a tool to log the maintenance history of my car.",
-      "did": "Designed, built and ran it alone, next to a full-time job, for over four years.",
-      "outcome": "Used by 3000+ people.",
+      "problem": "Practice only helps when the questions are neither too easy nor too hard for that child.",
+      "did": "I wrote an Elo engine that aims each child at a 70% success rate, calibrates new students and widens its search when the bank runs short. After a nine-month pause I revived it with coding agents: an authored question bank up to grade 12, live duels with matchmaking, leagues and a weekly report to parents.",
+      "outcome": "Live at wunderkind.bg with 728 tests. Output per commit grew from about 65 to about 367 lines after the revival.",
+      "stack": [
+        "Ruby on Rails",
+        "PostgreSQL",
+        "Claude Code"
+      ],
       "evidence": [
-        "https://www.carpass.bg/"
+        {
+          "url": "https://wunderkind.bg/",
+          "label": "wunderkind.bg"
+        }
       ]
     }
   ],
@@ -221,6 +270,28 @@
       "vibecoded": true
     },
     {
+      "name": "Lurepedia",
+      "description": "A moderated community wiki for fishing lures, with a review queue for edits and look-alike detection for photos.",
+      "url": "https://lurepedia.com/",
+      "startDate": "2026-06",
+      "vibecoded": true
+    },
+    {
+      "name": "Symtrail",
+      "description": "A private symptom diary for children on the App Store: offline, no account, 20 languages, and a PDF report for the paediatrician.",
+      "url": "https://apps.apple.com/app/symtrail/id6782177088",
+      "startDate": "2026-06",
+      "vibecoded": true
+    },
+    {
+      "name": "Dzhambaz",
+      "description": "A Chrome extension that shows the real market price of a car on Bulgarian listing sites.",
+      "url": "https://dobrinov.github.io/dzhambaz/",
+      "startDate": "2026-03",
+      "endDate": "2026-05",
+      "vibecoded": true
+    },
+    {
       "name": "Wunderkind",
       "description": "Daily math practice for kids in grades 1 to 12, with an explanation after every mistake.",
       "url": "https://wunderkind.bg/",
@@ -254,7 +325,7 @@
     },
     {
       "name": "Carpass",
-      "description": "Web application for maintaining a vehicle maintenance logs. I needed a tool to log the maintenance history of my car and I decided to build one. It is still being used by 3000+ people.",
+      "description": "Vehicle history for Bulgarian drivers: insurance, inspections, taxes and tyres in one log, with reminders before documents expire. Built and ran it alone from 2016 to 2020; 3000+ people used it.",
       "url": "https://www.carpass.bg/",
       "startDate": "2016-03",
       "endDate": "2020-08"
@@ -319,5 +390,131 @@
         "Lending"
       ]
     }
+  },
+  "llms": {
+    "source": "2,081 of my prompts to Claude Code, Sep–Oct 2026",
+    "patterns": [
+      {
+        "name": "Brain-dump the spec",
+        "goal": "planning",
+        "how": "When I start something new, I write everything I know in one long prompt: what it is for, who uses it, what it must and must not do.",
+        "achieves": "The model starts from my intent instead of a generic version of the idea."
+      },
+      {
+        "name": "Pseudocode as the prompt",
+        "goal": "planning",
+        "how": "When I already know the logic, I write the signature, data shape or if/then steps and let the model fill in the code.",
+        "achieves": "The code follows my design, not the one the model would have picked."
+      },
+      {
+        "name": "A concrete example",
+        "goal": "planning",
+        "how": "When a behaviour is ambiguous, I describe one real scenario step by step.",
+        "achieves": "The model builds for the case that matters and I can check the result against it."
+      },
+      {
+        "name": "Add one more constraint",
+        "goal": "planning",
+        "how": "When an answer is close but not right, I resend the prompt with the one sentence that was missing.",
+        "achieves": "A precise result without starting the conversation over."
+      },
+      {
+        "name": "Defer scope",
+        "goal": "planning",
+        "how": "I say what to leave for later (\"for now\", \"skip\", \"we will extend later\").",
+        "achieves": "Small increments that ship, instead of one change that does everything."
+      },
+      {
+        "name": "Pick up where I left off",
+        "goal": "planning",
+        "how": "After an interruption I ask the model where we are and what is left.",
+        "achieves": "I switch between projects without losing the thread."
+      },
+      {
+        "name": "Steer by naming code",
+        "goal": "building",
+        "how": "I name the exact function, class or variable to rename, move or inline.",
+        "achieves": "The structure and naming I want, without writing the change myself."
+      },
+      {
+        "name": "Cut it back",
+        "goal": "building",
+        "how": "Once something works, I ask to inline single-use code, remove indirection and comments, or start over if it got too complex.",
+        "achieves": "Code a person can read and maintain, not just code that passes."
+      },
+      {
+        "name": "Let the model decide",
+        "goal": "building",
+        "how": "For choices that are cheap to change, I tell the model to decide and keep going.",
+        "achieves": "My attention goes to the decisions that matter."
+      },
+      {
+        "name": "Use my own tools",
+        "goal": "building",
+        "how": "I point the model at tools I built, like Schema and Shape, to visualise a database or a flow.",
+        "achieves": "A picture of the system we both work from."
+      },
+      {
+        "name": "Ask why first",
+        "goal": "reviewing",
+        "how": "Before I accept a change, I ask why it is needed, where it is used and whether something simpler would do.",
+        "achieves": "I understand every line I ship and catch code that should not exist."
+      },
+      {
+        "name": "Push back with an alternative",
+        "goal": "reviewing",
+        "how": "When I disagree, I say so and describe what I want instead.",
+        "achieves": "Design decisions stay mine."
+      },
+      {
+        "name": "Review the diff myself",
+        "goal": "reviewing",
+        "how": "I open the branch in a diff viewer, comment on lines and hand the comments back to the model.",
+        "achieves": "Nothing merges that I have not read."
+      },
+      {
+        "name": "Make it test itself",
+        "goal": "reviewing",
+        "how": "I make the model test its work in a real browser, or send role-played agents (engineers, a child, a CTO) to try it and critique it.",
+        "achieves": "Bugs and product gaps found before I look."
+      },
+      {
+        "name": "Screenshot plus one line",
+        "goal": "reviewing",
+        "how": "For UI problems, I attach a screenshot and write one sentence about what is wrong.",
+        "achieves": "Precise visual feedback in seconds."
+      },
+      {
+        "name": "Triage by number",
+        "goal": "reviewing",
+        "how": "When the model lists issues or options, I reply with the numbers to fix, skip or decide.",
+        "achieves": "Quick decisions on many items at once."
+      },
+      {
+        "name": "Pass on outside feedback",
+        "goal": "reviewing",
+        "how": "I paste reviews from people and other tools and ask the model to act on them.",
+        "achieves": "Feedback turns into changes the same day."
+      },
+      {
+        "name": "Explain it simply",
+        "goal": "research",
+        "how": "When I meet unfamiliar code or an option I do not understand, I ask for a plain explanation with an example.",
+        "achieves": "I learn the parts of the system I did not write."
+      },
+      {
+        "name": "Write prompts for other models",
+        "goal": "operating",
+        "how": "I ask one model to write the prompt for another tool or session.",
+        "achieves": "Context moves between tools without me retyping it."
+      },
+      {
+        "name": "Git by one-liners",
+        "goal": "operating",
+        "how": "I hand git chores to the model in short commands: commit, squash, fold, cherry-pick, push.",
+        "achieves": "A clean history without the busywork."
+      }
+    ],
+    "gap": "I rarely put every constraint in the first prompt or ask for a plan first: 48 prompts resend the previous one with one more sentence, and only about 15 ask for a plan before code."
   }
 }

@@ -151,6 +151,18 @@ code, pre, .mono { font-family: var(--mono); }
 .eyebrow { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .section-head { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: baseline; }
 .section-head .note { font-size: 14px; color: var(--muted); }
+.section-head .note a { color: var(--accent-text); }
+section.llms { display: flex; flex-direction: column; gap: 16px; }
+.llm-rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.llm-row { display: grid; grid-template-columns: 120px 1fr; gap: 8px 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+.llm-goal { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.llm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.llm-chip { min-height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.12s, border-color 0.12s; }
+.llm-chip:hover, .llm-chip.on { background: var(--chip); border-color: var(--field); }
+.llm-pop blockquote { margin: 0; padding: 12px 14px; border-radius: 8px; background: var(--paper); font-family: var(--mono); font-size: 13px; line-height: 1.55; color: var(--prose); overflow-wrap: anywhere; }
+@media (max-width: 640px) { .llm-row { grid-template-columns: 1fr; } }
+.gap { margin: 0; font-size: 15px; color: var(--body); }
+.gap b { color: var(--ink); font-weight: 600; }
 .chip { display: inline-block; font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--body); }
 .btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--field); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; }
 .btn:hover { color: var(--ink); border-color: var(--muted); }
