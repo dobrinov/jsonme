@@ -257,19 +257,20 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .timeline-scroll::-webkit-scrollbar-track { background: var(--chip); border-radius: 5px; }
 .timeline-scroll::-webkit-scrollbar-thumb { background: var(--hatch-line); border-radius: 5px; }
 .timeline { width: calc(var(--who) + var(--gap) + var(--years) * var(--yr)); }
-.tl-frame::before, .tl-frame::after { content: ''; position: absolute; top: 0; bottom: 16px; width: 72px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 2; }
+.tl-frame::before, .tl-frame::after { content: ''; position: absolute; top: 0; bottom: 16px; width: 72px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 3; }
 .tl-frame::before { left: calc(var(--who) + var(--gap)); background: linear-gradient(90deg, var(--bg) 15%, transparent); }
 .tl-frame::after { right: 0; background: linear-gradient(270deg, var(--bg) 15%, transparent); }
 .tl-frame.can-prev::before, .tl-frame.can-next::after { opacity: 1; }
-.tl-edge { position: absolute; top: 50%; z-index: 3; width: 36px; height: 36px; margin-top: -24px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--raised); color: var(--ink); box-shadow: 0 2px 8px rgba(21, 23, 28, 0.12); cursor: pointer; }
+.tl-edge { position: absolute; top: 50%; z-index: 6; width: 36px; height: 36px; margin-top: -24px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--raised); color: var(--ink); box-shadow: 0 2px 8px rgba(21, 23, 28, 0.12); cursor: pointer; }
 .tl-edge.prev { left: calc(var(--who) + var(--gap) + 4px); }
 .tl-edge.next { right: 4px; }
 .tl-edge[hidden] { display: none; }
 .tl-group { position: sticky; left: 0; width: max-content; margin: 14px 0 4px; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .tl-row { display: grid; grid-template-columns: var(--who) minmax(0, 1fr); gap: var(--gap); align-items: center; border-top: 1px solid var(--line-soft); }
 .tl-axis { border-top: 1px solid var(--line); }
-.tl-axis > span:first-child { position: sticky; left: 0; z-index: 2; align-self: stretch; background: var(--bg); box-shadow: var(--gap) 0 0 var(--bg); }
-.tl-who { position: sticky; left: 0; z-index: 2; align-self: stretch; box-shadow: var(--gap) 0 0 var(--bg); background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; min-width: 0; min-height: 44px; padding: 4px 0; border: 0; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.tl-axis > span:first-child { position: sticky; left: 0; z-index: 5; align-self: stretch; background: var(--bg); box-shadow: var(--gap) 0 0 var(--bg); }
+/* Names stay above everything in the track, including a hovered bar and its tooltip. */
+.tl-who { position: sticky; left: 0; z-index: 5; align-self: stretch; box-shadow: var(--gap) 0 0 var(--bg); background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; min-width: 0; min-height: 44px; padding: 4px 0; border: 0; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
 .tl-who .n { font-size: 14px; font-weight: 600; }
 .tl-who .s { max-width: 100%; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tl-who:hover .n, .tl-who.on .n { text-decoration: underline; text-underline-offset: 3px; }
@@ -299,11 +300,13 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .legend .star svg, .pop .star svg { width: 12px; height: 12px; fill: var(--product); }
 .legend i.paused-key { width: 16px; height: 0; border-radius: 0; background: none; border-top: 2px dashed var(--product-key); }
 .dot-label { position: absolute; top: 14px; font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
-[data-tip]:hover, [data-tip]:focus-visible { z-index: 3; }
+[data-tip]:hover, [data-tip]:focus-visible { z-index: 4; }
 [data-tip]::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); padding: 6px 10px; border-radius: 6px; background: var(--tip-bg); color: var(--tip-text); font: 500 12px/1.4 'Geist', system-ui, sans-serif; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 0.12s; box-shadow: 0 4px 12px rgba(21, 23, 28, 0.18); }
 [data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; visibility: visible; }
 .tip-start::after { left: 0; transform: none; }
 .tip-end::after { left: auto; right: 0; transform: none; }
+/* me.js places the tooltip over the visible part of a bar, at the pointer. */
+.tip-at::after { left: var(--tip-left); right: auto; transform: none; }
 .axis { position: relative; height: 24px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .axis span { position: absolute; top: 5px; white-space: nowrap; }
 .axis .era-label { color: var(--ink); font-weight: 500; }

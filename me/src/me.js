@@ -58,6 +58,24 @@
     sync();
     scroller.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
+    // A bar can be wider than the screen: show its tooltip at the pointer (or the middle of what is visible), clear of the names.
+    var tip = function (el, x) {
+      var box = el.getBoundingClientRect();
+      var from = frame.querySelector('.tl-who').getBoundingClientRect().right + 8;
+      var to = scroller.getBoundingClientRect().right;
+      var w = parseFloat(getComputedStyle(el, '::after').width) + 20 || 0;
+      if (x == null) x = (Math.max(box.left, from) + Math.min(box.right, to)) / 2;
+      var left = Math.max(from, Math.min(x - w / 2, to - w));
+      el.style.setProperty('--tip-left', (left - box.left) + 'px');
+      el.classList.add('tip-at');
+    };
+    scroller.addEventListener('pointermove', function (event) {
+      var el = event.target.closest('.track [data-tip]');
+      if (el) tip(el, event.clientX);
+    });
+    scroller.addEventListener('focusin', function (event) {
+      if (event.target.matches('.track [data-tip]')) tip(event.target);
+    });
     controls.forEach(function (b) {
       b.addEventListener('click', function () {
         var track = scroller.clientWidth - frame.querySelector('.tl-who').offsetWidth;
