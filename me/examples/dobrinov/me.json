@@ -232,7 +232,7 @@
     {
       "name": "JsonMe",
       "description": "JsonMe is a web application allowing software engineers to maintain a resume in json format and keep it in their Github/Gitlab profile. The CV that you are looking at the moment is generated with it.",
-      "url": "https://dobrinov.github.io/me/",
+      "url": "https://dobrinov.github.io/jsonme/",
       "startDate": "2021-09",
       "pausedDate": "2022-12",
       "revivedDate": "2026-10",
