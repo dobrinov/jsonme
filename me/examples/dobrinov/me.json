@@ -66,6 +66,18 @@
     ],
     "ai": [
       {
+        "name": "At work, I review every line agents write",
+        "proof": "At Dext, no agent-written change merges until I have read the diff line by line",
+        "detail": "Agents draft; I review. I open the branch in a diff viewer, comment on specific lines and hand the comments back until the change is one I would have written myself. Side projects can move fast; production code at work does not skip this step.",
+        "aiPractice": {
+          "owned": "Every line that merges at work",
+          "verifiedBy": [
+            "Line-by-line review in a diff viewer",
+            "Tests"
+          ]
+        }
+      },
+      {
         "name": "Products AI agents can operate safely",
         "proof": "Approval gates, read-only modes and untrusted-input handling in Investor, Trace and Circle",
         "detail": "Agents read freely but every write waits for the person. Secrets stay on the machine: Circle drives Chromium over a private pipe instead of the open debugging port, and Trace strips visitor text before an agent reads it.",
@@ -470,7 +482,7 @@
       {
         "name": "Review the diff myself",
         "goal": "reviewing",
-        "how": "I open the branch in a diff viewer, comment on lines and hand the comments back to the model.",
+        "how": "At work I always review what agents write: I open the branch in a diff viewer, comment on lines and hand the comments back to the model.",
         "achieves": "Nothing merges that I have not read."
       },
       {
