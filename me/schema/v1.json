@@ -184,6 +184,7 @@
             "lookingFor": { "type": "string" },
             "domains": { "type": "array", "items": { "type": "string" } },
             "aiEraStart": { "$ref": "#/$defs/date", "description": "Where the career line marks the AI era. Default 2023-01." },
+            "plausible": { "type": "string", "pattern": "^https://", "description": "Plausible analytics script URL (the src of the snippet Plausible gives you). Added to every page." },
             "repo": { "type": "string", "description": "Source repo URL, for \"Suggest an edit\" links. Filled by the Action." }
           }
         }

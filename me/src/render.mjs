@@ -54,7 +54,16 @@ function absoluteImage(b, siteUrl) {
   return siteUrl ? siteUrl + b.image.replace(/^\//, '') : '';
 }
 
-function page({ title, description, root, body, canonical, og }) {
+// Plausible analytics: the script URL from meta.me.plausible, plus Plausible's own queue stub.
+function analytics(me) {
+  const url = me && me.meta && me.meta.me && me.meta.me.plausible;
+  if (!url || !/^https:\/\//i.test(url)) return '';
+  return `<script async src="${e(url)}"></script>
+<script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>
+`;
+}
+
+function page({ title, description, root, body, canonical, og, me }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -69,7 +78,7 @@ ${description ? `<meta name="description" content="${e(description)}">\n` : ''}$
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">
 <link rel="stylesheet" href="${root}assets/me.css">
-</head>
+${analytics(me)}</head>
 <body>
 ${body}
 <script src="${root}assets/me.js" defer></script>
@@ -472,7 +481,7 @@ ${more(me, posts)}
 </main>
 ${footer(me, '', builtAt)}`;
   return page({ title: `${b.name}${b.label ? ` · ${b.label}` : ''}`, description: me.headline || b.summary, root: '', body, canonical: siteUrl || undefined,
-    og: { type: 'profile', image: absoluteImage(b, siteUrl), siteName: b.name } });
+    og: { type: 'profile', image: absoluteImage(b, siteUrl), siteName: b.name }, me });
 }
 
 export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}) {
@@ -488,5 +497,5 @@ export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}
 <div class="post-foot wrap"><div><a class="back" href="${root}#writing"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>${repo ? `<a class="edit" href="${e(href(`${repo.replace(/\/$/, '')}/edit/HEAD/posts/${post.file}`))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Suggest an edit</a>` : ''}</div></div>
 ${footer(me, root, builtAt)}`;
   return page({ title: `${post.title} · ${b.name}`, description: post.summary, root, body, canonical: siteUrl ? `${siteUrl}posts/${post.slug}/` : undefined,
-    og: { type: 'article', image: absoluteImage(b, siteUrl), siteName: b.name, published: post.date || '' } });
+    og: { type: 'article', image: absoluteImage(b, siteUrl), siteName: b.name, published: post.date || '' }, me });
 }

@@ -167,6 +167,15 @@ test('Open Graph tags make shared links show a card', async () => {
   assert.doesNotMatch(renderProfile(me, [], { builtAt }), /og:image|og:url/, 'no site url, no relative og:image or og:url');
 });
 
+test('Plausible analytics from meta.me.plausible, https only', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, meta: { me: { plausible: 'https://stats.example.com/js/pa-abc.js' } } };
+  const html = renderProfile(me, [], { builtAt });
+  assert.match(html, /<script async src="https:\/\/stats.example.com\/js\/pa-abc.js"><\/script>\n<script>window.plausible=/);
+  me.meta.me.plausible = 'javascript:alert(1)';
+  assert.doesNotMatch(renderProfile(me, [], { builtAt }), /plausible/);
+});
+
 test('rejects an invalid me.json', async () => {
   const src = await mkdtemp(join(tmpdir(), 'me-bad-'));
   await writeFile(join(src, 'me.json'), JSON.stringify({ basics: {} }));

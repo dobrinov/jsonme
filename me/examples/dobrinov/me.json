@@ -388,7 +388,8 @@
         "Accounting",
         "Document extraction",
         "Lending"
-      ]
+      ],
+      "plausible": "https://stats.aparatnata.com/js/pa-DpF21XOvOBN0nOOPPnjUD.js"
     }
   },
   "llms": {
