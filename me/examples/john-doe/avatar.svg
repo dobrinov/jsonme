@@ -1,1 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#C9D2FF"/><circle cx="60" cy="47" r="22" fill="#2F4BE0"/><path d="M18 120c4-24 20-36 42-36s38 12 42 36z" fill="#2F4BE0"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 36 160 160">
+  <title>John Doe</title>
+  <defs>
+    <clipPath id="frame"><circle cx="120" cy="120" r="120"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="240" height="240" fill="#DCE3FF"/>
+    <circle cx="190" cy="52" r="70" fill="#C9D2FF"/>
+
+    <!-- shoulders: navy jacket over a light shirt -->
+    <path d="M28 240c4-46 34-70 92-70s88 24 92 70z" fill="#1F2A5C"/>
+    <path d="M98 172l22 40 22-40z" fill="#F4F6FB"/>
+    <path d="M98 172l22 40-14 6-20-38zM142 172l-22 40 14 6 20-38z" fill="#2B3A7A"/>
+
+    <!-- neck -->
+    <path d="M104 146h32v30c0 9-7 16-16 16s-16-7-16-16z" fill="#D9A07B"/>
+    <path d="M104 160c10 6 22 6 32 0v-10h-32z" fill="#C98C66"/>
+
+    <!-- ears -->
+    <ellipse cx="78" cy="112" rx="9" ry="13" fill="#E0AA85"/>
+    <ellipse cx="162" cy="112" rx="9" ry="13" fill="#E0AA85"/>
+
+    <!-- face -->
+    <path d="M80 100c0-30 18-48 40-48s40 18 40 48v14c0 26-18 46-40 46s-40-20-40-46z" fill="#EBB892"/>
+
+    <!-- short beard -->
+    <path d="M84 126c4 22 18 34 36 34s32-12 36-34c-5 5-11 8-17 8-5-5-12-7-19-7s-14 2-19 7c-6 0-12-3-17-8z" fill="#6B4A36"/>
+    <path d="M108 141c4-2 8-3 12-3s8 1 12 3c-3 4-7 6-12 6s-9-2-12-6z" fill="#B86B55"/>
+    <path d="M109 141h22" stroke="#7A3E30" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- hair -->
+    <path d="M78 104c-4-34 14-58 44-58 26 0 44 16 42 46-6-14-16-20-28-22-14-2-26 6-40 6-8 0-14 10-18 28z" fill="#5A3C2B"/>
+    <path d="M118 48c12-4 30 0 38 12-10-6-22-8-38-12z" fill="#7A5440"/>
+
+    <!-- brows -->
+    <path d="M94 98c6-4 14-4 20-1M126 97c6-3 14-3 20 1" stroke="#4A3123" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+    <!-- glasses -->
+    <g fill="none" stroke="#15171C" stroke-width="3.5">
+      <rect x="90" y="102" width="27" height="20" rx="7"/>
+      <rect x="123" y="102" width="27" height="20" rx="7"/>
+      <path d="M117 110c2-2 4-2 6 0"/>
+      <path d="M90 108l-9-3M150 108l9-3"/>
+    </g>
+    <circle cx="104" cy="112" r="3.2" fill="#15171C"/>
+    <circle cx="136" cy="112" r="3.2" fill="#15171C"/>
+
+    <!-- nose -->
+    <path d="M120 114c-1 6-3 10-6 12 3 2 8 2 11 0" stroke="#B9785A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
