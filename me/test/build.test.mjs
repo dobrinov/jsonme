@@ -54,14 +54,14 @@ test('builds the example site', async () => {
   assert.match(index, /id="llms"/, 'How I use LLMs is rendered');
 
   const post = await readFile(join(out, 'posts/hello-blogging/index.html'), 'utf8');
-  assert.match(post, /<h1>Hello, blogging!<\/h1>/);
-  assert.match(post, /<h2>How does it work\?<\/h2>/);
+  assert.match(post, /<h1>How to blog with {me}<\/h1>/);
+  assert.match(post, /<h2>Before you start<\/h2>/);
   assert.match(post, /github\.com\/dobrinov\/me\/edit\/HEAD\/posts\/hello-blogging\.md/);
 
   assert.match(await readFile(join(out, 'llms.txt'), 'utf8'), /\(https:\/\/dobrinov\.github\.io\/me\/cv\.md\)/);
   assert.match(await readFile(join(out, 'cv.md'), 'utf8'), /## Signature work/);
   assert.equal(JSON.parse(await readFile(join(out, 'me.json'), 'utf8')).meta.me.repo, 'https://github.com/dobrinov/me');
-  assert.match(await readFile(join(out, 'feed.xml'), 'utf8'), /<pubDate>Sat, 03 Dec 2022/);
+  assert.match(await readFile(join(out, 'feed.xml'), 'utf8'), /<pubDate>Thu, 29 Oct 2026/);
 });
 
 test('builds the template, a minimal file and a legacy file', async () => {
