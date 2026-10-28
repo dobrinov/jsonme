@@ -102,7 +102,9 @@ test('contact links, and unsafe URLs are dropped', async () => {
     { network: 'Evil', url: 'javascript:alert(1)' }
   ] }, projects: [{ name: 'X', url: 'javascript:alert(1)', startDate: '2020-01' }] };
   const html = renderProfile(me, [], { builtAt });
-  assert.match(html, /<div class="contact"><a href="mailto:ada@example.com">ada@example.com<\/a><a href="https:\/\/ada.dev" rel="me">ada.dev<\/a><a href="https:\/\/github.com\/ada" rel="me">GitHub<\/a><\/div>/);
+  assert.match(html, /<a class="mail" href="mailto:ada@example.com" data-tip="ada@example.com">.*?<span class="screen">Email<\/span><span class="print">ada@example.com<\/span><\/a>/);
+  assert.match(html, /<a class="icon" href="https:\/\/ada.dev" rel="me" aria-label="Website" data-tip="ada.dev">/);
+  assert.match(html, /<a class="icon" href="https:\/\/github.com\/ada" rel="me" aria-label="GitHub" data-tip="github.com\/ada">/);
   assert.doesNotMatch(html, /javascript:/);
   assert.match(cvMarkdown(me, []), /Contact: ada@example.com · ada.dev · GitHub: https:\/\/github.com\/ada/);
 });

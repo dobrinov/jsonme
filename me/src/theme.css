@@ -169,13 +169,19 @@ details[open] > summary .sign::before { content: '−'; }
 
 /* Header */
 main.profile { display: flex; flex-direction: column; gap: 64px; padding-top: 40px; padding-bottom: 96px; }
-.who { display: flex; gap: 16px; align-items: center; }
-.avatar { width: 56px; height: 56px; flex: none; border-radius: 50%; background: var(--avatar); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; color: var(--body); object-fit: cover; }
-.who .name { font-size: 18px; font-weight: 600; }
-.who .meta { font-size: 15px; color: var(--muted); }
-.who .contact { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-top: 4px; font-size: 14px; }
-.who .contact a { color: var(--accent-text); text-decoration: none; }
-.who .contact a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.who { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; }
+.who .id { display: flex; gap: 16px; align-items: center; min-width: 0; }
+.avatar { width: 64px; height: 64px; flex: none; border-radius: 50%; background: var(--avatar); display: inline-flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--body); object-fit: cover; box-shadow: 0 0 0 1px var(--hover-ring); }
+.who .name { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.who .meta { margin-top: 2px; font-size: 15px; color: var(--muted); }
+.who .contact { display: flex; flex-wrap: wrap; gap: 8px; }
+.who .contact a { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border: 1px solid var(--line); border-radius: 999px; color: var(--body); text-decoration: none; transition: color 0.12s, background 0.12s, border-color 0.12s; }
+.who .contact a:hover { color: var(--ink); background: var(--chip); border-color: var(--field); }
+.who .contact .mail { padding: 0 16px; color: var(--ink); font-size: 14px; font-weight: 500; }
+.who .contact .mail svg { width: 16px; height: 16px; }
+.who .contact .icon { width: 44px; }
+.who .contact .print { display: none; }
+.who .contact a:last-child::after { left: auto; right: 0; transform: none; }
 .intro { display: flex; flex-direction: column; gap: 28px; }
 .headline { margin: 0; font-size: clamp(36px, 5.6vw, 64px); line-height: 1.04; letter-spacing: -0.035em; font-weight: 700; max-width: 900px; text-wrap: balance; }
 .summary { margin: 0; font-size: 18px; line-height: 1.6; color: var(--body); max-width: 760px; }
@@ -475,6 +481,10 @@ article.post { max-width: 720px; padding-top: 48px; padding-bottom: 64px; displa
   main.profile { gap: 28px; padding: 0; }
   .story { display: flex !important; break-inside: avoid; }
   .tl-hint, .pop-close, [data-tip]::after { display: none !important; }
+  .who .contact { gap: 2px 14px; }
+  .who .contact a, .who .contact .icon, .who .contact .mail { height: auto; width: auto; padding: 0; border: 0; font-size: 13px; font-weight: 400; color: var(--accent-text); }
+  .who .contact svg, .who .contact .screen { display: none; }
+  .who .contact .print { display: inline; }
   .pops { display: flex; flex-direction: column; gap: 12px; }
   .pop.job-pop { display: flex !important; flex-direction: column; gap: 10px; position: static; inset: auto; margin: 0; width: auto; max-height: none; overflow: visible; box-shadow: none; break-inside: avoid; }
   .timeline-scroll { overflow: visible; margin-top: 0; padding-top: 0; }
