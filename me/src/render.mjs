@@ -446,7 +446,7 @@ function contact(b) {
     ...(b.profiles || []).filter((p) => p.url).map((p) => ({ url: href(p.url), label: p.network || hostOf(p.url), icon: networkIcon(p.network) }))
   ].filter((l) => l && l.url !== '#');
   const mail = b.email ? `<a class="mail" href="mailto:${e(b.email)}" data-tip="${e(b.email)}">${contactIcon('email')}<span class="screen">Email</span><span class="print">${e(b.email)}</span></a>` : '';
-  const icons = links.map((l) => `<a class="icon" href="${e(l.url)}" rel="me" aria-label="${e(l.label)}" data-tip="${e(hostOf(l.url))}">${contactIcon(l.icon)}<span class="print" aria-hidden="true">${e(hostOf(l.url))}</span></a>`).join('');
+  const icons = links.map((l) => `<a class="icon" href="${e(l.url)}" rel="me noopener" target="_blank" aria-label="${e(l.label)}" data-tip="${e(hostOf(l.url))}">${contactIcon(l.icon)}<span class="print" aria-hidden="true">${e(hostOf(l.url))}</span></a>`).join('');
   return mail || icons ? `<div class="contact">${mail}${icons}</div>` : '';
 }
 
