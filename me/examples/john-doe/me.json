@@ -1,0 +1,284 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dobrinov/jsonme/main/me/schema/v1.json",
+  "basics": {
+    "name": "John Doe",
+    "label": "Staff engineer at Northwind Payments",
+    "image": "avatar.svg",
+    "email": "john.doe@example.com",
+    "url": "https://example.com/johndoe",
+    "location": {
+      "city": "Amsterdam",
+      "country": "Netherlands"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "johndoe",
+        "url": "https://example.com/github/johndoe"
+      },
+      {
+        "network": "LinkedIn",
+        "url": "https://example.com/linkedin/johndoe"
+      }
+    ]
+  },
+  "headline": "I move money-critical systems off legacy code without anyone noticing.",
+  "facts": [
+    {
+      "value": "14 yrs",
+      "label": "shipping software, since 2012. 10 of them before AI coding tools."
+    },
+    {
+      "value": "2.3M",
+      "label": "card payments a day on the platform my group runs."
+    },
+    {
+      "value": "Team of 11",
+      "label": "the platform group I lead, across three teams."
+    },
+    {
+      "value": "0",
+      "label": "failed authorizations in the cutover off the monolith."
+    }
+  ],
+  "expertise": {
+    "engineering": [
+      {
+        "name": "Strangling legacy systems",
+        "proof": "Moved card authorization off a 9-year-old monolith with zero downtime",
+        "detail": "I prefer shadow traffic and dual writes to big-bang rewrites: every step can be rolled back, and the old system is the test oracle until the day it is switched off."
+      },
+      {
+        "name": "Latency and reliability",
+        "proof": "Authorization p99 from 900ms to 120ms; on-call pages down 70% in a year",
+        "detail": "Most wins came from removing work, not adding caches: fewer network hops, fewer locks, and timeouts that fail fast."
+      },
+      {
+        "name": "Payments and ledgers",
+        "proof": "Wrote Ledgerline, a double-entry library used in production at two companies",
+        "detail": "Idempotency keys, exactly-once posting, and reconciliation that a finance team can read."
+      },
+      {
+        "name": "Growing engineers",
+        "proof": "Four engineers I mentored were promoted to senior; two now lead teams"
+      }
+    ],
+    "ai": [
+      {
+        "name": "Migrations with coding agents",
+        "proof": "Moved 1,400 tests to a new framework in 3 weeks with Claude Code, every diff reviewed",
+        "detail": "The agent does the mechanical rewrite in small batches; a script compares coverage and test names before and after each batch.",
+        "aiPractice": {
+          "delegated": "Mechanical rewrites, test scaffolding, first drafts of migration scripts",
+          "owned": "The migration plan, money-moving code paths, and anything touching card data",
+          "verifiedBy": ["Coverage diff per batch", "Code review", "Shadow traffic in staging"]
+        }
+      },
+      {
+        "name": "Shipping products with AI",
+        "proof": "Built Quayside and Trailmap with AI from the first commit; revived Ledgerline after six years",
+        "aiPractice": {
+          "delegated": "UI, glue code, docs",
+          "owned": "Data model, security boundaries, pricing logic",
+          "verifiedBy": ["Property-based tests", "Manual exploratory testing"]
+        }
+      },
+      {
+        "name": "AI in the review loop",
+        "proof": "Added an AI pre-review to the platform group's PRs; median review time down from 26h to 9h",
+        "aiPractice": {
+          "delegated": "Spotting missing tests, risky queries and unclear naming",
+          "owned": "The approve/reject decision",
+          "verifiedBy": ["A monthly sample of its comments, scored by the team"]
+        }
+      }
+    ]
+  },
+  "highlights": [
+    {
+      "title": "Card authorization off the monolith, with zero downtime",
+      "hook": "Moved the busiest path in the company to a new service while it handled 2M payments a day.",
+      "where": "Northwind Payments",
+      "when": "Senior engineer",
+      "tags": ["depth", "leadership"],
+      "problem": "Card authorization lived in a 9-year-old Rails monolith. p99 was 900ms, every deploy was a risk, and the payment network was threatening penalties for slow responses.",
+      "did": "I proposed a strangler plan: a Go service fed by shadow traffic, compared response by response against the monolith for six weeks, then moved over 1% of merchants at a time with an instant switch back. I led four engineers through it and wrote the comparison tooling myself.",
+      "outcome": "p99 fell from 900ms to 120ms. No authorization failed during the cutover, and the old code path was deleted four months after we started.",
+      "stack": ["Go", "Kafka", "PostgreSQL", "Ruby on Rails"],
+      "evidence": [
+        { "url": "https://example.com/blog/strangling-authorization", "label": "Engineering blog post" },
+        { "url": "https://example.com/talks/zero-downtime-payments", "label": "Conference talk" }
+      ]
+    },
+    {
+      "title": "1,400 tests to a new framework in 3 weeks, with an agent",
+      "hook": "A migration the team had postponed for two years, done with Claude Code and a coverage diff.",
+      "where": "Northwind Payments",
+      "when": "Leads the platform group",
+      "tags": ["ai", "leadership"],
+      "problem": "The platform's tests ran on a framework that was no longer maintained. Rewriting them by hand was estimated at four months, so it never made a roadmap.",
+      "did": "I split the suite into batches of about 50 tests, had Claude Code rewrite each batch, and wrote a script that compared coverage and test names before and after. Two engineers reviewed every diff; anything that touched card data was rewritten by hand.",
+      "outcome": "Done in 3 weeks instead of an estimated 4 months. Coverage went from 81% to 83%, and CI got 40% faster.",
+      "stack": ["Claude Code", "Go", "GitHub Actions"],
+      "evidence": [
+        { "url": "https://example.com/blog/agent-test-migration", "label": "Write-up with the coverage script" }
+      ]
+    },
+    {
+      "title": "Ledgerline: a double-entry library, built twice",
+      "hook": "Written by hand in 2017, paused for six years, and revived with AI in 2025.",
+      "where": "Ledgerline",
+      "tags": ["product", "ai"],
+      "problem": "Every payments codebase I had seen kept money in mutable balance columns, and none of them could explain a balance to an auditor.",
+      "did": "I wrote an open-source double-entry library in Ruby with immutable entries and idempotent posting. In 2025 I picked it up again with AI: a Go port, a reconciliation CLI and full documentation.",
+      "outcome": "Used in production at two companies, 1,900 stars, and the Go port reached feature parity in five weeks of evenings.",
+      "stack": ["Ruby", "Go", "PostgreSQL"],
+      "evidence": [
+        { "url": "https://example.com/ledgerline", "label": "Ledgerline" }
+      ]
+    }
+  ],
+  "work": [
+    {
+      "name": "Northwind Payments",
+      "url": "https://example.com/northwind",
+      "position": "Staff engineer",
+      "scope": "Leads the platform group",
+      "startDate": "2025-02",
+      "summary": "I lead the platform group: three teams and 11 engineers who run payments infrastructure.",
+      "highlights": [
+        "Set the group's two-year plan for retiring the monolith",
+        "Introduced AI pre-review on every PR"
+      ]
+    },
+    {
+      "name": "Northwind Payments",
+      "url": "https://example.com/northwind",
+      "position": "Staff engineer",
+      "startDate": "2023-04",
+      "endDate": "2025-01",
+      "highlights": [
+        "Wrote the payments architecture principles every team now reviews against",
+        "Cut on-call pages by 70% in a year"
+      ]
+    },
+    {
+      "name": "Northwind Payments",
+      "url": "https://example.com/northwind",
+      "position": "Senior engineer",
+      "startDate": "2020-09",
+      "endDate": "2023-03",
+      "highlights": [
+        "Led four engineers through the authorization rewrite"
+      ]
+    },
+    {
+      "name": "Northwind Payments",
+      "url": "https://example.com/northwind",
+      "position": "Software engineer",
+      "startDate": "2019-04",
+      "endDate": "2020-08",
+      "highlights": [
+        "Built idempotent refunds, ending double refunds"
+      ]
+    },
+    {
+      "name": "Contoso Retail",
+      "url": "https://example.com/contoso",
+      "position": "Software engineer",
+      "startDate": "2015-09",
+      "endDate": "2019-03",
+      "summary": "Checkout and order management for an online retailer with 400 stores.",
+      "highlights": [
+        "Rebuilt checkout; conversion up 6%",
+        "Moved order processing from cron jobs to a queue"
+      ]
+    },
+    {
+      "name": "Fabrikam",
+      "url": "https://example.com/fabrikam",
+      "position": "Junior developer",
+      "startDate": "2012-07",
+      "endDate": "2015-08",
+      "summary": "Internal tools for a logistics company: PHP first, then Ruby on Rails."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Trailmap",
+      "description": "Turns a GPX file into a printable trail guide with elevation, water points and bail-out routes.",
+      "url": "https://example.com/trailmap",
+      "startDate": "2026-09",
+      "vibecoded": true
+    },
+    {
+      "name": "Quayside",
+      "description": "Booking for small marinas: berths, invoices and a harbour master's tablet view. Three marinas use it.",
+      "url": "https://example.com/quayside",
+      "startDate": "2026-02",
+      "vibecoded": true
+    },
+    {
+      "name": "Ledgerline",
+      "description": "An open-source double-entry ledger library with immutable entries and idempotent posting. 1,900 stars, used in production at two companies.",
+      "url": "https://example.com/ledgerline",
+      "startDate": "2017-03",
+      "pausedDate": "2019-06",
+      "revivedDate": "2025-08",
+      "revival": "A Go port at feature parity, a reconciliation CLI, and full documentation, built with AI in five weeks of evenings."
+    },
+    {
+      "name": "Standup Bot",
+      "description": "A Slack bot for written stand-ups. About 200 teams used it before I shut it down.",
+      "startDate": "2016-04",
+      "endDate": "2017-01"
+    },
+    {
+      "name": "Hackathon: Parcel Radar",
+      "description": "Live parcel tracking on a map, built in a weekend. Won the 2014 city hackathon.",
+      "startDate": "2014-05",
+      "endDate": "2014-05"
+    }
+  ],
+  "education": [
+    {
+      "institution": "Delft University of Technology",
+      "studyType": "MSc",
+      "area": "Computer Science",
+      "startDate": "2010-09",
+      "endDate": "2012-06"
+    },
+    {
+      "institution": "University of Amsterdam",
+      "studyType": "BSc",
+      "area": "Computer Science",
+      "startDate": "2007-09",
+      "endDate": "2010-07"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages",
+      "keywords": ["Go", "Ruby", "TypeScript", "SQL"]
+    },
+    {
+      "name": "Infrastructure",
+      "keywords": ["PostgreSQL", "Kafka", "Kubernetes", "AWS", "Terraform"]
+    },
+    {
+      "name": "AI tools",
+      "keywords": ["Claude Code", "Cursor", "GitHub Copilot"]
+    },
+    {
+      "name": "Can mentor",
+      "keywords": ["Go", "PostgreSQL", "System design", "Incident response"]
+    }
+  ],
+  "meta": {
+    "me": {
+      "listed": false,
+      "lookingFor": "Principal or staff roles in payments infrastructure, remote or Amsterdam.",
+      "domains": ["Payments", "Retail", "Logistics"]
+    }
+  }
+}

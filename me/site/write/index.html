@@ -17,7 +17,7 @@
   <a class="mark" href="../"><b>{</b>me<b>}</b></a>
   <nav class="nav">
     <a class="hide-sm" href="../#start">Publish</a>
-    <a href="https://dobrinov.github.io/me/">Example CV</a>
+    <a href="../example/">Example CV</a>
     <a href="https://github.com/dobrinov/jsonme/tree/main/me">GitHub</a>
   </nav>
 </header>
@@ -72,7 +72,7 @@
 </main>
 
 <footer>
-  <span>{me} by <a href="https://dobrinov.github.io/me/">Deyan Dobrinov</a></span>
+  <span>{me} by <a href="https://github.com/dobrinov">Deyan Dobrinov</a></span>
   <span><a href="https://github.com/dobrinov/jsonme/tree/main/me">Source on GitHub</a></span>
 </footer>
 </div>
@@ -181,7 +181,7 @@ area.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(c
 
 const loaders = {
   template: () => text('../lib/template.json'),
-  example: () => text('https://dobrinov.github.io/me/me.json'),
+  example: () => text('../lib/example.json'),
   clear: async () => ''
 };
 document.querySelectorAll('[data-load]').forEach((b) => b.addEventListener('click', async () => {

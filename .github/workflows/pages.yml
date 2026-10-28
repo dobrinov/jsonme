@@ -1,10 +1,11 @@
 name: Project page
 
-# Publishes me/site/ to https://dobrinov.github.io/jsonme/, with the builder modules that /write/ runs in the browser.
+# Publishes me/site/ to https://dobrinov.github.io/jsonme/, with the builder modules that /write/ runs in the browser
+# and the John Doe example CV at /example/.
 on:
   push:
     branches: [main]
-    paths: ['me/site/**', 'me/src/**', 'me/template/me.json', '.github/workflows/pages.yml']
+    paths: ['me/site/**', 'me/src/**', 'me/template/me.json', 'me/examples/john-doe/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -19,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - run: sh me/site/build.sh
       - uses: actions/upload-pages-artifact@v3
         with:
