@@ -64,6 +64,19 @@ function analytics(me) {
 `;
 }
 
+// Every link to another site opens in a new tab. Links within the site, anchors and mailto: stay as they are.
+export function externalLinks(html) {
+  return html.replace(/<a ([^>]*?)href="(https?:\/\/[^"]*)"([^>]*)>/g, (tag, before, url, after) => {
+    if (/\btarget=/.test(before + after)) return tag;
+    const attrs = before + after;
+    const rel = attrs.match(/\brel="([^"]*)"/);
+    const withRel = rel
+      ? tag.replace(rel[0], `rel="${rel[1].split(' ').includes('noopener') ? rel[1] : `${rel[1]} noopener`}"`)
+      : tag.replace(/>$/, ' rel="noopener">');
+    return withRel.replace(/>$/, ' target="_blank">');
+  });
+}
+
 function page({ title, description, root, body, canonical, og, me }) {
   return `<!doctype html>
 <html lang="en">
@@ -81,7 +94,7 @@ ${description ? `<meta name="description" content="${e(description)}">\n` : ''}$
 <link rel="stylesheet" href="${root}assets/me.css">
 ${analytics(me)}</head>
 <body>
-${body}
+${externalLinks(body)}
 <script src="${root}assets/me.js" defer></script>
 </body>
 </html>

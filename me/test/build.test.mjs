@@ -116,7 +116,7 @@ test('the current employer in the label links to its site', async () => {
     { name: 'Dext', url: 'https://www.dext.com/', position: 'Team lead', startDate: '2016-05' },
     { name: 'Acme', url: 'https://acme.test', position: 'Engineer', startDate: '2010-01', endDate: '2016-04' }
   ] };
-  assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at <a href="https:\/\/www.dext.com\/">Dext<\/a><\/div>/);
+  assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at <a href="https:\/\/www.dext.com\/" rel="noopener" target="_blank">Dext<\/a><\/div>/);
   me.work[0].endDate = '2020-01';
   assert.match(renderProfile(me, [], { builtAt }), /<div class="meta">Team lead at Dext<\/div>/);
 });
@@ -190,6 +190,14 @@ test('ongoing products always reach the present, finished short ones are dots', 
   assert.match(html, /popovertarget="product-fresh" data-tip="[^"]*" aria-label="[^"]*" style="left:min\(/);
   assert.match(html, /class="seg product ai mono[^"]*" type="button" popovertarget="product-revived" data-role="1"/);
   assert.match(html, /class="dot product mono[^"]*" type="button" popovertarget="product-done"/);
+});
+
+test('external links open in a new tab, internal ones do not', async () => {
+  const { externalLinks } = await import('../src/render.mjs');
+  assert.equal(externalLinks('<a href="https://x.dev">x</a>'), '<a href="https://x.dev" rel="noopener" target="_blank">x</a>');
+  assert.equal(externalLinks('<a class="i" href="https://x.dev" rel="me">x</a>'), '<a class="i" href="https://x.dev" rel="me noopener" target="_blank">x</a>');
+  assert.equal(externalLinks('<a href="https://x.dev" rel="me noopener" target="_blank">x</a>'), '<a href="https://x.dev" rel="me noopener" target="_blank">x</a>');
+  for (const internal of ['<a href="#s1">a</a>', '<a href="posts/a/">a</a>', '<a href="mailto:a@b.c">a</a>']) assert.equal(externalLinks(internal), internal);
 });
 
 test('rejects an invalid me.json', async () => {
