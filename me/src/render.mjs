@@ -42,9 +42,10 @@ function avatar(basics, root) {
 function social({ title, description, canonical, type, image, siteName, published }) {
   const tags = [
     ['og:type', type], ['og:title', title], ['og:description', description], ['og:url', canonical],
-    ['og:image', image], ['og:site_name', siteName], ['article:published_time', published]
+    ['og:image', image], ['og:image:alt', image && siteName], ['og:site_name', siteName], ['article:published_time', published]
   ].filter(([, v]) => v).map(([k, v]) => `<meta property="${k}" content="${e(v)}">`);
   tags.push(`<meta name="twitter:card" content="summary">`);
+  if (image) tags.push(`<meta name="twitter:image" content="${e(image)}">`);
   return tags.join('\n') + '\n';
 }
 

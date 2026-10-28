@@ -160,6 +160,8 @@ test('Open Graph tags make shared links show a card', async () => {
   assert.match(html, /<meta property="og:url" content="https:\/\/ada.dev\/">/);
   assert.match(html, /<meta property="og:image" content="https:\/\/ada.dev\/avatar.jpg">/);
   assert.match(html, /<meta name="twitter:card" content="summary">/);
+  assert.match(html, /<meta property="og:image:alt" content="Ada">/);
+  assert.match(html, /<meta name="twitter:image" content="https:\/\/ada.dev\/avatar.jpg">/);
   const post = renderPost(me, { title: 'Hello', summary: 'First post', slug: 'hello', date: '2026-01-02', words: 10, tags: [], body: 'Hi', file: 'hello.md' }, { siteUrl: 'https://ada.dev/', builtAt });
   assert.match(post, /<meta property="og:type" content="article">/);
   assert.match(post, /<meta property="og:url" content="https:\/\/ada.dev\/posts\/hello\/">/);
