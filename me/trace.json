@@ -112,6 +112,22 @@
       "target": "1%"
     }
   },
+  "audience": {
+    "marketing": [
+      "/jsonme"
+    ],
+    "engaged": [
+      {
+        "event": "prompt_copied"
+      },
+      {
+        "event": "cv_started"
+      },
+      {
+        "event": "cv_saved"
+      }
+    ]
+  },
   "funnels": {
     "writer": {
       "name": "Project page to a saved CV",
