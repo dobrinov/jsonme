@@ -116,6 +116,9 @@ export async function build({ src = '.', out = '_site', siteUrl = '', repo = '',
   await write(out, '.nojekyll', '');
   await write(out, 'assets/me.css', await readFile(join(HERE, 'theme.css')));
   await write(out, 'assets/me.js', await readFile(join(HERE, 'me.js')));
+  await write(out, 'assets/favicon.svg', await readFile(join(HERE, 'favicon.svg')));
+  await write(out, 'assets/apple-touch-icon.png', await readFile(join(HERE, 'apple-touch-icon.png')));
+  await write(out, 'favicon.ico', await readFile(join(HERE, 'favicon.ico')));
 
   return { posts: posts.length, warnings: warnings.length };
 }

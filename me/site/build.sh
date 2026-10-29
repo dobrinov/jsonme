@@ -9,6 +9,7 @@ rm -rf "$out"
 mkdir -p "$out/lib"
 cp -R site/. "$out/"
 rm "$out/build.sh"
+cp src/favicon.svg src/favicon.ico src/apple-touch-icon.png "$out/"
 cp src/render.mjs src/validate.mjs src/markdown.mjs src/migrate.mjs src/theme.css src/me.js "$out/lib/"
 cp template/me.json "$out/lib/template.json"
 # /write/ previews in an iframe, where a relative image path would not resolve.

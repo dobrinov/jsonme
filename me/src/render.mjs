@@ -10,6 +10,8 @@ const THEME_SWITCH = `<span class="theme" role="group" aria-label="Theme" hidden
 ].map(([id, label, icon]) => `<button type="button" aria-pressed="${id === 'auto'}" data-theme-choice="${id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg><span>${label}</span></button>`).join('')}</span>`;
 // Applies a saved theme before first paint so the page does not flash.
 const THEME_BOOT = '<script>try{var t=localStorage.getItem("me-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>';
+// The {me} project page: the footer of every generated site links to it.
+const HOME = 'https://dobrinov.github.io/jsonme/';
 const FONTS = 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap';
 
 // '2016-05' -> 2016.33; missing -> now
@@ -86,7 +88,10 @@ function page({ title, description, root, body, canonical, og, me }) {
 <meta name="color-scheme" content="light dark">
 ${THEME_BOOT}
 <title>${e(title)}</title>
-${description ? `<meta name="description" content="${e(description)}">\n` : ''}${canonical ? `<link rel="canonical" href="${e(canonical)}">\n` : ''}${og ? social({ title, description, canonical, ...og }) : ''}<link rel="alternate" type="application/json" href="${root}me.json">
+${description ? `<meta name="description" content="${e(description)}">\n` : ''}${canonical ? `<link rel="canonical" href="${e(canonical)}">\n` : ''}${og ? social({ title, description, canonical, ...og }) : ''}<link rel="icon" href="${root}favicon.ico" sizes="32x32">
+<link rel="icon" href="${root}assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="${root}assets/apple-touch-icon.png">
+<link rel="alternate" type="application/json" href="${root}me.json">
 <link rel="alternate" type="application/rss+xml" href="${root}feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -469,7 +474,7 @@ function contact(b) {
 
 function footer(me, root, builtAt) {
   const repo = me.meta && me.meta.me && me.meta.me.repo;
-  return `<footer class="site wrap"><span>Made with {me}${repo ? ` from <a href="${e(href(repo))}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
+  return `<footer class="site wrap"><span>Made by <a href="${HOME}">{me}</a>${repo ? ` from <a href="${e(href(repo))}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
 }
 
 export function renderProfile(me, posts, { siteUrl = '', builtAt = new Date() } = {}) {
