@@ -49,7 +49,7 @@ test('builds the example site', async () => {
   assert.match(await readFile(join(out, "assets/me.css"), "utf8"), /prefers-color-scheme: dark/);
   assert.match(index, /<link rel="icon" href="assets\/favicon.svg" type="image\/svg\+xml">/);
   for (const icon of ['favicon.ico', 'assets/favicon.svg', 'assets/apple-touch-icon.png']) await readFile(join(out, icon));
-  assert.match(index, /Made by <a href="https:\/\/dobrinov.github.io\/jsonme\/" rel="noopener" target="_blank">\{me\}<\/a>/);
+  assert.match(index, /Built with <a href="https:\/\/dobrinov.github.io\/jsonme\/" rel="noopener" target="_blank">\{me\}<\/a>/);
   assert.match(index, /class="dot product[^"]*" type="button" popovertarget="product-dev-wanted"/, "a one-month product is a dot");
   assert.match(index, /data-tip="DEV wanted · May 2018 – Jun 2018 · 1m"/);
   assert.match(index, /href="posts\/hello-blogging\/"/);

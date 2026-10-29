@@ -474,7 +474,7 @@ function contact(b) {
 
 function footer(me, root, builtAt) {
   const repo = me.meta && me.meta.me && me.meta.me.repo;
-  return `<footer class="site wrap"><span>Made by <a href="${HOME}">{me}</a>${repo ? ` from <a href="${e(href(repo))}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
+  return `<footer class="site wrap"><span>Built with <a href="${HOME}">{me}</a>${repo ? ` from <a href="${e(href(repo))}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
 }
 
 export function renderProfile(me, posts, { siteUrl = '', builtAt = new Date() } = {}) {
