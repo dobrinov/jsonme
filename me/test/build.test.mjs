@@ -270,3 +270,14 @@ test('a vibe-coded product', async () => {
   assert.match(html, /<\/svg><\/span>Vibe-coded<\/span><span><i class="era-key">/, 'the legend explains the star');
   assert.match(cvMarkdown(me, []), /\*\*New\*\* \([^)]*, vibe-coded\)/);
 });
+
+test('more than three products start collapsed in the timeline', async () => {
+  const { renderProfile } = await import('../src/render.mjs');
+  const products = (n) => ({ basics: { name: 'Ada' }, projects: Array.from({ length: n }, (_, i) => ({ name: `P${i}`, startDate: '2020-01'})) });
+  const three = renderProfile(products(3), [], { builtAt });
+  assert.match(three, /<p class="tl-group">Own products<\/p>/);
+  assert.doesNotMatch(three, /tl-fold/);
+  const four = renderProfile(products(4), [], { builtAt });
+  assert.match(four, /<details class="tl-fold" id="tl-products"><summary class="tl-group">Own products<span class="count">4<\/span>/);
+  assert.match(four, /popovertarget="product-p3"[\s\S]*<\/details>/, 'every product row is inside the fold');
+});

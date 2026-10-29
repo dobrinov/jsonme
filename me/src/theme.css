@@ -286,6 +286,12 @@ section { display: flex; flex-direction: column; gap: 20px; }
 .tl-edge.next { right: 4px; }
 .tl-edge[hidden] { display: none; }
 .tl-group { position: sticky; left: 0; width: max-content; margin: 14px 0 4px; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+/* More than three products fold under their group label; the label is the toggle. */
+.tl-fold > summary { display: flex; align-items: center; gap: 8px; min-height: 32px; margin-bottom: 0; }
+.tl-fold > summary:hover { color: var(--ink); }
+.tl-fold > summary .count { padding: 0 7px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); letter-spacing: 0; }
+.tl-fold > summary .sign { font-size: 15px; }
+.tl-fold:not([open]) > summary { margin-bottom: 10px; }
 .tl-row { display: grid; grid-template-columns: var(--who) minmax(0, 1fr); gap: var(--gap); align-items: center; border-top: 1px solid var(--line-soft); }
 .tl-axis { border-top: 1px solid var(--line); }
 .tl-axis > span:first-child { position: sticky; left: 0; z-index: 5; align-self: stretch; background: var(--bg); box-shadow: var(--gap) 0 0 var(--bg); }

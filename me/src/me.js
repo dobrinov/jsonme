@@ -153,6 +153,8 @@
     if (el && el.tagName === 'DETAILS') el.open = true;
     if (el && el.hasAttribute('popover') && el.showPopover) {
       invoker = document.querySelector('.track [popovertarget="' + el.id + '"]');
+      var fold = invoker && invoker.closest('details');
+      if (fold) fold.open = true;
       if (invoker) invoker.scrollIntoView({ block: 'center', behavior: 'instant' });
       el.showPopover();
       return;
