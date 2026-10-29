@@ -1,4 +1,5 @@
 {
+  "site": "dobrinov-github-io-jsonme",
   "product": "{me}",
   "events": {
     "prompt_copied": "Copied the prompt for their AI. Props: prompt (cv, patterns), form (full, link)",
