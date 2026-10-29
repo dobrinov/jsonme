@@ -112,6 +112,84 @@
       "target": "1%"
     }
   },
+  "areas": {
+    "project": {
+      "name": "Project page",
+      "description": "What {me} is",
+      "features": {
+        "page": {
+          "name": "Reading it",
+          "match": [
+            {
+              "pageview": "/jsonme"
+            }
+          ]
+        },
+        "source": {
+          "name": "Opening the source",
+          "match": [
+            {
+              "event": "source_opened"
+            }
+          ]
+        }
+      }
+    },
+    "writer": {
+      "name": "Writer",
+      "description": "Making a me.json with an AI",
+      "features": {
+        "prompt": {
+          "name": "Copying the prompt",
+          "match": [
+            {
+              "event": "prompt_copied"
+            }
+          ]
+        },
+        "start": {
+          "name": "Starting from a template",
+          "match": [
+            {
+              "event": "cv_started"
+            }
+          ]
+        },
+        "check": {
+          "name": "Checking a paste",
+          "match": [
+            {
+              "event": "cv_ready"
+            },
+            {
+              "event": "cv_needs_fixes"
+            }
+          ]
+        },
+        "save": {
+          "name": "Saving the CV",
+          "match": [
+            {
+              "event": "cv_saved"
+            }
+          ]
+        }
+      },
+      "match": [
+        {
+          "pageview": "/jsonme/write*"
+        }
+      ]
+    },
+    "example": {
+      "name": "Example CV",
+      "match": [
+        {
+          "pageview": "/jsonme/example*"
+        }
+      ]
+    }
+  },
   "audience": {
     "marketing": [
       "/jsonme"
