@@ -271,13 +271,13 @@ test('a vibe-coded product', async () => {
   assert.match(cvMarkdown(me, []), /\*\*New\*\* \([^)]*, vibe-coded\)/);
 });
 
-test('more than three products start collapsed in the timeline', async () => {
+test('more than three products: the latest three show, the rest fold under "and N more"', async () => {
   const { renderProfile } = await import('../src/render.mjs');
-  const products = (n) => ({ basics: { name: 'Ada' }, projects: Array.from({ length: n }, (_, i) => ({ name: `P${i}`, startDate: '2020-01'})) });
-  const three = renderProfile(products(3), [], { builtAt });
-  assert.match(three, /<p class="tl-group">Own products<\/p>/);
-  assert.doesNotMatch(three, /tl-fold/);
-  const four = renderProfile(products(4), [], { builtAt });
-  assert.match(four, /<details class="tl-fold" id="tl-products"><summary class="tl-group">Own products<span class="count">4<\/span>/);
-  assert.match(four, /popovertarget="product-p3"[\s\S]*<\/details>/, 'every product row is inside the fold');
+  const products = (n) => ({ basics: { name: 'Ada' }, projects: Array.from({ length: n }, (_, i) => ({ name: `P${i}`, startDate: `${2015 + i}-01` })) });
+  assert.doesNotMatch(renderProfile(products(3), [], { builtAt }), /tl-fold/);
+  const five = renderProfile(products(5), [], { builtAt });
+  const [shown, folded] = five.split('<details class="tl-fold" id="tl-products">');
+  for (const p of ['p2', 'p3', 'p4']) assert.match(shown, new RegExp(`popovertarget="product-${p}"`), `${p} is one of the latest three`);
+  assert.match(folded, /^<summary><span class="sign" aria-hidden="true"><\/span><span class="closed">and 2 more<\/span>/);
+  for (const p of ['p0', 'p1']) assert.match(folded.split('</details>')[0], new RegExp(`popovertarget="product-${p}"`), `${p} is folded`);
 });

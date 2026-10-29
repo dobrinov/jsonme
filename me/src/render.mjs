@@ -332,10 +332,8 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
     pops.push(popover(id, 'job-pop', g.name, g.url, g.start, g.end, items));
   }
 
-  // A long list of products would push education below the fold, so more than three start collapsed.
-  const folded = products.length > MAX_OPEN_PRODUCTS;
-  if (folded) rows.push(`<details class="tl-fold" id="tl-products"><summary class="tl-group">Own products<span class="count">${products.length}</span><span class="sign" aria-hidden="true"></span></summary>`);
-  else if (products.length) rows.push('<p class="tl-group">Own products</p>');
+  if (products.length) rows.push('<p class="tl-group">Own products</p>');
+  const firstProduct = rows.length;
   for (const p of products) {
     const id = `product-${slug(p.name)}`;
     const story = stories.find((s) => s.title.toLowerCase().includes(p.name.toLowerCase()));
@@ -379,7 +377,11 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
     ].join('')));
   }
 
-  if (folded) rows.push('</details>');
+  // A long list of products would push education below the fold: the latest three show, the rest fold under "and N more".
+  if (products.length > MAX_OPEN_PRODUCTS) {
+    const earlier = rows.splice(firstProduct, products.length - MAX_OPEN_PRODUCTS);
+    rows.push(`<details class="tl-fold" id="tl-products"><summary><span class="sign" aria-hidden="true"></span><span class="closed">and ${earlier.length} more</span><span class="opened">Show fewer</span></summary>`, ...earlier, '</details>');
+  }
   if (schools.length) rows.push('<p class="tl-group">Education</p>');
   for (const x of schools) {
     const id = `edu-${slug(x.institution)}`;
