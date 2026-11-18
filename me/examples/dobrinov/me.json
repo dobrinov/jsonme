@@ -252,6 +252,13 @@
   ],
   "projects": [
     {
+      "name": "LLM Tactics",
+      "description": "A map of how people actually use LLMs. Each contributor's own assistant reads their history, names the habits it finds and sends them in without anything that identifies anyone. The site shows which habits and tools are common, by country and over time.",
+      "url": "https://llmtactics.com/",
+      "startDate": "2026-11",
+      "vibecoded": true
+    },
+    {
       "name": "Trace",
       "description": "Web analytics for the agentic era. An analyst agent turns how people use a site into improvement insights tied to its KPIs, each insight copies out as a prompt for a coding agent, and once the change ships Trace measures whether it worked. Written in Rust.",
       "url": "https://github.com/dobrinov/tracetells",
@@ -288,9 +295,10 @@
     },
     {
       "name": "Lurepedia",
-      "description": "A moderated community wiki for fishing lures, with a review queue for edits and look-alike detection for photos.",
+      "description": "A moderated community wiki for fishing lures, with a review queue for edits and look-alike detection for photos. Discontinued: it did not get traffic, and without visitors the crowdsourcing idea could not work.",
       "url": "https://lurepedia.com/",
       "startDate": "2026-06",
+      "endDate": "2026-11",
       "vibecoded": true
     },
     {
