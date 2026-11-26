@@ -22,6 +22,17 @@ export const toYear = (d, now) => {
   return Number(y) + (Number(m) - 1) / 12;
 };
 const nowYear = (date) => date.getUTCFullYear() + date.getUTCMonth() / 12;
+
+// Own products, the ones still running first, the longest running at the top; then the finished ones, the most
+// recently finished first. A pause does not count as running: a product revived after one is placed as if it had
+// started that much later. Equal ones keep their me.json order.
+export const productOrder = (projects) => {
+  const ranOnFrom = (p) => toYear(p.startDate, Infinity) + (p.pausedDate && p.revivedDate ? toYear(p.revivedDate, 0) - toYear(p.pausedDate, 0) : 0);
+  return [...projects].sort((a, b) => {
+    if (!a.endDate !== !b.endDate) return a.endDate ? 1 : -1;
+    return a.endDate ? toYear(b.endDate, 0) - toYear(a.endDate, 0) : ranOnFrom(a) - ranOnFrom(b);
+  });
+};
 const year = (d) => (d ? String(d).slice(0, 4) : 'now');
 const span = (from, to) => (year(from) === year(to) ? year(from) : `${year(from)} – ${year(to)}`);
 export const slug = (s) => String(s).toLowerCase().normalize('NFKD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');
@@ -244,7 +255,7 @@ const ARROW = (d) => `<svg width="16" height="16" viewBox="0 0 16 16" fill="none
 
 function career(me, stats, now) {
   const jobs = employers(me.work).sort((a, b) => toYear(a.start, now) - toYear(b.start, now));
-  const products = (me.projects || []).filter((p) => p.startDate).sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
+  const products = productOrder((me.projects || []).filter((p) => p.startDate));
   const schools = (me.education || []).filter((x) => x.startDate).sort((a, b) => toYear(a.startDate, now) - toYear(b.startDate, now));
   if (!jobs.length && !products.length) return '';
   const starts = [...jobs.map((g) => g.start), ...products.map((p) => p.startDate), ...schools.map((x) => x.startDate)].map((d) => toYear(d, now));
@@ -377,10 +388,10 @@ ${items}${url ? `<a class="site" href="${e(href(url))}"${NEW_TAB}>${e(hostOf(url
     ].join('')));
   }
 
-  // A long list of products would push education below the fold: the latest three show, the rest fold under "and N more".
+  // A long list of products would push education below the fold: the first three show, the rest fold under "and N more".
   if (products.length > MAX_OPEN_PRODUCTS) {
-    const earlier = rows.splice(firstProduct, products.length - MAX_OPEN_PRODUCTS);
-    rows.push(`<details class="tl-fold" id="tl-products"><summary><span class="sign" aria-hidden="true"></span><span class="closed">and ${earlier.length} more</span><span class="opened">Show fewer</span></summary>`, ...earlier, '</details>');
+    const rest = rows.splice(firstProduct + MAX_OPEN_PRODUCTS);
+    rows.push(`<details class="tl-fold" id="tl-products"><summary><span class="sign" aria-hidden="true"></span><span class="closed">and ${rest.length} more</span><span class="opened">Show fewer</span></summary>`, ...rest, '</details>');
   }
   if (schools.length) rows.push('<p class="tl-group">Education</p>');
   for (const x of schools) {
@@ -424,7 +435,7 @@ function more(me, posts) {
     const meta = all.length > 6 ? `${all.slice(0, 6).join(', ')} and ${all.length - 6} more` : all.join(', ');
     blocks.push(['skills', 'Skills', meta, skills.map((s) => [e(s.name), e((s.keywords || []).join(', ') || s.level || '')])]);
   }
-  const projects = me.projects || [];
+  const projects = productOrder(me.projects || []);
   if (projects.length) {
     const live = projects.filter((p) => !p.endDate).length;
     blocks.push(['products', 'Own products', `${projects.length} built${live ? `, ${live} still running` : ''}`, projects.map((p) => [

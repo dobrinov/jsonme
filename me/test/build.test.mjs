@@ -271,13 +271,26 @@ test('a vibe-coded product', async () => {
   assert.match(cvMarkdown(me, []), /\*\*New\*\* \([^)]*, vibe-coded\)/);
 });
 
-test('more than three products: the latest three show, the rest fold under "and N more"', async () => {
+test('more than three products: the first three show, the rest fold under "and N more"', async () => {
   const { renderProfile } = await import('../src/render.mjs');
   const products = (n) => ({ basics: { name: 'Ada' }, projects: Array.from({ length: n }, (_, i) => ({ name: `P${i}`, startDate: `${2015 + i}-01` })) });
   assert.doesNotMatch(renderProfile(products(3), [], { builtAt }), /tl-fold/);
   const five = renderProfile(products(5), [], { builtAt });
   const [shown, folded] = five.split('<details class="tl-fold" id="tl-products">');
-  for (const p of ['p2', 'p3', 'p4']) assert.match(shown, new RegExp(`popovertarget="product-${p}"`), `${p} is one of the latest three`);
+  for (const p of ['p0', 'p1', 'p2']) assert.match(shown, new RegExp(`popovertarget="product-${p}"`), `${p} is one of the three running longest`);
   assert.match(folded, /^<summary><span class="sign" aria-hidden="true"><\/span><span class="closed">and 2 more<\/span>/);
-  for (const p of ['p0', 'p1']) assert.match(folded.split('</details>')[0], new RegExp(`popovertarget="product-${p}"`), `${p} is folded`);
+  for (const p of ['p3', 'p4']) assert.match(folded.split('</details>')[0], new RegExp(`popovertarget="product-${p}"`), `${p} is folded`);
+});
+
+test('products: live ones first, the longest running at the top, then finished ones, the latest finished first', async () => {
+  const { productOrder } = await import('../src/render.mjs');
+  const order = productOrder([
+    { name: 'New', startDate: '2026-10' },
+    { name: 'Old ended', startDate: '2010-01', endDate: '2012-01' },
+    { name: 'Revived', startDate: '2020-01', pausedDate: '2021-01', revivedDate: '2026-01' },
+    { name: 'Steady', startDate: '2024-01' },
+    { name: 'Just ended', startDate: '2026-01', endDate: '2026-11' }
+  ]).map((p) => p.name);
+  // Revived ran one year, paused five, then ten months: it counts as running since 2025-01, after Steady.
+  assert.deepEqual(order, ['Steady', 'Revived', 'New', 'Just ended', 'Old ended']);
 });

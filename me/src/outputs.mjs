@@ -1,6 +1,6 @@
 // Machine-readable outputs: /cv.md and /llms.txt for AI agents, /feed.xml for readers.
 import { escapeHtml as e } from './markdown.mjs';
-import { employers } from './render.mjs';
+import { employers, productOrder } from './render.mjs';
 
 const year = (d) => (d ? String(d).slice(0, 4) : 'now');
 const span = (from, to) => `${year(from)} – ${year(to)}`;
@@ -79,7 +79,7 @@ export function cvMarkdown(me, posts, { siteUrl = '' } = {}) {
 
   if (me.projects && me.projects.length) {
     out.push('## Own products', '');
-    for (const p of me.projects) out.push(`- **${p.name}** (${span(p.startDate, p.endDate)}${p.revivedDate ? `, built by hand, revived with AI in ${p.revivedDate.slice(0, 4)}` : p.vibecoded ? ', vibe-coded' : ''})${p.url ? ` ${p.url}` : ''}${p.description ? `. ${p.description}` : ''}${p.revival ? ` ${p.revival}` : ''}`);
+    for (const p of productOrder(me.projects)) out.push(`- **${p.name}** (${span(p.startDate, p.endDate)}${p.revivedDate ? `, built by hand, revived with AI in ${p.revivedDate.slice(0, 4)}` : p.vibecoded ? ', vibe-coded' : ''})${p.url ? ` ${p.url}` : ''}${p.description ? `. ${p.description}` : ''}${p.revival ? ` ${p.revival}` : ''}`);
     out.push('');
   }
 
