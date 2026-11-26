@@ -252,6 +252,13 @@
   ],
   "projects": [
     {
+      "name": "Wireframe",
+      "description": "LoFi prototypes instead of specs, for Claude Code. Type /sketch and a brief, and Claude builds a clickable wireframe with seeded test users you can sign in as. Teammates comment on any element and the agent changes the screen while they watch; the agreed wireframe then becomes the input for the spec and the HiFi design.",
+      "url": "https://dobrinov.github.io/wireframe/",
+      "startDate": "2026-11",
+      "vibecoded": true
+    },
+    {
       "name": "LLM Tactics",
       "description": "A map of how people actually use LLMs. Each contributor's own assistant reads their history, names the habits it finds and sends them in without anything that identifies anyone. The site shows which habits and tools are common, by country and over time.",
       "url": "https://llmtactics.com/",
@@ -296,7 +303,6 @@
     {
       "name": "Lurepedia",
       "description": "A moderated community wiki for fishing lures, with a review queue for edits and look-alike detection for photos. Discontinued: it did not get traffic, and without visitors the crowdsourcing idea could not work.",
-      "url": "https://lurepedia.com/",
       "startDate": "2026-06",
       "endDate": "2026-11",
       "vibecoded": true
