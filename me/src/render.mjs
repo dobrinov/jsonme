@@ -498,7 +498,7 @@ export function toolList(me) {
 }
 
 // The top bar every page shares: who, the Me · Tools · Blog switch (a tab only when there is something behind it),
-// the theme switch and, on the CV, "Ask your AI about me".
+// "Ask your AI about me" on the CV, then the theme switch, last so it stays in place from page to page.
 function bar(me, root, active, posts, extra = '') {
   const b = me.basics;
   const tabs = [['me', 'Me', root || './']];
@@ -507,7 +507,7 @@ function bar(me, root, active, posts, extra = '') {
   const nav = tabs.length > 1
     ? `<nav class="site-tabs" aria-label="Site">${tabs.map(([id, label, url]) => `<a href="${url}"${id === active ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`
     : '';
-  return `<header class="bar wrap"><a class="who-link" href="${root || './'}">${avatar(b, root)}<span class="who-name">${e(b.name)}</span></a>${nav}<span class="actions">${THEME_SWITCH}${extra}</span></header>`;
+  return `<header class="bar wrap"><a class="who-link" href="${root || './'}">${avatar(b, root)}<span class="who-name">${e(b.name)}</span></a>${nav}<span class="actions">${extra}${THEME_SWITCH}</span></header>`;
 }
 
 const toolIcon = (p, root) => {
