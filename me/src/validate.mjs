@@ -40,6 +40,17 @@ export function validate(me) {
   const patterns = (me.llms && me.llms.patterns) || [];
   patterns.forEach((p, i) => { if (!p.name) errors.push(`llms.patterns[${i}].name is required`); });
 
+  const tools = (me.meta && me.meta.me && me.meta.me.tools) || [];
+  if (!Array.isArray(tools)) errors.push('meta.me.tools must be a list of project names');
+  else tools.forEach((n) => {
+    const p = (me.projects || []).find((x) => String(x.name).toLowerCase() === String(n).toLowerCase());
+    if (!p) errors.push(`meta.me.tools names "${n}", but no project has that name`);
+    else if (!p.url && !(p.links || []).length) warnings.push(`tool "${p.name}" has no url or links`);
+  });
+  (me.projects || []).forEach((p, i) => (p.links || []).forEach((l, k) => {
+    if (!l || !l.label || !l.url) errors.push(`projects[${i}].links[${k}] needs a label and a url`);
+  }));
+
   if ((me.facts || []).length > 4) errors.push('facts can have at most 4 entries');
   if (me.headline && me.headline.length > 120) warnings.push('headline is longer than 120 characters');
 

@@ -256,7 +256,17 @@
       "description": "LoFi prototypes instead of specs, for Claude Code. Type /sketch and a brief, and Claude builds a clickable wireframe with seeded test users you can sign in as. Teammates comment on any element and the agent changes the screen while they watch; the agreed wireframe then becomes the input for the spec and the HiFi design.",
       "url": "https://dobrinov.github.io/wireframe/",
       "startDate": "2026-11",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "Clickable LoFi prototypes instead of specs, for Claude Code.",
+      "icon": "icons/wireframe.svg",
+      "problem": "Specs are long and nobody reads them. Teams agree on the words and then disagree on the screens.",
+      "solves": "Claude builds a clickable LoFi prototype, you iterate cheaply with comments, and the agreed wireframe becomes the input for the spec and the HiFi screens.",
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/dobrinov/wireframe"
+        }
+      ]
     },
     {
       "name": "LLM Tactics",
@@ -277,28 +287,84 @@
       "description": "A local-first investment planner: double-entry books, scenario projections and tax reporting, with an MCP server so an AI assistant can read the books and record changes you approve. Everything stays in one encrypted .invest file. Rust compiled to WebAssembly, with a desktop app.",
       "url": "https://dobrinov.github.io/investor/",
       "startDate": "2026-10",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "Plan, track and rehearse your investing decisions, in your browser.",
+      "icon": "https://dobrinov.github.io/investor/favicon.svg",
+      "problem": "Broker apps show what you own, not what a trade will cost you in fees and tax, or where it leaves you in 20 years. And most planners want your data on their server.",
+      "solves": "Imports your broker statements into real books, lets you try a trade before you make it, and follows your goals with a range of outcomes. Everything stays in one encrypted file you keep.",
+      "links": [
+        {
+          "label": "Open the app",
+          "url": "https://dobrinov.github.io/investor/app/"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/dobrinov/investor"
+        }
+      ]
     },
     {
       "name": "Circle",
       "description": "An open-source, Arc-style browser built in Rust on Chromium (CEF), with spaces, a command bar, split view and an MCP server for AI agents.",
       "url": "https://dobrinov.github.io/circle/",
       "startDate": "2026-10",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "A calm, sidebar-first browser in the spirit of Arc.",
+      "icon": "https://dobrinov.github.io/circle/assets/icon.png",
+      "problem": "Tabs pile up, browsers compete for your attention, and your AI agent cannot drive the browser you actually use.",
+      "solves": "Spaces, Spotlight, split view and docked DevTools, built in Rust on Chromium, with an MCP server for AI agents. Open source.",
+      "links": [
+        {
+          "label": "Download",
+          "url": "https://github.com/dobrinov/circle/releases/latest"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/dobrinov/circle"
+        }
+      ]
     },
     {
       "name": "Shape",
       "description": "One board for a whole project: mindmaps, kanban boards, timelines, screen sketches and decisions, kept as a plain-text file in the repo. A board copies out as a Markdown spec for a coding agent to build from. Rust compiled to WebAssembly.",
       "url": "https://dobrinov.github.io/shape/",
       "startDate": "2026-10",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "One board for the whole project, kept up to date by your AI.",
+      "icon": "https://dobrinov.github.io/shape/favicon.svg",
+      "problem": "Ideas, plans, decisions and timelines end up scattered across docs, boards and chats, and nobody keeps them in sync.",
+      "solves": "Mindmaps, plans, timelines, wireframes, decisions and slides on one board, sorted by the AI you already pay for. It is plain text in your repository.",
+      "links": [
+        {
+          "label": "Try it",
+          "url": "https://dobrinov.github.io/shape/app/"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/dobrinov/shape"
+        }
+      ]
     },
     {
       "name": "Schema",
       "description": "Interactive ER diagrams and visual git diffs for Postgres, MySQL, SQLite and Rails schemas, plus a design mode that turns sketched changes into a spec an agent implements. One Rust engine compiled to WebAssembly runs the CLI, the browser viewer and embeddable diagrams.",
       "url": "https://dobrinov.github.io/schema/",
       "startDate": "2026-09",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "Interactive ER diagrams and visual git diffs for your database schema.",
+      "icon": "https://dobrinov.github.io/schema/favicon.svg",
+      "problem": "A big structure.sql or schema.rb is a wall of text, and a migration in a pull request is a wall of SQL. Nobody can see how the tables fit together, or what a change really does.",
+      "solves": "Draws the schema as a diagram you can focus on, and shows every migration as a picture of what was added, removed or changed. Postgres, MySQL, SQLite and Rails.",
+      "links": [
+        {
+          "label": "Try it",
+          "url": "https://dobrinov.github.io/schema/app/"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/dobrinov/schema"
+        }
+      ]
     },
     {
       "name": "Lurepedia",
@@ -331,13 +397,23 @@
       "revival": "Grew it into a full platform: an authored question bank up to grade 12, preparation for the national exams and competitions like Kangaroo, teacher and parent roles, duels, and a weekly report to parents."
     },
     {
-      "name": "JsonMe",
+      "name": "{me}",
       "description": "JsonMe is a web application allowing software engineers to maintain a resume in json format and keep it in their Github/Gitlab profile. The CV that you are looking at the moment is generated with it.",
       "url": "https://dobrinov.github.io/jsonme/",
       "startDate": "2021-09",
       "pausedDate": "2022-12",
       "revivedDate": "2026-10",
-      "revival": "Rebuilt as {me}: a static CV and blog that developers keep in their own repo and publish with a GitHub Action."
+      "revival": "Rebuilt as {me}: a static CV and blog that developers keep in their own repo and publish with a GitHub Action.",
+      "tagline": "A CV and blog that live in your own repository.",
+      "icon": "https://dobrinov.github.io/jsonme/favicon.svg",
+      "problem": "A PDF CV cannot show how you actually work, and CV sites keep your data on their platform.",
+      "solves": "Turns me.json and a folder of Markdown posts into a CV and blog, published by a GitHub Action. No server, no account. This site is built with it.",
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/dobrinov/jsonme"
+        }
+      ]
     },
     {
       "name": "Textstandup",
@@ -419,7 +495,15 @@
         "Document extraction",
         "Lending"
       ],
-      "plausible": "https://stats.aparatnata.com/js/pa-DpF21XOvOBN0nOOPPnjUD.js"
+      "plausible": "https://stats.aparatnata.com/js/pa-DpF21XOvOBN0nOOPPnjUD.js",
+      "tools": [
+        "Wireframe",
+        "{me}",
+        "Schema",
+        "Investor",
+        "Shape",
+        "Circle"
+      ]
     }
   },
   "llms": {

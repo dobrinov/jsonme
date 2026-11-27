@@ -319,14 +319,20 @@
       "description": "Turns a GPX file into a printable trail guide with elevation, water points and bail-out routes.",
       "url": "https://example.com/trailmap",
       "startDate": "2026-09",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "A GPX file in, a printable trail guide out.",
+      "problem": "Phone maps die with the battery, and a GPX track says nothing about water or a way down.",
+      "solves": "Elevation, water points and bail-out routes on paper you can fold into a pocket."
     },
     {
       "name": "Quayside",
       "description": "Booking for small marinas: berths, invoices and a harbour master's tablet view. Three marinas use it.",
       "url": "https://example.com/quayside",
       "startDate": "2026-02",
-      "vibecoded": true
+      "vibecoded": true,
+      "tagline": "Booking for small marinas.",
+      "problem": "Small marinas run berths and invoices on paper and spreadsheets, and the harbour master is never at the desk.",
+      "solves": "Berths, invoices and a tablet view the harbour master carries along the quay. Three marinas use it."
     },
     {
       "name": "Ledgerline",
@@ -335,7 +341,16 @@
       "startDate": "2017-03",
       "pausedDate": "2019-06",
       "revivedDate": "2025-08",
-      "revival": "A Go port at feature parity, a reconciliation CLI, and full documentation, built with AI in five weeks of evenings."
+      "revival": "A Go port at feature parity, a reconciliation CLI, and full documentation, built with AI in five weeks of evenings.",
+      "tagline": "An open-source double-entry ledger library.",
+      "problem": "Every team that moves money writes its own ledger, and most of them can lose or double-count a payment when a request is retried.",
+      "solves": "Immutable entries and idempotent posting, so a retried request never posts twice. 1,900 stars, used in production at two companies.",
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://example.com/ledgerline/source"
+        }
+      ]
     },
     {
       "name": "Standup Bot",
@@ -412,6 +427,11 @@
         "Payments",
         "Retail",
         "Logistics"
+      ],
+      "tools": [
+        "Ledgerline",
+        "Quayside",
+        "Trailmap"
       ]
     }
   }

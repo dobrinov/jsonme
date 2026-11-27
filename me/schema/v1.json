@@ -144,7 +144,16 @@
           "vibecoded": { "type": "boolean", "description": "Built with AI from the start. Drawn with a star and a hatched bar." },
           "revival": { "type": "string", "description": "What was built after the revival." },
           "highlights": { "type": "array", "items": { "type": "string" } },
-          "keywords": { "type": "array", "items": { "type": "string" } }
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "tagline": { "type": "string", "description": "Tools page: one line on what it is, shown under the name. Falls back to description." },
+          "icon": { "type": "string", "description": "Tools page: a square logo, a path in the repo or a URL." },
+          "problem": { "type": "string", "description": "Tools page: the problem it solves." },
+          "solves": { "type": "string", "description": "Tools page: what it does about it." },
+          "links": {
+            "type": "array",
+            "description": "Tools page: buttons after \"Visit <name>\" (url), e.g. Try it, GitHub.",
+            "items": { "type": "object", "required": ["label", "url"], "properties": { "label": { "type": "string" }, "url": { "type": "string" } } }
+          }
         }
       }
     },
@@ -185,6 +194,7 @@
             "domains": { "type": "array", "items": { "type": "string" } },
             "aiEraStart": { "$ref": "#/$defs/date", "description": "Where the career line marks the AI era. Default 2023-01." },
             "plausible": { "type": "string", "pattern": "^https://", "description": "Plausible analytics script URL (the src of the snippet Plausible gives you). Added to every page." },
+            "tools": { "type": "array", "items": { "type": "string" }, "description": "Project names to show on the Tools page (/tools/), in this order. Without it there is no Tools page." },
             "repo": { "type": "string", "description": "Source repo URL, for \"Suggest an edit\" links. Filled by the Action." }
           }
         }

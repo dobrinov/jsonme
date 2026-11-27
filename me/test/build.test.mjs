@@ -55,11 +55,29 @@ test('builds the example site', async () => {
   assert.match(index, /href="posts\/hello-blogging\/"/);
   assert.match(index, /class="col ai"/, 'the AI column is rendered');
   assert.match(index, /id="llms"/, 'How I use LLMs is rendered');
+  assert.equal(result.tools, 6);
+  assert.match(index, /<nav class="site-tabs" aria-label="Site"><a href=".\/" aria-current="page">Me<\/a><a href="tools\/">Tools<\/a><a href="blog\/">Blog<\/a><\/nav>/);
+
+  const tools = await readFile(join(out, 'tools/index.html'), 'utf8');
+  const order = [...tools.matchAll(/<article class="slide[^"]*" id="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(order, ['wireframe', 'me', 'schema', 'investor', 'shape', 'circle'], 'tools follow meta.me.tools');
+  assert.match(tools, /<a href="..\/tools\/" aria-current="page">Tools<\/a>/);
+  assert.match(tools, /<img src="..\/icons\/wireframe.svg" alt="">/, 'a repo icon is relative to the site root');
+  assert.match(tools, /<h3>The problem<\/h3>/);
+  assert.match(tools, /class="btn primary" href="https:\/\/dobrinov.github.io\/schema\/"[^>]*>Visit Schema<\/a>/);
+  assert.match(tools, /role="tablist"/);
+  await readFile(join(out, 'icons/wireframe.svg'));
+
+  const blog = await readFile(join(out, 'blog/index.html'), 'utf8');
+  assert.match(blog, /<a href="..\/blog\/" aria-current="page">Blog<\/a>/);
+  assert.match(blog, /<h2><a href="..\/posts\/hello-blogging\/">How to blog with \{me\}<\/a><\/h2>/);
 
   const post = await readFile(join(out, 'posts/hello-blogging/index.html'), 'utf8');
   assert.match(post, /<h1>How to blog with {me}<\/h1>/);
   assert.match(post, /<h2>Before you start<\/h2>/);
   assert.match(post, /github\.com\/dobrinov\/me\/edit\/HEAD\/posts\/hello-blogging\.md/);
+  assert.match(post, /<a href="..\/..\/blog\/" aria-current="page">Blog<\/a>/, 'a post sits under the Blog tab');
+  assert.match(post, /<a class="back" href="..\/..\/blog\/">/);
 
   assert.match(await readFile(join(out, 'llms.txt'), 'utf8'), /\(https:\/\/dobrinov\.github\.io\/me\/cv\.md\)/);
   assert.match(await readFile(join(out, 'cv.md'), 'utf8'), /## Signature work/);
@@ -78,6 +96,9 @@ test('builds the template, a minimal file and a legacy file', async () => {
   const html = await readFile(join(src, '_site/index.html'), 'utf8');
   assert.match(html, /<h1 class="headline">Ada<\/h1>/);
   assert.doesNotMatch(html, /undefined/);
+  assert.doesNotMatch(html, /site-tabs/, 'only the CV: no Me · Tools · Blog switch');
+  await assert.rejects(readFile(join(src, '_site/tools/index.html')));
+  await assert.rejects(readFile(join(src, '_site/blog/index.html')));
 
   const legacy = await mkdtemp(join(tmpdir(), 'me-old-'));
   await mkdir(join(legacy, 'posts'));
@@ -96,6 +117,46 @@ test('publishes images, assets/, static/ and CNAME, and nothing else from the re
   await build({ src, out: join(src, '_site'), builtAt, log: quiet });
   for (const f of ['CNAME', 'me.png', 'static/cv.pdf']) await readFile(join(src, '_site', f));
   for (const f of ['notes.txt', 'private/plan.pdf']) await assert.rejects(readFile(join(src, '_site', f)));
+});
+
+test('public/ is copied to the root of the site as it is', async () => {
+  const src = await mkdtemp(join(tmpdir(), 'me-public-'));
+  await writeFile(join(src, 'me.json'), JSON.stringify({ basics: { name: 'Ada' } }));
+  await mkdir(join(src, 'public/me'), { recursive: true });
+  await writeFile(join(src, 'public/404.html'), 'not found');
+  await writeFile(join(src, 'public/google123.html'), 'google-site-verification');
+  await writeFile(join(src, 'public/me/index.html'), 'redirect');
+  await writeFile(join(src, 'public/notes.md'), 'md');
+  await build({ src, out: join(src, '_site'), builtAt, log: quiet });
+  assert.equal(await readFile(join(src, '_site/404.html'), 'utf8'), 'not found');
+  for (const f of ['google123.html', 'me/index.html', 'notes.md']) await readFile(join(src, '_site', f));
+  await assert.rejects(readFile(join(src, '_site/public/404.html')));
+});
+
+test('Tools page: only the projects meta.me.tools names, in that order', async () => {
+  const { renderTools, toolList } = await import('../src/render.mjs');
+  const me = { basics: { name: 'Ada' }, meta: { me: { tools: ['b', 'A'] } }, projects: [
+    { name: 'A', url: 'https://a.dev', tagline: 'Short A', description: 'Long A', problem: 'Pa', solves: 'Sa', links: [{ label: 'GitHub', url: 'https://github.com/ada/a' }] },
+    { name: 'B', description: 'Only B', icon: 'https://b.dev/icon.svg' },
+    { name: 'C', url: 'https://c.dev' }
+  ] };
+  assert.deepEqual(toolList(me).map((p) => p.name), ['B', 'A']);
+  const html = renderTools(me, [], { builtAt });
+  assert.match(html, /id="b"[\s\S]*id="a"/);
+  assert.doesNotMatch(html, /c\.dev/);
+  assert.match(html, /<p class="what">Short A<\/p>/, 'the tagline wins over the description');
+  assert.match(html, /<p class="what">Only B<\/p>/);
+  assert.match(html, /<span class="initials" aria-hidden="true">A<\/span>/, 'no icon: initials');
+  assert.match(html, /<img src="https:\/\/b.dev\/icon.svg" alt="">/);
+  assert.match(html, /<a class="btn primary" href="https:\/\/a.dev"[^>]*>Visit A<\/a><a class="btn" href="https:\/\/github.com\/ada\/a"/);
+  assert.doesNotMatch(html, /Blog<\/a>/, 'no posts: no Blog tab');
+
+  const { errors, warnings } = validate({ ...me, meta: { me: { tools: ['A', 'Nope'] } } });
+  assert.ok(errors.some((e) => e.includes('"Nope"')));
+  assert.ok(validate({ basics: { name: 'A' }, projects: [{ name: 'X', links: [{ label: 'x' }] }] }).errors.some((e) => e.includes('label and a url')));
+  assert.ok(validate(me).warnings.some((w) => w.includes('tool "B" has no url')));
+  assert.deepEqual(errors.filter((e) => !e.includes('Nope')), []);
+  assert.ok(Array.isArray(warnings));
 });
 
 test('contact links, and unsafe URLs are dropped', async () => {

@@ -35,6 +35,60 @@
     sync();
   });
 
+  // Tools: one tool per slide. The dock, the arrows, the arrow keys and a swipe move between them; #name links to one.
+  var stage = document.querySelector('.stage');
+  var track = stage && stage.querySelector('.deck-track');
+  if (track) {
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.slide'));
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.dock [role="tab"]'));
+    var n = slides.length, current = 0;
+    var show = function (index, remember) {
+      current = ((index % n) + n) % n;
+      track.style.transform = 'translateX(-' + current * 100 + '%)';
+      slides.forEach(function (slide, k) {
+        var on = k === current;
+        slide.classList.toggle('on', on);
+        slide.setAttribute('aria-hidden', String(!on));
+        slide.inert = !on;
+        if (on) slide.scrollTop = 0;
+      });
+      tabs.forEach(function (tab, k) {
+        tab.setAttribute('aria-selected', String(k === current));
+        tab.tabIndex = k === current ? 0 : -1;
+      });
+      if (remember) history.replaceState(null, '', '#' + slides[current].id);
+    };
+    var fromHash = function () {
+      var id = location.hash.slice(1);
+      for (var k = 0; k < n; k++) if (slides[k].id === id) return k;
+      return 0;
+    };
+    track.style.transition = 'none';
+    show(fromHash(), false);
+    track.getBoundingClientRect();
+    track.style.transition = '';
+    tabs.forEach(function (tab, k) { tab.addEventListener('click', function () { show(k, true); }); });
+    document.querySelectorAll('[data-step]').forEach(function (b) {
+      b.addEventListener('click', function () { show(current + Number(b.getAttribute('data-step')), true); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey || /^(input|textarea|select)$/i.test(e.target.tagName)) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(current + 1, true); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1, true); }
+      else if (e.key === 'Home') show(0, true);
+      else if (e.key === 'End') show(n - 1, true);
+    });
+    window.addEventListener('hashchange', function () { show(fromHash(), false); });
+    var x0 = null, y0 = null;
+    stage.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    stage.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1), true);
+      x0 = y0 = null;
+    }, { passive: true });
+  }
+
   // Career timeline: wider than the screen, opened at the present. Fades and buttons show there is more to the left.
   document.querySelectorAll('.tl-frame').forEach(function (frame) {
     var scroller = frame.querySelector('.timeline-scroll');
@@ -159,7 +213,7 @@
       el.showPopover();
       return;
     }
-    if (el) el.scrollIntoView();
+    if (el && !el.classList.contains('slide')) el.scrollIntoView();
   };
   openTarget();
   window.addEventListener('hashchange', openTarget);

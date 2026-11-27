@@ -91,7 +91,7 @@ export function externalLinks(html) {
   });
 }
 
-function page({ title, description, root, body, canonical, og, me }) {
+function page({ title, description, root, body, canonical, og, me, bodyClass = '' }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -110,7 +110,7 @@ ${description ? `<meta name="description" content="${e(description)}">\n` : ''}$
 <link rel="stylesheet" href="${FONTS}">
 <link rel="stylesheet" href="${root}assets/me.css">
 ${analytics(me)}</head>
-<body>
+<body${bodyClass ? ` class="${bodyClass}"` : ''}>
 ${externalLinks(body)}
 <script src="${root}assets/me.js" defer></script>
 </body>
@@ -490,6 +490,92 @@ function contact(b) {
   return mail || icons ? `<div class="contact">${mail}${icons}</div>` : '';
 }
 
+// The projects shown on the Tools page, in the order meta.me.tools names them. Names match case-insensitively.
+export function toolList(me) {
+  const names = (me.meta && me.meta.me && me.meta.me.tools) || [];
+  const projects = me.projects || [];
+  return names.map((n) => projects.find((p) => String(p.name).toLowerCase() === String(n).toLowerCase())).filter(Boolean);
+}
+
+// The top bar every page shares: who, the Me · Tools · Blog switch (a tab only when there is something behind it),
+// the theme switch and, on the CV, "Ask your AI about me".
+function bar(me, root, active, posts, extra = '') {
+  const b = me.basics;
+  const tabs = [['me', 'Me', root || './']];
+  if (toolList(me).length) tabs.push(['tools', 'Tools', `${root}tools/`]);
+  if (posts.length) tabs.push(['blog', 'Blog', `${root}blog/`]);
+  const nav = tabs.length > 1
+    ? `<nav class="site-tabs" aria-label="Site">${tabs.map(([id, label, url]) => `<a href="${url}"${id === active ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`
+    : '';
+  return `<header class="bar wrap"><a class="who-link" href="${root || './'}">${avatar(b, root)}<span class="who-name">${e(b.name)}</span></a>${nav}<span class="actions">${THEME_SWITCH}${extra}</span></header>`;
+}
+
+const toolIcon = (p, root) => {
+  if (!p.icon) return `<span class="initials" aria-hidden="true">${e(initials(p.name))}</span>`;
+  const src = /^[a-z][\w+.-]*:|^\//i.test(p.icon) ? safeUrl(p.icon) : root + p.icon;
+  return `<img src="${e(src)}" alt="">`;
+};
+
+export function renderTools(me, posts, { siteUrl = '', builtAt = new Date() } = {}) {
+  const root = '../';
+  const b = me.basics;
+  const list = toolList(me);
+  const ids = list.map((p) => slug(p.name) || 'tool');
+  const slides = list.map((p, i) => {
+    const links = [
+      ...(p.url ? [{ label: `Visit ${p.name}`, url: p.url }] : []),
+      ...(p.links || []).filter((l) => l && l.url && l.label)
+    ].filter((l) => href(l.url) !== '#');
+    const facts = [p.problem && ['The problem', p.problem], p.solves && ['What it does', p.solves]].filter(Boolean);
+    return `<article class="slide${i ? '' : ' on'}" id="${ids[i]}" aria-roledescription="slide" aria-label="${i + 1} of ${list.length}: ${e(p.name)}"${i ? ' aria-hidden="true"' : ''}>
+<div class="inner">
+<span class="logo">${toolIcon(p, root)}</span>
+<h2>${e(p.name)}</h2>
+${p.tagline || p.description ? `<p class="what">${inline(p.tagline || p.description)}</p>` : ''}
+${facts.length ? `<div class="facts-2${facts.length === 1 ? ' one' : ''}">${facts.map(([t, x]) => `<div><h3>${t}</h3><p>${inline(x)}</p></div>`).join('')}</div>` : ''}
+${links.length ? `<div class="links">${links.map((l, k) => `<a class="btn${k ? '' : ' primary'}" href="${e(href(l.url))}">${e(l.label)}</a>`).join('')}</div>` : ''}
+</div>
+</article>`;
+  }).join('\n');
+  const dock = list.map((p, i) => `<button type="button" role="tab" aria-selected="${i === 0}" aria-controls="${ids[i]}"${i ? ' tabindex="-1"' : ''}><span class="tile">${toolIcon(p, root)}</span><span class="name">${e(p.name)}</span></button>`).join('');
+  const ARR = (d) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  const body = `<div class="tools-screen">
+${bar(me, root, 'tools', posts)}
+<main class="deck wrap" aria-roledescription="carousel" aria-label="Tools, one at a time">
+<h1 class="sr-only">Tools by ${e(b.name)}</h1>
+<div class="stage-wrap">
+${list.length > 1 ? `<button class="arrow prev" type="button" aria-label="Previous tool" data-step="-1">${ARR('M15 6l-6 6 6 6')}</button><button class="arrow next" type="button" aria-label="Next tool" data-step="1">${ARR('M9 6l6 6-6 6')}</button>` : ''}
+<div class="stage" tabindex="0" aria-live="polite"><div class="deck-track">
+${slides}
+</div></div>
+</div>
+${list.length > 1 ? `<div class="dock" role="tablist" aria-label="Choose a tool">${dock}</div>` : ''}
+</main>
+</div>`;
+  const names = list.map((p) => p.name);
+  return page({ title: `Tools · ${b.name}`, description: `Tools by ${b.name}: ${names.join(', ')}.`, root, body, canonical: siteUrl ? `${siteUrl}tools/` : undefined,
+    og: { type: 'website', image: absoluteImage(b, siteUrl), siteName: b.name }, me, bodyClass: 'tools-page' });
+}
+
+export function renderBlog(me, posts, { siteUrl = '', builtAt = new Date() } = {}) {
+  const root = '../';
+  const b = me.basics;
+  const entries = posts.map((p) => {
+    const minutes = Math.max(1, Math.round(p.words / 220));
+    return `<li class="entry"><div class="date">${p.date ? `${e(longDate(p.date))} · ` : ''}${minutes} min read</div><h2><a href="${root}posts/${e(p.slug)}/">${e(p.title)}</a></h2>${p.summary ? `<p>${e(p.summary)}</p>` : ''}${p.tags.length ? `<div class="tags">${p.tags.map((t) => `<span class="chip">${e(t)}</span>`).join('')}</div>` : ''}</li>`;
+  }).join('\n');
+  const body = `${bar(me, root, 'blog', posts)}
+<main class="blog wrap">
+<header><p class="eyebrow">Blog</p><h1>Writing by ${e(b.name)}</h1><a class="rss" href="${root}feed.xml">RSS feed</a></header>
+<ol class="entries">
+${entries}
+</ol>
+</main>
+${footer(me, root, builtAt)}`;
+  return page({ title: `Blog · ${b.name}`, description: `Writing by ${b.name}.`, root, body, canonical: siteUrl ? `${siteUrl}blog/` : undefined,
+    og: { type: 'website', image: absoluteImage(b, siteUrl), siteName: b.name }, me });
+}
+
 function footer(me, root, builtAt) {
   const repo = me.meta && me.meta.me && me.meta.me.repo;
   return `<footer class="site wrap"><span>Built with <a href="${HOME}">{me}</a>${repo ? ` from <a href="${e(href(repo))}">${e(hostOf(repo))}</a>` : ''} · updated ${longDate(builtAt.toISOString().slice(0, 10))}</span><span class="files"><a href="${root}me.json">/me.json</a><a href="${root}llms.txt">/llms.txt</a><a href="${root}cv.md">/cv.md</a></span></footer>`;
@@ -505,10 +591,8 @@ export function renderProfile(me, posts, { siteUrl = '', builtAt = new Date() } 
   const label = b.label ? (employer ? b.label.split(employer.name).map(e).join(`<a href="${e(href(employer.url))}">${e(employer.name)}</a>`) : e(b.label)) : '';
   const meta = [label, e(where)].filter(Boolean).join(' · ');
   const prompt = `Read {url}. It is ${b.name}'s CV. Tell me where they would be strongest on my team, which of their stories to ask about in an interview, and what is missing.`;
-  const body = `<div class="topbar wrap"><span class="mono">${e(hostOf(siteUrl))}</span><span class="actions">
-${THEME_SWITCH}
-<button class="btn" type="button" data-ask="${e(prompt)}" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Ask your AI about me</span></button>
-</span></div>
+  const ask = `<button class="btn ask" type="button" data-ask="${e(prompt)}" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Ask your AI about me</span></button>`;
+  const body = `${bar(me, '', 'me', posts, ask)}
 <main class="profile wrap">
 <header class="intro">
 <div class="who"><div class="id">${avatar(b, '')}<div><div class="name">${e(b.name)}</div>${meta ? `<div class="meta">${meta}</div>` : ''}</div></div>${contact(b)}</div>
@@ -531,12 +615,12 @@ export function renderPost(me, post, { siteUrl = '', builtAt = new Date() } = {}
   const b = me.basics;
   const repo = me.meta && me.meta.me && me.meta.me.repo;
   const minutes = Math.max(1, Math.round(post.words / 220));
-  const body = `<nav class="post-nav wrap"><a class="home" href="${root}">${avatar(b, root)}<span>${e(b.name)}</span></a><span class="links"><a href="${root}">CV</a><a href="${root}#writing">Writing</a>${THEME_SWITCH}</span></nav>
+  const body = `${bar(me, root, 'blog', [post])}
 <article class="post wrap">
 <header><div class="date">${post.date ? `${e(longDate(post.date))} · ` : ''}${minutes} min read</div><h1>${e(post.title)}</h1>${post.tags.length ? `<div class="tags">${post.tags.map((t) => `<span class="chip">${e(t)}</span>`).join('')}</div>` : ''}</header>
 <div class="prose">${markdown(post.body, { shift: post.topHeading })}</div>
 </article>
-<div class="post-foot wrap"><div><a class="back" href="${root}#writing"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>${repo ? `<a class="edit" href="${e(href(`${repo.replace(/\/$/, '')}/edit/HEAD/posts/${post.file}`))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Suggest an edit</a>` : ''}</div></div>
+<div class="post-foot wrap"><div><a class="back" href="${root}blog/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>${repo ? `<a class="edit" href="${e(href(`${repo.replace(/\/$/, '')}/edit/HEAD/posts/${post.file}`))}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Suggest an edit</a>` : ''}</div></div>
 ${footer(me, root, builtAt)}`;
   return page({ title: `${post.title} · ${b.name}`, description: post.summary, root, body, canonical: siteUrl ? `${siteUrl}posts/${post.slug}/` : undefined,
     og: { type: 'article', image: absoluteImage(b, siteUrl), siteName: b.name, published: post.date || '' }, me });

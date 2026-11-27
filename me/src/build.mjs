@@ -11,7 +11,7 @@ import { parseFrontmatter } from './frontmatter.mjs';
 import { plainText } from './markdown.mjs';
 import { validate } from './validate.mjs';
 import { migrate, isLegacy } from './migrate.mjs';
-import { renderProfile, renderPost } from './render.mjs';
+import { renderProfile, renderPost, renderTools, renderBlog, toolList } from './render.mjs';
 import { cvMarkdown, llmsTxt, feedXml } from './outputs.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -57,11 +57,12 @@ export async function loadPosts(src) {
 }
 
 // Only what a site needs is published: images anywhere, everything under assets/ or static/, and a CNAME.
+// public/ is copied to the root of the site as it is (a 404.html, a verification file, redirects).
 // Other files in the repo (notes, drafts, PDFs) stay private.
 const IMAGES = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.svg', '.ico']);
 const published = (path) => {
   const top = path.split(sep)[0];
-  return path === 'CNAME' || top === 'assets' || top === 'static' || IMAGES.has(extname(path).toLowerCase());
+  return path === 'CNAME' || top === 'assets' || top === 'static' || top === 'public' || IMAGES.has(extname(path).toLowerCase());
 };
 
 async function copyStatic(src, out, dir = src) {
@@ -69,8 +70,9 @@ async function copyStatic(src, out, dir = src) {
     const from = join(dir, entry.name);
     if (entry.name.startsWith('.') || SKIP.has(entry.name) || resolve(from) === resolve(out)) continue;
     if (entry.isDirectory()) await copyStatic(src, out, from);
-    else if (extname(entry.name) !== '.md' && published(relative(src, from))) {
-      const to = join(out, relative(src, from));
+    else if ((extname(entry.name) !== '.md' || relative(src, from).split(sep)[0] === 'public') && published(relative(src, from))) {
+      const rel = relative(src, from);
+      const to = rel.split(sep)[0] === 'public' ? join(out, rel.split(sep).slice(1).join(sep)) : join(out, rel);
       await mkdir(dirname(to), { recursive: true });
       await copyFile(from, to);
     }
@@ -108,6 +110,9 @@ export async function build({ src = '.', out = '_site', siteUrl = '', repo = '',
   await copyStatic(src, out);
 
   await write(out, 'index.html', renderProfile(me, posts, opts));
+  const tools = toolList(me).length;
+  if (tools) await write(out, 'tools/index.html', renderTools(me, posts, opts));
+  if (posts.length) await write(out, 'blog/index.html', renderBlog(me, posts, opts));
   for (const post of posts) await write(out, `posts/${post.slug}/index.html`, renderPost(me, post, opts));
   await write(out, 'me.json', JSON.stringify(me, null, 2) + '\n');
   await write(out, 'cv.md', cvMarkdown(me, posts, opts));
@@ -120,7 +125,7 @@ export async function build({ src = '.', out = '_site', siteUrl = '', repo = '',
   await write(out, 'assets/apple-touch-icon.png', await readFile(join(HERE, 'apple-touch-icon.png')));
   await write(out, 'favicon.ico', await readFile(join(HERE, 'favicon.ico')));
 
-  return { posts: posts.length, warnings: warnings.length };
+  return { posts: posts.length, tools, warnings: warnings.length };
 }
 
 async function main() {
@@ -147,7 +152,7 @@ async function main() {
   const out = a.out || '_site';
   const result = await build({ src, out, siteUrl: a['site-url'] || process.env.ME_SITE_URL || '', repo: a.repo || process.env.ME_REPO_URL || '' });
   const size = (await stat(join(out, 'index.html'))).size;
-  console.log(`✓ Built ${out}/ · CV (${Math.round(size / 1024)} KB), ${result.posts} post${result.posts === 1 ? '' : 's'}, cv.md, llms.txt, feed.xml`);
+  console.log(`✓ Built ${out}/ · CV (${Math.round(size / 1024)} KB)${result.tools ? `, ${result.tools} tool${result.tools === 1 ? '' : 's'}` : ''}, ${result.posts} post${result.posts === 1 ? '' : 's'}, cv.md, llms.txt, feed.xml`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

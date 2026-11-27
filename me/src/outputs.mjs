@@ -1,6 +1,6 @@
 // Machine-readable outputs: /cv.md and /llms.txt for AI agents, /feed.xml for readers.
 import { escapeHtml as e } from './markdown.mjs';
-import { employers, productOrder } from './render.mjs';
+import { employers, productOrder, toolList, slug } from './render.mjs';
 
 const year = (d) => (d ? String(d).slice(0, 4) : 'now');
 const span = (from, to) => `${year(from)} – ${year(to)}`;
@@ -107,8 +107,12 @@ export function llmsTxt(me, posts, { siteUrl = '' } = {}) {
   out.push(`- [Full CV in Markdown](${link(siteUrl, 'cv.md')}): expertise, signature work, career, products, skills`);
   out.push(`- [me.json](${link(siteUrl, 'me.json')}): the same data as JSON Resume plus {me} fields`);
   out.push('');
+  const tools = toolList(me);
+  if (tools.length) {
+    out.push('## Tools', '', `- [Tools](${link(siteUrl, 'tools/')}): what each one is and the problem it solves`, ...tools.map((p) => `- [${p.name}](${p.url || link(siteUrl, `tools/#${slug(p.name)}`)})${p.tagline || p.description ? `: ${p.tagline || p.description}` : ''}`), '');
+  }
   if (posts.length) {
-    out.push('## Writing', '', ...posts.map((p) => `- [${p.title}](${link(siteUrl, `posts/${p.slug}/`)})${p.summary ? `: ${p.summary}` : ''}`), '');
+    out.push('## Writing', '', `- [Blog](${link(siteUrl, 'blog/')}): all posts`, ...posts.map((p) => `- [${p.title}](${link(siteUrl, `posts/${p.slug}/`)})${p.summary ? `: ${p.summary}` : ''}`), '');
   }
   return out.join('\n').trimEnd() + '\n';
 }

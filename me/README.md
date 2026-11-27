@@ -25,7 +25,7 @@ node src/build.mjs --migrate old-me.json         # convert an old jsonme file, p
 npm test
 ```
 
-Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `llms.txt` for AI agents, `feed.xml`. The site has light and dark themes: it follows the system setting, and a switch in the top bar lets readers pick one (kept in their browser). Printing always uses the light theme and expands every section. Pages carry Open Graph tags, so a shared link shows a card with your name, headline and `basics.image`; pass `--site-url` so the links and image are absolute.
+Output: `index.html` (CV), `tools/index.html` (when `meta.me.tools` names any), `blog/index.html` and `posts/<slug>/index.html` (when there are posts), `me.json`, `cv.md` and `llms.txt` for AI agents, `feed.xml`. Every page shares one top bar: your name, a **Me · Tools · Blog** switch (a tab shows only when there is something behind it) and the theme switch. The site has light and dark themes: it follows the system setting, and the switch lets readers pick one (kept in their browser). Printing always uses the light theme and expands every section. Pages carry Open Graph tags, so a shared link shows a card with your name, headline and `basics.image`; pass `--site-url` so the links and image are absolute.
 
 ## Format
 
@@ -35,7 +35,7 @@ Output: `index.html` (CV), `posts/<slug>/index.html`, `me.json`, `cv.md` and `ll
 - `facts`: up to 4 `{ value, label }`.
 - `expertise.engineering` and `expertise.ai`: `{ name, proof, detail, aiPractice: { delegated, owned, verifiedBy } }`. `proof` is required.
 - `highlights`: at most 3 stories `{ title, hook, where, when, tags, problem, did, outcome, stack, evidence }`.
-- `meta.me`: `listed`, `lookingFor`, `domains`, `aiEraStart` (default `2023-01`), `plausible` (the script URL from your Plausible snippet; added to every page).
+- `meta.me`: `listed`, `lookingFor`, `domains`, `aiEraStart` (default `2023-01`), `plausible` (the script URL from your Plausible snippet; added to every page), `tools` (project names for the Tools page, in order).
 - `llms`: how you use LLMs, `{ source, gap, patterns: [{ name, goal, how, achieves, example, share, limit }] }`. Patterns show as one row of names per `goal` (planning, designing, building, reviewing, debugging, research, writing, operating); a click opens the detail. [`site/patterns-prompt.md`](site/patterns-prompt.md) asks an LLM to find them in your own prompts.
 
 Everything about AI is optional. The AI-era line, "N of them before AI" and the AI-native column show only when the CV has AI content: `expertise.ai`, an `ai` story tag, a vibe-coded or revived product, `llms`, or `aiEraStart`.
@@ -50,8 +50,19 @@ The career line has one row per employer (`work` entries with the same `name`), 
 - A product built by hand and picked up again with AI takes `pausedDate`, `revivedDate` and `revival` (what was built since). It is drawn as a bar, a dashed pause and a star where the revival starts.
 - A product built with AI from the start takes `"vibecoded": true`. It is drawn with a star where it starts and a hatched bar; the legend explains the star.
 
-Links in `me.json` and posts may be `http(s)`, `mailto` or relative; other schemes are dropped. From the repo, only images, `assets/`, `static/` and `CNAME` are copied to the site, so notes or drafts next to `me.json` stay private.
+Links in `me.json` and posts may be `http(s)`, `mailto` or relative; other schemes are dropped. From the repo, only images, `assets/`, `static/`, `CNAME` and `public/` are copied to the site, so notes or drafts next to `me.json` stay private. `public/` lands at the root of the site as it is: a `404.html`, a search engine verification file or a redirect page.
 
 Only `basics.name` is required. Old jsonme files (`employments`, `technologies`, …) are converted automatically during the build.
 
-Posts are `posts/*.md` with frontmatter: `title`, `date`, `summary`, `tags`, `draft`.
+Posts are `posts/*.md` with frontmatter: `title`, `date`, `summary`, `tags`, `draft`. `/blog/` lists them, newest first.
+
+## Tools page
+
+`/tools/` presents the projects you name in `meta.me.tools`, one per slide, in that order: a dock of icons below (the selected one larger), arrows at the sides, the arrow keys and a swipe move between them, and `/tools/#name` links to one. It is one screen tall at any size. Each project can add:
+
+- `tagline`: one line under the name (falls back to `description`, which is usually too long for a slide).
+- `icon`: a square logo, a path in the repo (published like any image) or a URL. Without one, the initials show.
+- `problem` and `solves`: the problem it solves and what it does about it.
+- `links`: buttons after "Visit <name>" (the `url`), e.g. `[{ "label": "GitHub", "url": "…" }]`.
+
+Projects not named in `meta.me.tools` stay on the CV only.
